@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -24,11 +20,27 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{0162e7ae-3b8d-4226-8512-19ad1d1f825f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{ce5e4fd3-91b7-4851-ac1f-5e371237eef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer">
+      <UniqueIdentifier>{2adb6bee-6a18-471e-8569-ee536ee7f9c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainEngineFiles">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="GameObjectComponents\GameObjectComponent">
+      <UniqueIdentifier>{16193731-4c03-4f16-b929-9bdf01dc0e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjectComponents\SimpleComponents">
+      <UniqueIdentifier>{365fb63a-9527-435d-a4ce-926b7ef9f1ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjectComponents\CompositeComponents">
+      <UniqueIdentifier>{e206737a-3a51-4146-a884-61eb79b750d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Transform.h">
-      <Filter>GameObjectComponents</Filter>
-    </ClInclude>
     <ClInclude Include="Texture2D.h">
       <Filter>GameResources</Filter>
     </ClInclude>
@@ -41,20 +53,11 @@
     <ClInclude Include="GameObject.h">
       <Filter>GameObjectActors</Filter>
     </ClInclude>
-    <ClInclude Include="TextObject.h">
-      <Filter>GameObjectActors</Filter>
-    </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Minigin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Source Files</Filter>
+      <Filter>MainEngineFiles</Filter>
     </ClInclude>
     <ClInclude Include="Singleton.h">
-      <Filter>Source Files</Filter>
+      <Filter>MainEngineFiles</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>Scene</Filter>
@@ -62,20 +65,37 @@
     <ClInclude Include="Scene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineMacros.h">
+      <Filter>MainEngineFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectComponent.h">
+      <Filter>GameObjectComponents\GameObjectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2DComponent.h">
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComponent.h">
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="TextComponent.h">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSComponent.h">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderComponent.h">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Minigin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Transform.cpp">
-      <Filter>GameObjectComponents</Filter>
+      <Filter>MainEngineFiles</Filter>
     </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>GameResources</Filter>
@@ -89,14 +109,38 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>GameObjectActors</Filter>
     </ClCompile>
-    <ClCompile Include="TextObject.cpp">
-      <Filter>GameObjectActors</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>MainEngineFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectComponent.cpp">
+      <Filter>GameObjectComponents\GameObjectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2DComponent.cpp">
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponent.cpp">
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="TextComponent.cpp">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSComponent.cpp">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderComponent.cpp">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

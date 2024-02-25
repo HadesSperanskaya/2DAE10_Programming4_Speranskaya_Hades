@@ -4,6 +4,11 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <chrono>
+#include <thread>
+
+#include <wingdi.h>
+
 #include "Minigin.h"
 #include "InputManager.h"
 #include "SceneManager.h"
@@ -85,10 +90,59 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 	// todo: this update loop could use some work.
 	bool doContinue = true;
+
+	//variable to store starting point before loop, and then last time point
+	auto lastTime = std::chrono::high_resolution_clock::now();
+
+	float lag = 0.0f;
+
+	const float millisecondsInSecond{ 1000.f };
+
+#ifdef _WIN32 
+	const long millisecondsPerFrame{ long(millisecondsInSecond / float(GetDeviceCaps(GetDC(NULL), VREFRESH))) };
+
+#else
+	const float desiredFPS{ 140 };
+
+	const long millisecondsPerFrame{ long(millisecondsInSecond / desiredFPS) };
+
+#endif
+	float fixedTimeStep{ 1 };
+
 	while (doContinue)
 	{
+		//get and store current point in time
+		const auto currentTime = std::chrono::high_resolution_clock::now();
+		
+		//get delta time from the difference between last stored timepoint and now
+		const float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
+
+		//update last time to be the current time
+
+		lastTime = currentTime;
+		lag = lag + deltaTime;
+
 		doContinue = input.ProcessInput();
-		sceneManager.Update();
+
+
+		//for time dependent things (physics and networking), run through them as many times as it takes
+		//to catch up the present time
+		while(lag >= fixedTimeStep)
+		{
+			sceneManager.FixedUpdate(fixedTimeStep);
+			lag = lag - fixedTimeStep;
+		}
+
+
+
+		sceneManager.Update(deltaTime);
 		renderer.Render();
+
+
+		const auto sleepTime = currentTime + std::chrono::milliseconds(millisecondsPerFrame) - std::chrono::high_resolution_clock::now();
+
+
+		std::this_thread::sleep_for(sleepTime);
+
 	}
 }
