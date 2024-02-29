@@ -50,7 +50,7 @@ void FPSComponent::Update(float deltaTime)
 
 			std::string outputString = match[0].str() + " FPS";
 
-			static_cast<TextComponent*>(std::shared_ptr<GameObjectComponent>(m_TextComponentPointer).get())->SetText(outputString);
+			std::static_pointer_cast<TextComponent>(std::shared_ptr<GameObjectComponent>(m_TextComponentPointer))->SetText(outputString);
 
 		}
 

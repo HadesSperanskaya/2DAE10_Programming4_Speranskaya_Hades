@@ -37,6 +37,13 @@ namespace Engine
 		void SetPosition(float x, float y);
 		void SetRotation(float rotation);
 
+		//set parent
+		void SetParent(std::weak_ptr<GameObject> parent);
+
+		//get parent, children
+		std::weak_ptr<GameObject> GetParent();
+		int GetChildCount();
+		std::weak_ptr<GameObject> GetChildAt(int index);
 
 		//add a component
 		void AddTexture2DComponent(std::string name, std::shared_ptr<Texture2D> textureSharedPointer = nullptr);
@@ -68,11 +75,20 @@ namespace Engine
 
 
 	private:
+		//functions
+		bool HasThisChildOrGrandchild(std::weak_ptr<GameObject> object);
 
+		void RemoveChild(std::shared_ptr<GameObject> child);
+		void AddChild(std::shared_ptr<GameObject> child);
+
+
+		//elements
+		// 
 		//component types that an object does not need multiple of
 		static const COMPONENT_TYPE m_DefaultComponents[];
 
-		std::unique_ptr<TransformComponent> m_TransformComponentUniquePointer;
+		std::unique_ptr<TransformComponent> m_InheritedTransformComponentUniquePointer;
+		std::unique_ptr<TransformComponent> m_LocalTransformComponentUniquePointer;
 		std::unique_ptr<RenderComponent> m_RenderComponentUniquePointer;
 
 		//vector of extra components
@@ -80,6 +96,16 @@ namespace Engine
 
 
 		int m_ExtraComponentCount;
+
+
+		//components for hierarchical relationship with other game objects
+		std::weak_ptr<GameObject> m_ParentPointer;
+		std::vector <std::shared_ptr<GameObject>> m_ChildrenPointerVector;
+
+
+		//dirty flags
+		bool m_NeedsToBeDestroyed{ false };
+		bool m_NeedsToUpdateWorldTransformInfo{ false };
 
 	};
 }
