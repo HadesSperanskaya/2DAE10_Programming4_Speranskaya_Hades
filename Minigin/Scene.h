@@ -1,7 +1,7 @@
 #pragma once
 #include "SceneManager.h"
 
-namespace dae
+namespace Engine
 {
 	class GameObject;
 	class Scene final
@@ -13,7 +13,7 @@ namespace dae
 		void RemoveAll();
 
 
-		void FixedUpdate(float fixedTimeStepTime);
+		//void FixedUpdate(float fixedTimeStepTime);
 		void Update(float deltaTime);
 		void Render() const;
 

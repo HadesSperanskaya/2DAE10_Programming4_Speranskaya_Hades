@@ -3,16 +3,16 @@
 
 
 
-void dae::SceneManager::FixedUpdate(float fixedTimeStepTime)
-{
-	for (auto& scene : m_scenes)
-	{
-		scene->FixedUpdate(fixedTimeStepTime);
-	}
-}
+//void Engine::SceneManager::FixedUpdate(float fixedTimeStepTime)
+//{
+//	for (auto& scene : m_scenes)
+//	{
+//		scene->FixedUpdate(fixedTimeStepTime);
+//	}
+//}
 
 
-void dae::SceneManager::Update(float deltaTime)
+void Engine::SceneManager::Update(float deltaTime)
 {
 	for(auto& scene : m_scenes)
 	{
@@ -23,7 +23,7 @@ void dae::SceneManager::Update(float deltaTime)
 
 
 
-void dae::SceneManager::Render()
+void Engine::SceneManager::Render()
 {
 	for (const auto& scene : m_scenes)
 	{
@@ -31,7 +31,7 @@ void dae::SceneManager::Render()
 	}
 }
 
-dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
+Engine::Scene& Engine::SceneManager::CreateScene(const std::string& name)
 {
 	const auto& scene = std::shared_ptr<Scene>(new Scene(name));
 	m_scenes.push_back(scene);

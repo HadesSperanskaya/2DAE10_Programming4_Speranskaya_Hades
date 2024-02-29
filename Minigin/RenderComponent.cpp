@@ -1,34 +1,45 @@
 #include "RenderComponent.h"
 
+using namespace Engine;
 
-dae::RenderComponent::RenderComponent() :
-	GameObjectComponent(COMPONENT_TYPENAME_RENDER, COMPONENT_TYPENAME_RENDER)
+RenderComponent::RenderComponent() :
+	GameObjectComponent(COMPONENT_TYPE::RenderComponent, COMPONENT_TYPENAME_RENDER)
 {
 
 }
 
 
 
-void dae::RenderComponent::Render(float x, float y) const
+void RenderComponent::Render(float xPosition, float yPosition, float rotation) const
 {
-	for (auto& component : m_ObjectsToRenderVector)
+	for (auto& component : m_ComponentWeakPointersVector)
 	{
-		component->Render(x, y);
-	}
-}
-
-void dae::RenderComponent::AddComponentToRender(GameObjectComponent* objectToRender)
-{
-	m_ObjectsToRenderVector.push_back(objectToRender);
-}
-
-void dae::RenderComponent::RemoveComponentToRenderByName(const std::string& componentName)
-{
-	for (int vectorIndex{ 0 }; vectorIndex < int(m_ObjectsToRenderVector.size()); ++vectorIndex)
-	{
-		if (m_ObjectsToRenderVector[vectorIndex]->GetComponentName() == componentName)
+		if(component.expired() != true)
 		{
-			m_ObjectsToRenderVector.erase(std::find(m_ObjectsToRenderVector.begin(), m_ObjectsToRenderVector.end(), m_ObjectsToRenderVector[vectorIndex]));
+			std::shared_ptr<GameObjectComponent>(component)->Render(xPosition, yPosition, rotation);
 		}
 	}
+}
+
+void RenderComponent::AddComponentToRender(std::shared_ptr<GameObjectComponent> componentToAdd)
+{
+	if(componentToAdd != nullptr)
+	{
+		m_ComponentWeakPointersVector.push_back(std::weak_ptr<GameObjectComponent>(componentToAdd));
+	}
+}
+
+void RenderComponent::EraseEmptyComponents()
+{
+	//remove and erase all expired pointers. the remove if return the iterator to the logical end, 
+	//where all the expired pointers are moved during the remove_if function
+
+	m_ComponentWeakPointersVector.erase(std::remove_if(m_ComponentWeakPointersVector.begin(), m_ComponentWeakPointersVector.end(),
+										[](std::weak_ptr<GameObjectComponent> element) 
+											{
+												return (element.use_count() == 0); 
+											}), m_ComponentWeakPointersVector.end());
+
+
+
 }

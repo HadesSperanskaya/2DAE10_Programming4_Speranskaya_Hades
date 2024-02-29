@@ -4,7 +4,7 @@
 #include <memory>
 #include "Singleton.h"
 
-namespace dae
+namespace Engine
 {
 	class Scene;
 	class SceneManager final : public Singleton<SceneManager>
@@ -12,7 +12,7 @@ namespace dae
 	public:
 		Scene& CreateScene(const std::string& name);
 
-		void FixedUpdate(float fixedTimeStepTime);
+		//void FixedUpdate(float fixedTimeStepTime);
 		void Update(float deltaTime);
 		void Render();
 

@@ -5,11 +5,13 @@
 
 #include "GameObjectComponent.h"
 
-namespace dae
+namespace Engine
 {
 	class Texture2D;
 	class Font;
 	class TextComponent;
+	class TransformComponent;
+	class RenderComponent;
 
 	class GameObject final
 	{
@@ -28,24 +30,20 @@ namespace dae
 
 
 		//functions
-		void FixedUpdate(float fixedTimeStepTime);
 		void Update(float deltaTime);
 		void Render() const;
 
 		//all game objects will have a transform component, so they all can have a set position method.
 		void SetPosition(float x, float y);
-		void AddComponentPointerToRenderComponentByName(std::string name);
+		void SetRotation(float rotation);
+
 
 		//add a component
-		
+		void AddTexture2DComponent(std::string name, std::shared_ptr<Texture2D> textureSharedPointer = nullptr);
+	
+		void AddTextComponent(std::string name, std::shared_ptr<Font> fontSharedPointer = nullptr, std::string textString = "");
 
-		void AddTexture2DComponent(std::string name);
-		void AddTexture2DComponent(std::string name, std::shared_ptr<Texture2D> textureSharedPointer);
-		void AddTextComponent(std::string name);
-		void AddTextComponent(std::string name, std::shared_ptr<Font> fontSharedPointer);
-		void AddTextComponent(std::string name, std::shared_ptr<Font> fontSharedPointer, std::string textString);
-		void AddFPSComponent();
-		void AddFPSComponent(GameObjectComponent* textComponentPointer);
+		void AddFPSComponent(std::weak_ptr<GameObjectComponent> textComponentPointer = std::weak_ptr<GameObjectComponent>{});
 
 
 
@@ -53,34 +51,35 @@ namespace dae
 		void RemoveComponentWithName(std::string componentName); 
 
 		//remove all components of this type
-		void RemoveAllComponentsOfType(std::string componentTypeName); 
+		void RemoveAllComponentsOfType(COMPONENT_TYPE componentType);
 
 		//Checks for the presence of a component with a certain name
 		bool CheckForComponentWithName(std::string componentName) const; 
 
 		//Checks for the presence of a component of a certain type
-		bool CheckForComponentOfType(std::string componentTypeName) const; 
+		bool CheckForComponentOfType(COMPONENT_TYPE componentType) const;
 
 
 		//Get a pointer to a component by name
-		GameObjectComponent* GetComponentByName(std::string componentName) const; 
-		GameObjectComponent* GetComponentByType(std::string componentType) const; 
+		std::weak_ptr<GameObjectComponent> GetComponentByName(std::string componentName) const; 
+		std::weak_ptr<GameObjectComponent> GetComponentByType(COMPONENT_TYPE componentType) const;
 
 
 
 
 	private:
 
-		//to store a list of all components that are always part of a game object, and that it can only have one of
-		static const std::string m_DefaultComponents[];
+		//component types that an object does not need multiple of
+		static const COMPONENT_TYPE m_DefaultComponents[];
+
+		std::unique_ptr<TransformComponent> m_TransformComponentUniquePointer;
+		std::unique_ptr<RenderComponent> m_RenderComponentUniquePointer;
+
+		//vector of extra components
+		std::vector<std::shared_ptr<GameObjectComponent>> m_GameObjectComponentsVector; 
 
 
-		//vector storing the components. could potentially later change to an unordered set with a lambda that uses component name to check
-		//that the new added component is
-		std::vector<std::unique_ptr<GameObjectComponent>> m_GameObjectComponentsVector; 
-
-
-		int m_ComponentCount;
+		int m_ExtraComponentCount;
 
 	};
 }

@@ -4,38 +4,27 @@
 #include "Texture2D.h"
 
 
-dae::Texture2DComponent::Texture2DComponent(const std::string& name)
+using namespace Engine;
+
+
+Texture2DComponent::Texture2DComponent(const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer)
 	:
-	GameObjectComponent(COMPONENT_TYPENAME_TEXTURE2D, name)
+	GameObjectComponent(COMPONENT_TYPE::Texture2DComponent, name),
+	m_TextureSharedPointer{ textureSharedPointer }
 {
 
 };
 
 
-
-dae::Texture2DComponent::Texture2DComponent(const std::string& name, std::shared_ptr<dae::Texture2D> textureSharedPointer)
-	:
-	GameObjectComponent(COMPONENT_TYPENAME_TEXTURE2D, name)
+void Texture2DComponent::Render(float xPosition, float yPosition, float rotation) const
 {
-	m_TextureSharedPointer = textureSharedPointer;
 
-};
+	//to do: implement rotation of texture. for not just stop it throwing error c4100 unreferenced formal parameter
+	rotation;
 
-void dae::Texture2DComponent::Render(float x, float y) const
-{
-	if(m_TextureSharedPointer != nullptr)
-	Renderer::GetInstance().RenderTexture(*m_TextureSharedPointer, x, y);
+	if (m_TextureSharedPointer != nullptr)
+	{
+		Renderer::GetInstance().RenderTexture(*m_TextureSharedPointer, xPosition, yPosition);
+	}
 }
-
-
-const std::shared_ptr<dae::Texture2D> dae::Texture2DComponent::GetTexture() const
-{
-	return m_TextureSharedPointer;
-};
-
-
-void dae::Texture2DComponent::SetTexture(std::shared_ptr<dae::Texture2D> textureSharedPointer)
-{
-	m_TextureSharedPointer = textureSharedPointer;
-};
 

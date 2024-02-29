@@ -5,14 +5,14 @@
 //including macros here so that all components will have access to them as well.
 #include "EngineMacros.h"
 
-namespace dae
+namespace Engine
 {
 	class GameObjectComponent
 	{
 	public:
 
 		//constructor
-		GameObjectComponent(std::string componentTypeName, std::string componentName);
+		GameObjectComponent(COMPONENT_TYPE componentType, std::string componentName);
 
 		//destructor
 		virtual ~GameObjectComponent() = default;
@@ -27,28 +27,24 @@ namespace dae
 		//functions
 
 		virtual void Update(float deltaTime);
-		virtual void Render(float x, float y) const;
 
-		const std::string& GetComponentTypeName() const;
-		const std::string& GetComponentName() const;
-		bool GetIsRenderable() const;
+		//render function requires the parent game object's transform information to render the object in the correct place
+		virtual void Render(float xPosition, float yPosition, float rotation) const;
 
-		void SetComponentName(const std::string& newName);
-		void SetRenderable(bool isRenderable);
+
+		//elements - public following the guideline "C.131: Avoid trivial getters and setters"
+
+		//component type cannot change after consutruction, so it is const
+		const COMPONENT_TYPE m_ComponentType;
+
+		//component unique name can be changed after construction, so it is not const
+		std::string m_ComponentName;
 
 
 
 
 	private:
-		//component type cannot change after consutruction, so it is const
-		const std::string m_ComponentTypeName;
-
-		//component unique name can be changed after construction, so it is not const
-		std::string m_ComponentUniqueName;
-
-		//variable that tracks whether a component has a render function that needs calling for it.
-		bool m_IsRenderable;
-
+		
 
 	};
 }

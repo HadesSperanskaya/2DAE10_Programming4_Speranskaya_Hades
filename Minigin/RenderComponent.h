@@ -2,7 +2,7 @@
 #include "GameObjectComponent.h"
 #include <vector>
 
-namespace dae
+namespace Engine
 {
 
 	class Texture2DComponent;
@@ -10,7 +10,7 @@ namespace dae
     class RenderComponent : public GameObjectComponent
     {
 	public: 
-		//constructors
+		//constructor
 		RenderComponent();
 
 		//destructor
@@ -24,15 +24,17 @@ namespace dae
 
 
 		//functions
-		void Render(float x, float y) const;
+		void Render(float xPosition, float yPosition, float rotation) const;
 
-		void AddComponentToRender(GameObjectComponent* objectToRender);
-		void RemoveComponentToRenderByName(const std::string& componentName);
+		void AddComponentToRender(std::shared_ptr<GameObjectComponent> componentToAdd);
+
+		void EraseEmptyComponents();
 
 
 	private:
 
-		std::vector<GameObjectComponent*> m_ObjectsToRenderVector;
+		//elements
+		std::vector<std::weak_ptr<GameObjectComponent>> m_ComponentWeakPointersVector;
 
 
 

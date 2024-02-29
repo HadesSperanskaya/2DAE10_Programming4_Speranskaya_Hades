@@ -15,214 +15,164 @@
 #include "FPSComponent.h"
 #include "RenderComponent.h"
 
-
-const std::string dae::GameObject::m_DefaultComponents[2]{COMPONENT_TYPENAME_TRANSFORM, COMPONENT_TYPENAME_RENDER };
-
+using namespace Engine;
 
 
-dae::GameObject::GameObject()
+const COMPONENT_TYPE GameObject::m_DefaultComponents[2]{COMPONENT_TYPE::TransformComponent, COMPONENT_TYPE::RenderComponent };
+
+
+
+GameObject::GameObject():
+	m_TransformComponentUniquePointer{ std::unique_ptr<TransformComponent>(new TransformComponent{})},
+	m_RenderComponentUniquePointer{ std::unique_ptr<RenderComponent>(new RenderComponent{}) },
+	m_ExtraComponentCount{0}
 {
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<GameObjectComponent>(new TransformComponent{}));
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<GameObjectComponent>(new RenderComponent{}));
-
-	m_ComponentCount = int(m_GameObjectComponentsVector.size());
+	
 };
 
 
-dae::GameObject::~GameObject()
+GameObject::~GameObject()
 {
 
 	m_GameObjectComponentsVector.clear();
 
 };
 
-void dae::GameObject::FixedUpdate(float fixedTimeStepTime)
-{
-	fixedTimeStepTime;
-	//not relevant for now
-};
 
-void dae::GameObject::Update(float deltaTime)
+void GameObject::Update(float deltaTime)
 {
 
-	for (int vectorIndex{ 0 }; vectorIndex < m_ComponentCount; ++vectorIndex)
+	for (int vectorIndex{ 0 }; vectorIndex < m_ExtraComponentCount; ++vectorIndex)
 	{
 		m_GameObjectComponentsVector[vectorIndex]->Update(deltaTime);
 	}
 };
 
-void dae::GameObject::Render() const
+void GameObject::Render() const
 {
-	//get game object position
-	const glm::vec3 position = static_cast<TransformComponent*>(GetComponentByType(COMPONENT_TYPENAME_TRANSFORM))->GetPosition();
 
 	//render using game object world position
-	GetComponentByType(COMPONENT_TYPENAME_RENDER)->Render(position.x, position.y);
+	m_RenderComponentUniquePointer->Render(m_TransformComponentUniquePointer->m_Position.x, m_TransformComponentUniquePointer->m_Position.y, m_TransformComponentUniquePointer->m_Rotation);
 	
 
 };
 
-
-void dae::GameObject::SetPosition(float x, float y)
+void GameObject::SetPosition(float x, float y)
 {
-	(static_cast<TransformComponent*>(GetComponentByType(COMPONENT_TYPENAME_TRANSFORM)))->SetPosition(x, y, 0.0f);
+	m_TransformComponentUniquePointer->m_Position.x = x;
+	m_TransformComponentUniquePointer->m_Position.y = y;
 
 
 };
 
-void dae::GameObject::AddComponentPointerToRenderComponentByName(std::string name)
+void GameObject::SetRotation(float rotation)
 {
-	static_cast<RenderComponent*>(GetComponentByType(COMPONENT_TYPENAME_RENDER))->AddComponentToRender(GetComponentByName(name));
-}
+	m_TransformComponentUniquePointer->m_Rotation = rotation;
+};
 
-void dae::GameObject::AddTexture2DComponent(std::string name)
+
+void GameObject::AddTexture2DComponent(std::string name, std::shared_ptr<Texture2D> textureSharedPointer)
 {
-	if (CheckForComponentOfType(COMPONENT_TYPENAME_TEXTURE2D))
+	if (CheckForComponentOfType(COMPONENT_TYPE::Texture2DComponent))
 	{
 		return;
 	}
 
-	
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new Texture2DComponent{ name })));
-
-	++m_ComponentCount;
-};
-
-void dae::GameObject::AddTexture2DComponent(std::string name, std::shared_ptr<dae::Texture2D> textureSharedPointer)
-{
-	if (CheckForComponentOfType(COMPONENT_TYPENAME_TEXTURE2D))
+	if(textureSharedPointer != nullptr)
 	{
-		return;
+		m_GameObjectComponentsVector.push_back(std::shared_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new Texture2DComponent{ name, textureSharedPointer })));
+	}
+	else
+	{
+		m_GameObjectComponentsVector.push_back(std::shared_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new Texture2DComponent{ name })));
+
 	}
 
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new Texture2DComponent{ name, textureSharedPointer })));
+	++m_ExtraComponentCount;
 
-	++m_ComponentCount;
+	m_RenderComponentUniquePointer->AddComponentToRender(m_GameObjectComponentsVector.back());
 };
 
-void dae::GameObject::AddTextComponent(std::string name)
-{
 
-	if (CheckForComponentWithName(name))
-	{
-		return;
-	}
 
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new TextComponent{ name })));
-
-	++m_ComponentCount;
-
-};
-
-void dae::GameObject::AddTextComponent(std::string name, std::shared_ptr<Font> fontSharedPointer)
+void GameObject::AddTextComponent(std::string name, std::shared_ptr<Font> fontSharedPointer, std::string textString)
 {
 	if (CheckForComponentWithName(name))
 	{
 		return;
 	}
 
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new TextComponent{ name, fontSharedPointer })));
+	m_GameObjectComponentsVector.push_back(std::shared_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new TextComponent{ name, fontSharedPointer, textString })));
 
-	++m_ComponentCount;
+	++m_ExtraComponentCount;
+	m_RenderComponentUniquePointer->AddComponentToRender(m_GameObjectComponentsVector.back());
 
 };
 
-void dae::GameObject::AddTextComponent(std::string name, std::shared_ptr<Font> fontSharedPointer, std::string textString)
+
+void GameObject::AddFPSComponent(std::weak_ptr<GameObjectComponent> textComponentPointer)
 {
-	if (CheckForComponentWithName(name))
+	if (CheckForComponentOfType(COMPONENT_TYPE::FPSComponent))
 	{
 		return;
 	}
 
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new TextComponent{ name, fontSharedPointer, textString })));
-
-	++m_ComponentCount;
-};
-
-void dae::GameObject::AddFPSComponent()
-{
-	if (CheckForComponentWithName(COMPONENT_TYPENAME_FPS))
+	if (textComponentPointer.expired())
 	{
-		return;
+		m_GameObjectComponentsVector.push_back(std::shared_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new FPSComponent{})));
+
+	}
+	else
+	{
+		m_GameObjectComponentsVector.push_back(std::shared_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new FPSComponent{ textComponentPointer })));
+
 	}
 
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new FPSComponent{})));
-
-	++m_ComponentCount;
+	++m_ExtraComponentCount;
 }
 
-void dae::GameObject::AddFPSComponent(GameObjectComponent* textComponentPointer)
-{
-	if (CheckForComponentWithName(COMPONENT_TYPENAME_FPS))
-	{
-		return;
-	}
-
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<GameObjectComponent>(static_cast<GameObjectComponent*>(new FPSComponent{ textComponentPointer })));
-
-	++m_ComponentCount;
-}
-
-void dae::GameObject::RemoveComponentWithName(std::string componentName)
+void GameObject::RemoveComponentWithName(std::string componentName)
 {
 
-	//find the component
-	for (int vectorIndex{ 0 }; vectorIndex < m_ComponentCount; ++vectorIndex)
-	{
-		//once the component is found, check if it can be removed
-		if (m_GameObjectComponentsVector[vectorIndex]->GetComponentName() == componentName)
-		{
-			const std::string typeOfComponentToRemove = m_GameObjectComponentsVector[vectorIndex]->GetComponentTypeName();
+	m_GameObjectComponentsVector.erase(std::remove_if(m_GameObjectComponentsVector.begin(), m_GameObjectComponentsVector.end(),
+														[componentName](std::shared_ptr<GameObjectComponent> element)
+														{
+															return (element->m_ComponentName == componentName);
+														}),
+														m_GameObjectComponentsVector.end());
 
-			for (auto forbiddenComponentType : m_DefaultComponents)
-			{
-				if (forbiddenComponentType == typeOfComponentToRemove)
-				{
-					return;
-				}
-			}
-
-			//if the type was not a default type, erase the component
-
-			m_GameObjectComponentsVector.erase(std::find(m_GameObjectComponentsVector.begin(), m_GameObjectComponentsVector.end(), m_GameObjectComponentsVector[vectorIndex]));
-			--m_ComponentCount;
-
-			return;
-		}
-	}
-
-
+	m_RenderComponentUniquePointer->EraseEmptyComponents();
 };
 
-void dae::GameObject::RemoveAllComponentsOfType(std::string componentTypeName)
+void GameObject::RemoveAllComponentsOfType(COMPONENT_TYPE componentType)
 {
 	//return if the desired deletion type is a default type
 	for (auto forbiddenComponentType : m_DefaultComponents)
 	{
-		if (forbiddenComponentType == componentTypeName)
+		if (forbiddenComponentType == componentType)
 		{
 			return;
 		}
 	}
 
 	//find the components to delete and delete them
-	for (int vectorIndex{ 0 }; vectorIndex < m_ComponentCount; ++vectorIndex)
-	{
-		//once the component is found, check if it can be removed
-		if (m_GameObjectComponentsVector[vectorIndex]->GetComponentTypeName() == componentTypeName)
-		{
-			m_GameObjectComponentsVector.erase(std::find(m_GameObjectComponentsVector.begin(), m_GameObjectComponentsVector.end(), m_GameObjectComponentsVector[vectorIndex]));
-			--m_ComponentCount;
+	m_GameObjectComponentsVector.erase(std::remove_if(m_GameObjectComponentsVector.begin(), m_GameObjectComponentsVector.end(),
+														[componentType](std::shared_ptr<GameObjectComponent> element)
+														{
+															return (element->m_ComponentType == componentType);
+														}), 
+														m_GameObjectComponentsVector.end());
 
-		}
-	}
+	m_RenderComponentUniquePointer->EraseEmptyComponents();
+
 };
 
-bool dae::GameObject::CheckForComponentWithName(std::string componentName) const
+bool GameObject::CheckForComponentWithName(std::string componentName) const
 {
-	for (int vectorIndex{ 0 }; vectorIndex < m_ComponentCount; ++vectorIndex)
+
+	for (const auto& component : m_GameObjectComponentsVector)
 	{
-		if (m_GameObjectComponentsVector[vectorIndex]->GetComponentName() == componentName)
+		if (component->m_ComponentName == componentName)
 		{
 			return true;
 		}
@@ -231,12 +181,12 @@ bool dae::GameObject::CheckForComponentWithName(std::string componentName) const
 	return false;
 };
 
-bool dae::GameObject::CheckForComponentOfType(std::string componentTypeName) const
+bool GameObject::CheckForComponentOfType(COMPONENT_TYPE componentType) const
 {
 
-	for (int vectorIndex{ 0 }; vectorIndex < m_ComponentCount; ++vectorIndex)
+	for (const auto& component : m_GameObjectComponentsVector)
 	{
-		if (m_GameObjectComponentsVector[vectorIndex]->GetComponentTypeName() == componentTypeName)
+		if (component->m_ComponentType == componentType)
 		{
 			return true;
 		}
@@ -246,35 +196,33 @@ bool dae::GameObject::CheckForComponentOfType(std::string componentTypeName) con
 
 };
 
-dae::GameObjectComponent* dae::GameObject::GetComponentByName(std::string componentName) const
+std::weak_ptr<GameObjectComponent> GameObject::GetComponentByName(std::string componentName) const
 {
-	//figure out error handling for this later, involving checking for component
 
-
-	for (int vectorIndex{ 0 }; vectorIndex < m_ComponentCount; ++vectorIndex)
+	for (const auto& component : m_GameObjectComponentsVector)
 	{
-		if (m_GameObjectComponentsVector[vectorIndex]->GetComponentName() == componentName)
+		if (component->m_ComponentName == componentName)
 		{
-			return m_GameObjectComponentsVector[vectorIndex].get();
+			return std::weak_ptr<GameObjectComponent>(component);
 		}
 	}
 
-	return nullptr;
+	return std::weak_ptr<GameObjectComponent>{};
 
 };
 
-dae::GameObjectComponent* dae::GameObject::GetComponentByType(std::string componentType) const
+std::weak_ptr<GameObjectComponent> GameObject::GetComponentByType(COMPONENT_TYPE componentType) const
 {
-	//figure out error handling for this later, involving checking for component
 
-	for (int vectorIndex{ 0 }; vectorIndex < m_ComponentCount; ++vectorIndex)
+	for (const auto& component : m_GameObjectComponentsVector)
 	{
-		if (m_GameObjectComponentsVector[vectorIndex]->GetComponentTypeName() == componentType)
+		if (component->m_ComponentType == componentType)
 		{
-			return m_GameObjectComponentsVector[vectorIndex].get();
+			return std::weak_ptr<GameObjectComponent>(component);
 		}
 	}
 
-	return nullptr;
+	return std::weak_ptr<GameObjectComponent>{};
+
 
 };

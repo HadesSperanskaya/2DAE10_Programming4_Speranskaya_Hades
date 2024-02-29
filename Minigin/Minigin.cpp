@@ -45,7 +45,7 @@ void PrintSDLVersion()
 		version.major, version.minor, version.patch);
 }
 
-dae::Minigin::Minigin(const std::string &dataPath)
+Engine::Minigin::Minigin(const std::string &dataPath)
 {
 	PrintSDLVersion();
 	
@@ -72,7 +72,7 @@ dae::Minigin::Minigin(const std::string &dataPath)
 	ResourceManager::GetInstance().Init(dataPath);
 }
 
-dae::Minigin::~Minigin()
+Engine::Minigin::~Minigin()
 {
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
@@ -80,7 +80,7 @@ dae::Minigin::~Minigin()
 	SDL_Quit();
 }
 
-void dae::Minigin::Run(const std::function<void()>& load)
+void Engine::Minigin::Run(const std::function<void()>& load)
 {
 	load();
 
@@ -88,13 +88,17 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 
-	// todo: this update loop could use some work.
+	
 	bool doContinue = true;
 
 	//variable to store starting point before loop, and then last time point
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
-	float lag = 0.0f;
+
+	//fixed update functionatlity currenly commented out. may be relevant later for phyics, so not deleted.
+	//float lag = 0.0f;
+	//float fixedTimeStep{ 1 };
+
 
 	const float millisecondsInSecond{ 1000.f };
 
@@ -107,7 +111,6 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	const long millisecondsPerFrame{ long(millisecondsInSecond / desiredFPS) };
 
 #endif
-	float fixedTimeStep{ 1 };
 
 	while (doContinue)
 	{
@@ -118,20 +121,19 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		const float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
 
 		//update last time to be the current time
-
 		lastTime = currentTime;
-		lag = lag + deltaTime;
 
 		doContinue = input.ProcessInput();
 
 
-		//for time dependent things (physics and networking), run through them as many times as it takes
-		//to catch up the present time
-		while(lag >= fixedTimeStep)
-		{
-			sceneManager.FixedUpdate(fixedTimeStep);
-			lag = lag - fixedTimeStep;
-		}
+		//fixed update functionatlity currenly commented out. may be relevant later for physics, so not deleted.
+		//lag = lag + deltaTime;
+		////for time dependent things (physics and networking), run through them as many times as it takes to catch up the present time
+		//while(lag >= fixedTimeStep)
+		//{
+		//	sceneManager.FixedUpdate(fixedTimeStep);
+		//	lag = lag - fixedTimeStep;
+		//}
 
 
 
@@ -140,7 +142,6 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 
 		const auto sleepTime = currentTime + std::chrono::milliseconds(millisecondsPerFrame) - std::chrono::high_resolution_clock::now();
-
 
 		std::this_thread::sleep_for(sleepTime);
 

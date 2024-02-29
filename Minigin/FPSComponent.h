@@ -2,35 +2,38 @@
 #include "GameObjectComponent.h"
 #include "TextComponent.h"
 
-namespace dae
+namespace Engine
 {
 	class FPSComponent : public GameObjectComponent
 	{
 	public:
 
-		FPSComponent();
-		FPSComponent(GameObjectComponent* connectedTextComponent);
+		//constructor
+		FPSComponent(std::weak_ptr<GameObjectComponent> connectedTextComponent = std::weak_ptr<GameObjectComponent>{});
+
+		//destructor
 		~FPSComponent() = default;
 
-
+		//constructors and movers
 		FPSComponent(const FPSComponent& other) = delete;
 		FPSComponent(FPSComponent&& other) = delete;
 		FPSComponent& operator=(const FPSComponent& other) = delete;
 		FPSComponent& operator=(FPSComponent&& other) = delete;
 
 
+		//functions
 		void Update(float deltaTime);
-
-		const std::string& GetFPS() const;
-
-		void SetTextComponentPointer(GameObjectComponent* connectedTextComponent);
+		void SetTextComponentPointer(std::weak_ptr<GameObjectComponent> textComponent);
 
 
 
 	private:
-
-		std::string m_FPS;
-		TextComponent* m_TextComponentPointer;
+		//elements
+		float m_CyclesRun;
+		float m_FPSTotal;
+		float m_TimePassed;
+		float m_UpdateFrequency;
+		std::weak_ptr<GameObjectComponent> m_TextComponentPointer;
 	};
 
 }

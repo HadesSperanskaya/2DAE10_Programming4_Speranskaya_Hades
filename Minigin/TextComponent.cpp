@@ -6,44 +6,11 @@
 #include "Font.h"
 #include "Texture2D.h"
 
+using namespace Engine;
 
-//text component that has nothing yet
-dae::TextComponent::TextComponent(std::string componentName)
+TextComponent::TextComponent(std::string componentName, std::shared_ptr<Font> fontSharedPointer, std::string textString)
 	:
-	GameObjectComponent(COMPONENT_TYPENAME_TEXT, componentName),
-	m_NeedsUpdate{ false },
-	m_FontSharedPointer{},
-	m_TextureComponentUniquePointer{},
-	m_TextString{}
-{
-	m_TextureComponentUniquePointer = std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ componentName + COMPONENT_TYPENAME_TEXTURE2D });
-	m_TransformComponentUniquePointer = std::unique_ptr<TransformComponent>(new TransformComponent{});
-	SetRenderable(true);
-
-};
-
-//text component that has a font but not a text yet
-dae::TextComponent::TextComponent(std::string componentName, std::shared_ptr<Font> fontSharedPointer)
-	:
-	GameObjectComponent(COMPONENT_TYPENAME_TEXT, componentName),
-	m_NeedsUpdate{ false },
-	m_FontSharedPointer{ fontSharedPointer },
-	m_TextureComponentUniquePointer{},
-	m_TextString{}
-
-{
-	m_TextureComponentUniquePointer = std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ componentName + COMPONENT_TYPENAME_TEXTURE2D });
-	m_TransformComponentUniquePointer = std::unique_ptr<TransformComponent>(new TransformComponent{});
-	SetRenderable(true);
-
-
-
-};
-
-//tect component that has a font and a text 
-dae::TextComponent::TextComponent(std::string componentName, std::shared_ptr<Font> fontSharedPointer, std::string textString)
-	:
-	GameObjectComponent(COMPONENT_TYPENAME_TEXT, componentName),
+	GameObjectComponent(COMPONENT_TYPE::TextComponent, componentName),
 	m_NeedsUpdate{ false },
 	m_FontSharedPointer{ fontSharedPointer },
 	m_TextureComponentUniquePointer{},
@@ -56,12 +23,11 @@ dae::TextComponent::TextComponent(std::string componentName, std::shared_ptr<Fon
 
 	UpdateTextureOfTextComponent();
 
-	SetRenderable(true);
 };
 
 
 
-void dae::TextComponent::Update(float deltaTime)
+void TextComponent::Update(float deltaTime)
 {
 	deltaTime; 
 
@@ -71,39 +37,47 @@ void dae::TextComponent::Update(float deltaTime)
 	}
 };
 
-void dae::TextComponent::Render(float x, float y) const
+void TextComponent::Render(float xPosition, float yPosition, float rotation) const
 {
-	//get game object position
-	const glm::vec3 position = m_TransformComponentUniquePointer->GetPosition();
 
 	//render game object texture using game object position + position of the text object (world transform + object local transform)
-	m_TextureComponentUniquePointer->Render(position.x + x, position.y + y);
+	m_TextureComponentUniquePointer->Render(m_TransformComponentUniquePointer->m_Position.x + xPosition, 
+												m_TransformComponentUniquePointer->m_Position.y + yPosition, 
+												m_TransformComponentUniquePointer->m_Rotation + rotation);
 
 };
 
-void dae::TextComponent::SetText(const std::string& text)
+void TextComponent::SetText(const std::string& text)
 {
 	m_TextString = text;
+	//set the dirty flag
 	m_NeedsUpdate = true;
 };
 
-void dae::TextComponent::SetPosition(float x, float y)
+void TextComponent::SetPosition(float x, float y)
 {
 	const float zeroZPosition = 0.00f;
-	m_TransformComponentUniquePointer->SetPosition(x, y, zeroZPosition);
+	m_TransformComponentUniquePointer->m_Position = glm::vec3{ x, y, zeroZPosition };
 };
 
-void dae::TextComponent::SetFont(std::shared_ptr<dae::Font> fontSharedPointer)
+void TextComponent::SetFont(std::shared_ptr<Font> fontSharedPointer)
 {
 	m_FontSharedPointer.reset();
 	m_FontSharedPointer = fontSharedPointer;
+	//set the flag to dirty
 	m_NeedsUpdate = true;
 
 };
 
 
-void dae::TextComponent::UpdateTextureOfTextComponent()
+void TextComponent::UpdateTextureOfTextComponent()
 {
+	if (m_TextString.size() <= 0)
+	{
+		return;
+	}
+
+
 	const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
 
 	const auto surf = TTF_RenderText_Blended(m_FontSharedPointer->GetFont(), m_TextString.c_str(), color);
@@ -117,10 +91,13 @@ void dae::TextComponent::UpdateTextureOfTextComponent()
 	{
 		throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 	}
+	
 	SDL_FreeSurface(surf);
 
-	m_TextureComponentUniquePointer.get()->SetTexture(std::make_shared<Texture2D>(texture));
+	(m_TextureComponentUniquePointer->m_TextureSharedPointer).reset();
+	(m_TextureComponentUniquePointer->m_TextureSharedPointer) = std::make_shared<Texture2D>(texture);
 
+	//clear the dirty flag
 	m_NeedsUpdate = false;
 
 

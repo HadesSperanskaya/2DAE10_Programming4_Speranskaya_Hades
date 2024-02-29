@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-using namespace dae;
+using namespace Engine;
 
 unsigned int Scene::m_idCounter = 0;
 
@@ -26,13 +26,13 @@ void Scene::RemoveAll()
 	m_objects.clear();
 }
 
-void Scene::FixedUpdate(float fixedTimeStepTime)
-{
-	for (auto& object : m_objects)
-	{
-		object->FixedUpdate(fixedTimeStepTime);
-	}
-}
+//void Scene::FixedUpdate(float fixedTimeStepTime)
+//{
+//	for (auto& object : m_objects)
+//	{
+//		object->FixedUpdate(fixedTimeStepTime);
+//	}
+//}
 
 void Scene::Update(float deltaTime)
 {

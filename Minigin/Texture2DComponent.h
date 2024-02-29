@@ -2,7 +2,7 @@
 #include "GameObjectComponent.h"
 #include <memory>
 
-namespace dae
+namespace Engine
 {
 
 	class Texture2D;
@@ -12,27 +12,30 @@ namespace dae
 	{
 	public:
 
-		Texture2DComponent(const std::string& name);
-		Texture2DComponent(const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer);
+		//constructor
+		Texture2DComponent(const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer = nullptr);
+
+		//destructor
 		~Texture2DComponent() = default;
 
-
+		//copy/assignment constructor and move functions
 		Texture2DComponent(const Texture2DComponent& other) = delete;
 		Texture2DComponent(Texture2DComponent&& other) = delete;
 		Texture2DComponent& operator=(const Texture2DComponent& other) = delete;
 		Texture2DComponent& operator=(Texture2DComponent&& other) = delete;
 
-		void Render(float x, float y) const;
 
-		const std::shared_ptr<Texture2D> GetTexture() const;
+		void Render(float xPosition, float yPosition, float rotation) const;
 
-		void SetTexture(std::shared_ptr<Texture2D> textureSharedPointer);
+
+
+		//element - public following the guideline "C.131: Avoid trivial getters and setters"
+		std::shared_ptr<Texture2D> m_TextureSharedPointer{};
+
 
 
 
 	private:
-
-		std::shared_ptr<Texture2D> m_TextureSharedPointer{};
 
 	};
 
