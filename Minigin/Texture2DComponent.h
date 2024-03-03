@@ -13,7 +13,7 @@ namespace Engine
 	public:
 
 		//constructor
-		Texture2DComponent(const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer = nullptr);
+		Texture2DComponent(GameObject* gameObjectParentPointer, const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer = nullptr);
 
 		//destructor
 		~Texture2DComponent() = default;

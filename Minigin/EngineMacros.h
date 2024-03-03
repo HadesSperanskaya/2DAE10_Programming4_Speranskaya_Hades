@@ -10,6 +10,7 @@ namespace Engine
 	const std::string COMPONENT_TYPENAME_TRANSFORM{ "Transform" };
 	const std::string COMPONENT_TYPENAME_FPS{ "FPS" };
 	const std::string COMPONENT_TYPENAME_RENDER{ "RenderComponent" };
+	const std::string COMPONENT_TYPENAME_ROTATOR{ "RotatorComponent" };
 
 
 	//component type enum
@@ -19,7 +20,26 @@ namespace Engine
 		Texture2DComponent,
 		TransformComponent,
 		FPSComponent,
-		RenderComponent
+		RenderComponent,
+		RotatorComponent
 	};
+
+
+	//flag types
+	enum class TRANSFORM_RELATIONSHIP_FlAG
+	{
+		PreserveCurrentRelativeToWorld,
+		PreserveCurrentRelativeToParent,
+		CopyParent
+	};
+
+	//struct to hold info on how a child s
+	struct PARENT_CHILD_TRANSFORM_RELATIONSHIP
+	{
+		TRANSFORM_RELATIONSHIP_FlAG Position{ TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToParent };
+		TRANSFORM_RELATIONSHIP_FlAG Rotation{ TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToParent };
+	};
+
+
 
 }

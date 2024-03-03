@@ -4,12 +4,15 @@
 
 namespace Engine
 {
+
+	class TextComponent;
+
 	class FPSComponent : public GameObjectComponent
 	{
 	public:
 
 		//constructor
-		FPSComponent(std::weak_ptr<GameObjectComponent> connectedTextComponent = std::weak_ptr<GameObjectComponent>{});
+		FPSComponent(GameObject* gameObjectParentPointer, std::weak_ptr<GameObjectComponent> connectedTextComponent = std::weak_ptr<GameObjectComponent>{});
 
 		//destructor
 		~FPSComponent() = default;
@@ -33,7 +36,7 @@ namespace Engine
 		float m_FPSTotal;
 		float m_TimePassed;
 		float m_UpdateFrequency;
-		std::weak_ptr<GameObjectComponent> m_TextComponentPointer;
+		std::weak_ptr<TextComponent> m_TextComponentPointer;
 	};
 
 }

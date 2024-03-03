@@ -10,7 +10,7 @@ namespace Engine
 	public:
 
 		//constructor 
-		TransformComponent(const glm::vec3& position = glm::vec3{0.f, 0.f, 0.f}, float rotation = 0.f);
+		TransformComponent(GameObject* gameObjectParentPointer, const glm::vec3& position = glm::vec3{0.f, 0.f, 0.f}, float rotation = 0.f);
 	
 
 		//destructor

@@ -8,9 +8,9 @@
 
 using namespace Engine;
 
-TextComponent::TextComponent(std::string componentName, std::shared_ptr<Font> fontSharedPointer, std::string textString)
+TextComponent::TextComponent(GameObject* gameObjectParentPointer, std::string componentName, std::shared_ptr<Font> fontSharedPointer, std::string textString)
 	:
-	GameObjectComponent(COMPONENT_TYPE::TextComponent, componentName),
+	GameObjectComponent(COMPONENT_TYPE::TextComponent, componentName, gameObjectParentPointer),
 	m_NeedsUpdate{ false },
 	m_FontSharedPointer{ fontSharedPointer },
 	m_TextureComponentUniquePointer{},
@@ -18,8 +18,8 @@ TextComponent::TextComponent(std::string componentName, std::shared_ptr<Font> fo
 
 {
 
-	m_TextureComponentUniquePointer = std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ componentName + COMPONENT_TYPENAME_TEXTURE2D });
-	m_TransformComponentUniquePointer = std::unique_ptr<TransformComponent>(new TransformComponent{});
+	m_TextureComponentUniquePointer = std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ m_OwnerGameObjectPointer, componentName + COMPONENT_TYPENAME_TEXTURE2D });
+	m_TransformComponentUniquePointer = std::unique_ptr<TransformComponent>(new TransformComponent{ m_OwnerGameObjectPointer });
 
 	UpdateTextureOfTextComponent();
 

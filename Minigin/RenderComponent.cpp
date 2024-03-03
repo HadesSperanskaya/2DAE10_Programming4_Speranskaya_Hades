@@ -2,8 +2,8 @@
 
 using namespace Engine;
 
-RenderComponent::RenderComponent() :
-	GameObjectComponent(COMPONENT_TYPE::RenderComponent, COMPONENT_TYPENAME_RENDER)
+RenderComponent::RenderComponent(GameObject* gameObjectParentPointer) :
+	GameObjectComponent(COMPONENT_TYPE::RenderComponent, COMPONENT_TYPENAME_RENDER, gameObjectParentPointer)
 {
 
 }
@@ -25,7 +25,10 @@ void RenderComponent::AddComponentToRender(std::shared_ptr<GameObjectComponent> 
 {
 	if(componentToAdd != nullptr)
 	{
-		m_ComponentWeakPointersVector.push_back(std::weak_ptr<GameObjectComponent>(componentToAdd));
+		if(componentToAdd->m_OwnerGameObjectPointer == m_OwnerGameObjectPointer)
+		{
+			m_ComponentWeakPointersVector.push_back(std::weak_ptr<GameObjectComponent>(componentToAdd));
+		}
 	}
 }
 

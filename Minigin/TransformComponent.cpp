@@ -3,9 +3,9 @@
 
 using namespace Engine;
 
-TransformComponent::TransformComponent(const glm::vec3& position, float rotation)
+TransformComponent::TransformComponent(GameObject* gameObjectParentPointer, const glm::vec3& position, float rotation)
 	:
-	GameObjectComponent(COMPONENT_TYPE::TransformComponent, COMPONENT_TYPENAME_TRANSFORM),
+	GameObjectComponent(COMPONENT_TYPE::TransformComponent, COMPONENT_TYPENAME_TRANSFORM, gameObjectParentPointer),
 	m_Rotation{ rotation},
 	m_Position{position}
 {

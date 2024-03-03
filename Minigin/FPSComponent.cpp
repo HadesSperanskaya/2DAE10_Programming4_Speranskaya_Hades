@@ -5,17 +5,17 @@
 using namespace Engine;
 
 
-FPSComponent::FPSComponent(std::weak_ptr<GameObjectComponent>  connectedTextComponent) :
-	GameObjectComponent(COMPONENT_TYPE::FPSComponent, COMPONENT_TYPENAME_FPS),
+FPSComponent::FPSComponent(GameObject* gameObjectParentPointer, std::weak_ptr<GameObjectComponent>  connectedTextComponent) :
+	GameObjectComponent(COMPONENT_TYPE::FPSComponent, COMPONENT_TYPENAME_FPS, gameObjectParentPointer),
 	m_FPSTotal{ 0 },
 	m_CyclesRun{ 0 },
 	m_UpdateFrequency{1},
 	m_TimePassed{0},
 	m_TextComponentPointer{}
 {
-	if (connectedTextComponent.expired() != true)
+	if (connectedTextComponent.expired() != true && std::shared_ptr<GameObjectComponent>(connectedTextComponent)->m_OwnerGameObjectPointer == gameObjectParentPointer)
 	{
-		m_TextComponentPointer = connectedTextComponent;
+		m_TextComponentPointer = std::weak_ptr<TextComponent>(std::static_pointer_cast<TextComponent>(std::shared_ptr<GameObjectComponent>(connectedTextComponent)));
 
 	}
 }
@@ -50,7 +50,7 @@ void FPSComponent::Update(float deltaTime)
 
 			std::string outputString = match[0].str() + " FPS";
 
-			std::static_pointer_cast<TextComponent>(std::shared_ptr<GameObjectComponent>(m_TextComponentPointer))->SetText(outputString);
+			std::shared_ptr<TextComponent>(m_TextComponentPointer)->SetText(outputString);
 
 		}
 
@@ -63,5 +63,9 @@ void FPSComponent::Update(float deltaTime)
 
 void FPSComponent::SetTextComponentPointer(std::weak_ptr<GameObjectComponent> textComponent)
 {
-	m_TextComponentPointer = textComponent;
+	if (textComponent.expired() != true && std::shared_ptr<GameObjectComponent>(textComponent)->m_OwnerGameObjectPointer == m_OwnerGameObjectPointer)
+	{
+		m_TextComponentPointer = std::weak_ptr<TextComponent>(std::static_pointer_cast<TextComponent>(std::shared_ptr<GameObjectComponent>(textComponent)));
+
+	}
 }

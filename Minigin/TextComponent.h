@@ -15,7 +15,7 @@ namespace Engine
 	public:
 
 		//constructors
-		TextComponent(std::string componentName, std::shared_ptr<Font> fontSharedPointer = nullptr, std::string textString = "");
+		TextComponent(GameObject* gameObjectParentPointer, std::string componentName, std::shared_ptr<Font> fontSharedPointer = nullptr, std::string textString = "");
 
 		//destructor
 		~TextComponent() = default;

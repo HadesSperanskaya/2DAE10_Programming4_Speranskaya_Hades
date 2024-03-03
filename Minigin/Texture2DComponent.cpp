@@ -7,9 +7,9 @@
 using namespace Engine;
 
 
-Texture2DComponent::Texture2DComponent(const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer)
+Texture2DComponent::Texture2DComponent(GameObject* gameObjectParentPointer, const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer)
 	:
-	GameObjectComponent(COMPONENT_TYPE::Texture2DComponent, name),
+	GameObjectComponent(COMPONENT_TYPE::Texture2DComponent, name, gameObjectParentPointer),
 	m_TextureSharedPointer{ textureSharedPointer }
 {
 

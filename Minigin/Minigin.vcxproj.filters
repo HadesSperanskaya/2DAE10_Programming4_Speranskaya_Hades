@@ -92,6 +92,9 @@
     <ClInclude Include="RenderComponent.h">
       <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClInclude>
+    <ClInclude Include="RotatorComponent.h">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Minigin.cpp">
@@ -140,6 +143,9 @@
       <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClCompile>
     <ClCompile Include="RenderComponent.cpp">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="RotatorComponent.cpp">
       <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClCompile>
   </ItemGroup>

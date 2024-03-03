@@ -7,12 +7,14 @@
 
 namespace Engine
 {
+	class GameObject;
+
 	class GameObjectComponent
 	{
 	public:
 
 		//constructor
-		GameObjectComponent(COMPONENT_TYPE componentType, std::string componentName);
+		GameObjectComponent(COMPONENT_TYPE componentType, std::string componentName, GameObject* gameObjectParentPointer);
 
 		//destructor
 		virtual ~GameObjectComponent() = default;
@@ -33,6 +35,9 @@ namespace Engine
 
 
 		//elements - public following the guideline "C.131: Avoid trivial getters and setters"
+
+		//component parent object cannot change; components cannot be transferred between objects in my implementation.
+		GameObject* const m_OwnerGameObjectPointer;
 
 		//component type cannot change after consutruction, so it is const
 		const COMPONENT_TYPE m_ComponentType;

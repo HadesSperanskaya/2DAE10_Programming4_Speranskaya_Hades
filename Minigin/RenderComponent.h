@@ -11,7 +11,7 @@ namespace Engine
     {
 	public: 
 		//constructor
-		RenderComponent();
+		RenderComponent(GameObject* gameObjectParentPointer);
 
 		//destructor
 		~RenderComponent() = default;
