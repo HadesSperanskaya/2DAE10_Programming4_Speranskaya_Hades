@@ -39,7 +39,7 @@ GameObject::~GameObject()
 {
 
 	//if has a valid parent, remove itself from parent
-	if (m_ParentPointer.expired() != false)
+	if (m_ParentPointer.expired() != true)
 	{
 		std::shared_ptr<GameObject>(m_ParentPointer)->RemoveChild(std::shared_ptr<GameObject>(this));
 	}
@@ -161,7 +161,7 @@ std::weak_ptr<GameObject> GameObject::GetParent()
 
 int GameObject::GetChildCount()
 {
-	return m_ChildrenPointerVector.size();
+	return int(m_ChildrenPointerVector.size());
 }
 
 std::weak_ptr<GameObject> GameObject::GetChildAt(int index)
