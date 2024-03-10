@@ -30,14 +30,14 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="GameObjectComponents\GameObjectComponent">
-      <UniqueIdentifier>{16193731-4c03-4f16-b929-9bdf01dc0e28}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObjectComponents\SimpleComponents">
       <UniqueIdentifier>{365fb63a-9527-435d-a4ce-926b7ef9f1ce}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameObjectComponents\CompositeComponents">
       <UniqueIdentifier>{e206737a-3a51-4146-a884-61eb79b750d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjectComponents\BaseGameObjectComponent">
+      <UniqueIdentifier>{16193731-4c03-4f16-b929-9bdf01dc0e28}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -75,7 +75,7 @@
       <Filter>MainEngineFiles</Filter>
     </ClInclude>
     <ClInclude Include="GameObjectComponent.h">
-      <Filter>GameObjectComponents\GameObjectComponent</Filter>
+      <Filter>GameObjectComponents\BaseGameObjectComponent</Filter>
     </ClInclude>
     <ClInclude Include="Texture2DComponent.h">
       <Filter>GameObjectComponents\SimpleComponents</Filter>
@@ -128,7 +128,7 @@
       <Filter>MainEngineFiles</Filter>
     </ClCompile>
     <ClCompile Include="GameObjectComponent.cpp">
-      <Filter>GameObjectComponents\GameObjectComponent</Filter>
+      <Filter>GameObjectComponents\BaseGameObjectComponent</Filter>
     </ClCompile>
     <ClCompile Include="Texture2DComponent.cpp">
       <Filter>GameObjectComponents\SimpleComponents</Filter>

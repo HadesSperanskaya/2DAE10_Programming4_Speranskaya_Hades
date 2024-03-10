@@ -4,10 +4,10 @@
 
 using namespace Engine;
 
-GameObjectComponent::GameObjectComponent(COMPONENT_TYPE componentType, std::string componentName, GameObject* gameObjectParentPointer) :
+GameObjectComponent::GameObjectComponent(COMPONENT_TYPE componentType, const std::string& componentName, GameObject* gameObjectParentPointer) :
+	m_OwnerGameObjectPointer(gameObjectParentPointer),
 	m_ComponentType(componentType),
-	m_ComponentName(componentName),
-	m_OwnerGameObjectPointer(gameObjectParentPointer)
+	m_ComponentName(componentName)
 {
 
 };

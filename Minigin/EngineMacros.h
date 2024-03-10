@@ -3,6 +3,9 @@
 
 namespace Engine
 {
+	const double PI_VALUE{ 3.1415926 };
+	const double PI_TIMES_TW0_VALUE{ 6.2831853 };
+
 	//component type name strings
 
 	const std::string COMPONENT_TYPENAME_TEXT{ "Text" };

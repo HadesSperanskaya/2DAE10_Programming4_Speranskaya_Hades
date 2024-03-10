@@ -5,17 +5,17 @@
 using namespace Engine;
 
 
-FPSComponent::FPSComponent(GameObject* gameObjectParentPointer, std::weak_ptr<GameObjectComponent>  connectedTextComponent) :
+FPSComponent::FPSComponent(GameObject* gameObjectParentPointer, TextComponent* connectedTextComponent) :
 	GameObjectComponent(COMPONENT_TYPE::FPSComponent, COMPONENT_TYPENAME_FPS, gameObjectParentPointer),
-	m_FPSTotal{ 0 },
 	m_CyclesRun{ 0 },
+	m_FPSTotal{ 0 },
+	m_TimePassed{ 0 },
 	m_UpdateFrequency{1},
-	m_TimePassed{0},
 	m_TextComponentPointer{}
 {
-	if (connectedTextComponent.expired() != true && std::shared_ptr<GameObjectComponent>(connectedTextComponent)->m_OwnerGameObjectPointer == gameObjectParentPointer)
+	if (connectedTextComponent && connectedTextComponent->m_OwnerGameObjectPointer == gameObjectParentPointer)
 	{
-		m_TextComponentPointer = std::weak_ptr<TextComponent>(std::static_pointer_cast<TextComponent>(std::shared_ptr<GameObjectComponent>(connectedTextComponent)));
+		m_TextComponentPointer = connectedTextComponent;
 
 	}
 }
@@ -40,7 +40,7 @@ void FPSComponent::Update(float deltaTime)
 		m_CyclesRun = 0;
 		m_TimePassed = 0;
 
-		if (m_TextComponentPointer.expired() != true)
+		if (m_TextComponentPointer)
 		{
 			const std::string initialNumberConversion = std::to_string(averageFPS);
 
@@ -50,7 +50,7 @@ void FPSComponent::Update(float deltaTime)
 
 			std::string outputString = match[0].str() + " FPS";
 
-			std::shared_ptr<TextComponent>(m_TextComponentPointer)->SetText(outputString);
+			m_TextComponentPointer->SetText(outputString);
 
 		}
 
@@ -61,11 +61,11 @@ void FPSComponent::Update(float deltaTime)
 }
 
 
-void FPSComponent::SetTextComponentPointer(std::weak_ptr<GameObjectComponent> textComponent)
+void FPSComponent::SetTextComponentPointer(TextComponent* textComponent)
 {
-	if (textComponent.expired() != true && std::shared_ptr<GameObjectComponent>(textComponent)->m_OwnerGameObjectPointer == m_OwnerGameObjectPointer)
+	if (textComponent  && textComponent->m_OwnerGameObjectPointer == m_OwnerGameObjectPointer)
 	{
-		m_TextComponentPointer = std::weak_ptr<TextComponent>(std::static_pointer_cast<TextComponent>(std::shared_ptr<GameObjectComponent>(textComponent)));
+		m_TextComponentPointer = textComponent;
 
 	}
 }

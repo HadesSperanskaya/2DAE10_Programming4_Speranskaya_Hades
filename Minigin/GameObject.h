@@ -14,7 +14,7 @@ namespace Engine
 	class RenderComponent;
 	class RotatorComponent;
 
-	class GameObject final : public std::enable_shared_from_this<GameObject>
+	class GameObject final 
 	{
 	public:
 		//Constructor
@@ -39,24 +39,24 @@ namespace Engine
 		void SetRotation(float rotation);
 
 		//set parent
-		void SetParent(std::weak_ptr<GameObject> parent);
+		void SetParent(GameObject* parent);
 
 		//get parent, children
-		std::weak_ptr<GameObject> GetParent();
+		GameObject* const GetParent();
 		int GetChildCount();
-		std::weak_ptr<GameObject> GetChildAt(int index);
+		GameObject* const GetChildAt(int index);
 
 		//add a component
-		void AddTexture2DComponent(std::string name, std::shared_ptr<Texture2D> textureSharedPointer = nullptr);
+		void AddTexture2DComponent(const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer = nullptr);
 	
-		void AddTextComponent(std::string name, std::shared_ptr<Font> fontSharedPointer = nullptr, std::string textString = "");
+		void AddTextComponent(const std::string& name, std::shared_ptr<Font> fontSharedPointer = nullptr, const std::string& textString = "");
 
-		void AddFPSComponent(std::weak_ptr<GameObjectComponent> textComponentPointer = std::weak_ptr<GameObjectComponent>{});
+		void AddFPSComponent(GameObjectComponent* textComponentPointer = nullptr);
 
 		void AddRotatorComponent(const std::string& name, float angularVelocity = 0.5f, float orbitRadius = 40.f);
 
 		//remove all components with this name,with caveat that there should only be one component with a specific name on any given object?
-		void RemoveComponentWithName(std::string componentName); 
+		void RemoveComponentWithName(const std::string& componentName); 
 
 		//remove all components of this type
 		void RemoveAllComponentsOfType(COMPONENT_TYPE componentType);
@@ -69,20 +69,22 @@ namespace Engine
 
 
 		//Get a pointer to a component by name
-		std::weak_ptr<GameObjectComponent> GetComponentByName(std::string componentName) const; 
-		std::weak_ptr<GameObjectComponent> GetComponentByType(COMPONENT_TYPE componentType) const;
+		GameObjectComponent* const GetComponentByName(const std::string& componentName) const;
+		GameObjectComponent* const GetComponentByType(COMPONENT_TYPE componentType) const;
 
-		std::weak_ptr<TransformComponent> GetLocalTransformComponent() const;
-		std::weak_ptr<TransformComponent> GetWorldTransformComponent() const;
-		std::weak_ptr<TransformComponent> GetCombinedTransformComponent() const;
+		TransformComponent* const GetLocalTransformComponent() const;
+		TransformComponent* const GetWorldTransformComponent() const;
+
+		//nothing outside should be able to change the combined transform values
+		const TransformComponent* const GetCombinedTransformComponent() const;
 
 
 	private:
 		//functions
-		bool HasThisChildOrGrandchild(std::weak_ptr<GameObject> object);
+		bool HasThisChildOrGrandchild(const GameObject* const object);
 
-		void RemoveChild(std::shared_ptr<GameObject> child);
-		void AddChild(std::shared_ptr<GameObject> child);
+		void RemoveChild(GameObject* const child);
+		void AddChild(GameObject* const child);
 
 		void UpdateInheritedTransforms(PARENT_CHILD_TRANSFORM_RELATIONSHIP parameters);
 
@@ -95,9 +97,9 @@ namespace Engine
 
 
 		//components that every game object must have
-		std::shared_ptr<TransformComponent> m_WorldTransformComponentPointer;
-		std::shared_ptr<TransformComponent>  m_LocalTransformComponentPointer;
-		std::shared_ptr<TransformComponent>  m_CombinedTransformComponentPointer;
+		std::unique_ptr<TransformComponent> m_WorldTransformComponentPointer;
+		std::unique_ptr<TransformComponent>  m_LocalTransformComponentPointer;
+		std::unique_ptr<TransformComponent>  m_CombinedTransformComponentPointer;
 		std::unique_ptr<RenderComponent>  m_RenderComponentPointer;
 
 		//structs holding info on how to handle transforms relating to parent stuff
@@ -107,13 +109,13 @@ namespace Engine
 
 
 		//vector of extra components
-		std::vector<std::shared_ptr<GameObjectComponent>> m_GameObjectComponentsVector; 
+		std::vector<std::unique_ptr<GameObjectComponent>> m_GameObjectComponentsVector; 
 		int m_ExtraComponentCount;
 
 
 		//elements for hierarchical relationship with other game objects
-		std::weak_ptr<GameObject> m_ParentPointer;
-		std::vector <std::shared_ptr<GameObject>> m_ChildrenPointerVector;
+		GameObject* m_ParentPointer;
+		std::vector<GameObject*> m_ChildrenPointerVector;
 
 
 		//dirty flags

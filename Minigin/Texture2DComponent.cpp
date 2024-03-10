@@ -22,7 +22,7 @@ void Texture2DComponent::Render(float xPosition, float yPosition, float rotation
 	//to do: implement rotation of texture. for not just stop it throwing error c4100 unreferenced formal parameter
 	rotation;
 
-	if (m_TextureSharedPointer != nullptr)
+	if (m_TextureSharedPointer)
 	{
 		Renderer::GetInstance().RenderTexture(*m_TextureSharedPointer, xPosition, yPosition);
 	}

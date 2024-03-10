@@ -12,36 +12,32 @@ RenderComponent::RenderComponent(GameObject* gameObjectParentPointer) :
 
 void RenderComponent::Render(float xPosition, float yPosition, float rotation) const
 {
-	for (auto& component : m_ComponentWeakPointersVector)
+	for (auto& component : m_ComponentPointersVector)
 	{
-		if(component.expired() != true)
+		if(component)
 		{
-			std::shared_ptr<GameObjectComponent>(component)->Render(xPosition, yPosition, rotation);
+			component->Render(xPosition, yPosition, rotation);
 		}
 	}
 }
 
-void RenderComponent::AddComponentToRender(std::shared_ptr<GameObjectComponent> componentToAdd)
+void RenderComponent::AddComponentToRender(GameObjectComponent* componentToAdd)
 {
-	if(componentToAdd != nullptr)
+	if(componentToAdd)
 	{
 		if(componentToAdd->m_OwnerGameObjectPointer == m_OwnerGameObjectPointer)
 		{
-			m_ComponentWeakPointersVector.push_back(std::weak_ptr<GameObjectComponent>(componentToAdd));
+			m_ComponentPointersVector.push_back(componentToAdd);
 		}
 	}
 }
 
 void RenderComponent::EraseEmptyComponents()
 {
-	//remove and erase all expired pointers. the remove if return the iterator to the logical end, 
-	//where all the expired pointers are moved during the remove_if function
+	//remove and erase all components that are now nullptr
 
-	m_ComponentWeakPointersVector.erase(std::remove_if(m_ComponentWeakPointersVector.begin(), m_ComponentWeakPointersVector.end(),
-										[](std::weak_ptr<GameObjectComponent> element) 
-											{
-												return (element.use_count() == 0); 
-											}), m_ComponentWeakPointersVector.end());
+	m_ComponentPointersVector.erase(std::remove_if(m_ComponentPointersVector.begin(), m_ComponentPointersVector.end(), [](const GameObjectComponent* component) {return (component == nullptr); }),
+									m_ComponentPointersVector.end());
 
 
 

@@ -31,11 +31,9 @@ namespace Engine
 		//elements
 		float m_AngularVeloctiy{};
 		float m_OrbitRadius{};
-		std::weak_ptr<TransformComponent> m_OrbitTargetTransformPointer;
-		std::weak_ptr<TransformComponent> m_OrbitingTransformComponentPointer;
 
-
-
+		//const so that the qualities of the target cannot be changed
+		const TransformComponent* m_OrbitTargetTransformPointer;
 
 
 	private:

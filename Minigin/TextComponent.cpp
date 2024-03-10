@@ -8,13 +8,13 @@
 
 using namespace Engine;
 
-TextComponent::TextComponent(GameObject* gameObjectParentPointer, std::string componentName, std::shared_ptr<Font> fontSharedPointer, std::string textString)
+TextComponent::TextComponent(GameObject* gameObjectParentPointer, const std::string& componentName, std::shared_ptr<Font> fontSharedPointer, std::string textString, const glm::vec4& color)
 	:
 	GameObjectComponent(COMPONENT_TYPE::TextComponent, componentName, gameObjectParentPointer),
 	m_NeedsUpdate{ false },
-	m_FontSharedPointer{ fontSharedPointer },
-	m_TextureComponentUniquePointer{},
-	m_TextString{ textString }
+	m_Color{ color },
+	m_TextString{ textString },
+	m_FontSharedPointer{ fontSharedPointer }
 
 {
 
@@ -78,7 +78,7 @@ void TextComponent::UpdateTextureOfTextComponent()
 	}
 
 
-	const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
+	const SDL_Color color = { Uint8(m_Color.r), Uint8(m_Color.b), Uint8(m_Color.g), Uint8(m_Color.a) }; // only white text is supported now
 
 	const auto surf = TTF_RenderText_Blended(m_FontSharedPointer->GetFont(), m_TextString.c_str(), color);
 	if (surf == nullptr)

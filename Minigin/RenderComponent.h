@@ -26,7 +26,7 @@ namespace Engine
 		//functions
 		void Render(float xPosition, float yPosition, float rotation) const;
 
-		void AddComponentToRender(std::shared_ptr<GameObjectComponent> componentToAdd);
+		void AddComponentToRender(GameObjectComponent* componentToAdd);
 
 		void EraseEmptyComponents();
 
@@ -34,7 +34,8 @@ namespace Engine
 	private:
 
 		//elements
-		std::vector<std::weak_ptr<GameObjectComponent>> m_ComponentWeakPointersVector;
+		//render component only needs to call the render functions of the renderable components, so it can have const pointer to const objects
+		std::vector<const GameObjectComponent*> m_ComponentPointersVector;
 
 
 

@@ -24,12 +24,12 @@ const COMPONENT_TYPE GameObject::m_DefaultComponents[2]{COMPONENT_TYPE::Transfor
 
 
 GameObject::GameObject():
-	m_LocalTransformComponentPointer{ std::shared_ptr<TransformComponent>(new TransformComponent{this})},
-	m_WorldTransformComponentPointer{ std::shared_ptr<TransformComponent>(new TransformComponent{this}) },
-	m_CombinedTransformComponentPointer{ std::shared_ptr<TransformComponent>(new TransformComponent{this}) },
+	m_WorldTransformComponentPointer{ std::unique_ptr<TransformComponent>(new TransformComponent{this}) },
+	m_LocalTransformComponentPointer{ std::unique_ptr<TransformComponent>(new TransformComponent{this})},
+	m_CombinedTransformComponentPointer{ std::unique_ptr<TransformComponent>(new TransformComponent{this}) },
 	m_RenderComponentPointer{ std::unique_ptr<RenderComponent>(new RenderComponent{this}) },
 	m_ExtraComponentCount{0},
-	m_ParentPointer{ std::weak_ptr<GameObject>{} }
+	m_ParentPointer{ nullptr }
 {
 	
 };
@@ -37,16 +37,20 @@ GameObject::GameObject():
 
 GameObject::~GameObject()
 {
-
 	//if has a valid parent, remove itself from parent
-	if (m_ParentPointer.expired() != true)
+	if (m_ParentPointer)
 	{
-		std::shared_ptr<GameObject>(m_ParentPointer)->RemoveChild(std::shared_ptr<GameObject>(this));
+		m_ParentPointer->RemoveChild(this);
 	}
 
-	//if has children, default behaviour will be to destroy the children as well
-	m_ChildrenPointerVector.clear();
-
+	//if has children, remove itself from the childre
+	for (const auto& child : m_ChildrenPointerVector)
+	{
+		if (child)
+		{
+			child->SetParent(nullptr);
+		}
+	}
 
 	m_GameObjectComponentsVector.clear();
 
@@ -66,8 +70,8 @@ void GameObject::Update(float deltaTime)
 
 	if (m_ParentTransformWasUpdated)
 	{
-		m_WorldTransformComponentPointer->m_Position = std::shared_ptr<GameObject>(m_ParentPointer)->m_CombinedTransformComponentPointer->m_Position;
-		m_WorldTransformComponentPointer->m_Rotation = std::shared_ptr<GameObject>(m_ParentPointer)->m_CombinedTransformComponentPointer->m_Rotation;
+		m_WorldTransformComponentPointer->m_Position = m_ParentPointer->m_CombinedTransformComponentPointer->m_Position;
+		m_WorldTransformComponentPointer->m_Rotation = m_ParentPointer->m_CombinedTransformComponentPointer->m_Rotation;
 
 		m_ParentTransformWasUpdated = false;
 	}
@@ -95,6 +99,7 @@ void GameObject::Render() const
 
 };
 
+//set local position
 void GameObject::SetPosition(float x, float y)
 {
 	m_LocalTransformComponentPointer->m_Position.x = x;
@@ -110,6 +115,7 @@ void GameObject::SetPosition(float x, float y)
 
 };
 
+//set local rotation
 void GameObject::SetRotation(float rotation)
 {
 	m_LocalTransformComponentPointer->m_Rotation = rotation;
@@ -117,44 +123,50 @@ void GameObject::SetRotation(float rotation)
 	m_CombinedTransformComponentPointer->m_Rotation = m_WorldTransformComponentPointer->m_Rotation + m_LocalTransformComponentPointer->m_Rotation;
 
 	//set all children as needing to have their world transform infos updated
-	for (auto child : m_ChildrenPointerVector)
+	for (const auto& child : m_ChildrenPointerVector)
 	{
 		child->m_ParentTransformWasUpdated = true;
 	}
 
 };
 
-void GameObject::SetParent(std::weak_ptr<GameObject> parent)
+void GameObject::SetParent(GameObject* parent)
 {
 	//if the parent is the same as this object, return 
-	if (std::shared_ptr<GameObject>(parent) == shared_from_this())
+	if (parent == this)
 	{
 		return;
 	}
 
 	//return if to-be parent is already a child or grandchild or greatgranchild of this object
-	if (HasThisChildOrGrandchild(parent))
+	if (parent && HasThisChildOrGrandchild(parent))
 	{
 		return;
 	}
 
 	//if has a valid game object parent, remove itself from that parent
-	if (!m_ParentPointer.expired())
+	if (m_ParentPointer)
 	{
-		std::shared_ptr<GameObject>(m_ParentPointer)->RemoveChild(shared_from_this());
+		m_ParentPointer->RemoveChild(this);
 	}
 
 	//set new parent
 	m_ParentPointer = parent;
 
 	//add this object to the new parent.
-	std::shared_ptr<GameObject>(m_ParentPointer)->AddChild(shared_from_this());
+	if(m_ParentPointer)
+	{
+		m_ParentPointer->AddChild(this);
+	}
 
 	m_ParentWasChanged = true;
 
+	UpdateInheritedTransforms(m_TransformInheritanceParametersParentSwitch);
+
+
 }
 
-std::weak_ptr<GameObject> GameObject::GetParent()
+GameObject* const GameObject::GetParent()
 {
 	return m_ParentPointer;
 }
@@ -164,57 +176,68 @@ int GameObject::GetChildCount()
 	return int(m_ChildrenPointerVector.size());
 }
 
-std::weak_ptr<GameObject> GameObject::GetChildAt(int index)
+GameObject* const GameObject::GetChildAt(int index)
 {
 	return m_ChildrenPointerVector[index];
 }
 
-void GameObject::AddTexture2DComponent(std::string name, std::shared_ptr<Texture2D> textureSharedPointer)
+void GameObject::AddTexture2DComponent(const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer)
 {
 	if (CheckForComponentOfType(COMPONENT_TYPE::Texture2DComponent))
 	{
 		return;
 	}
 
-	if(textureSharedPointer != nullptr)
+	if(textureSharedPointer)
 	{
-		m_GameObjectComponentsVector.push_back(std::static_pointer_cast<GameObjectComponent>(std::shared_ptr< Texture2DComponent>(new Texture2DComponent{ this, name, textureSharedPointer })));
+		m_GameObjectComponentsVector.push_back(std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ this, name, textureSharedPointer }));
 	}
 	else
 	{
-		m_GameObjectComponentsVector.push_back(std::static_pointer_cast<GameObjectComponent>(std::shared_ptr< Texture2DComponent>(new Texture2DComponent{ this, name })));
+		m_GameObjectComponentsVector.push_back(std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ this, name }));
 
 	}
 
 	++m_ExtraComponentCount;
 
-	m_RenderComponentPointer->AddComponentToRender(m_GameObjectComponentsVector.back());
+	//give the render component a raw pointer to love and treasure and render
+	m_RenderComponentPointer->AddComponentToRender(m_GameObjectComponentsVector.back().get());
 };
 
-void GameObject::AddTextComponent(std::string name, std::shared_ptr<Font> fontSharedPointer, std::string textString)
+void GameObject::AddTextComponent(const std::string& name, std::shared_ptr<Font> fontSharedPointer, const std::string& textString)
 {
-	if (CheckForComponentWithName(name))
+	//type checking is a little cheaper, and an object is probably not going to have more than one text component added very often?
+	if(CheckForComponentOfType(COMPONENT_TYPE::TextComponent))
 	{
-		return;
+		if (CheckForComponentWithName(name))
+		{
+			return;
+		}
 	}
 
-	m_GameObjectComponentsVector.push_back(std::static_pointer_cast<GameObjectComponent>(std::shared_ptr<TextComponent>(new TextComponent{ this, name, fontSharedPointer, textString })));
+	m_GameObjectComponentsVector.push_back(std::unique_ptr<TextComponent>(new TextComponent{ this, name, fontSharedPointer, textString }));
 
 	++m_ExtraComponentCount;
-	m_RenderComponentPointer->AddComponentToRender(m_GameObjectComponentsVector.back());
+
+	//give the render component a raw pointer to love and treasure and render
+	m_RenderComponentPointer->AddComponentToRender(m_GameObjectComponentsVector.back().get());
 
 };
 
-void GameObject::AddFPSComponent(std::weak_ptr<GameObjectComponent> textComponentPointer)
+void GameObject::AddFPSComponent(GameObjectComponent* textComponentPointer)
 {
+	//an object does not need more than one of these for sure
 	if (CheckForComponentOfType(COMPONENT_TYPE::FPSComponent))
 	{
 		return;
 	}
 
-	m_GameObjectComponentsVector.push_back(std::static_pointer_cast<GameObjectComponent>(std::shared_ptr <FPSComponent>(new FPSComponent{ this, textComponentPointer })));
+	if(textComponentPointer->m_ComponentType == COMPONENT_TYPE::TextComponent)
+	{
+		m_GameObjectComponentsVector.push_back(std::unique_ptr <FPSComponent>(new FPSComponent{ this, static_cast<TextComponent*>(textComponentPointer) }));
 
-	++m_ExtraComponentCount;
+		++m_ExtraComponentCount;
+	}
 }
 
 void GameObject::AddRotatorComponent(const std::string& name, float angularVelocity, float orbitRadius)
@@ -224,16 +247,16 @@ void GameObject::AddRotatorComponent(const std::string& name, float angularVeloc
 		return;
 	}
 
-	m_GameObjectComponentsVector.push_back(std::static_pointer_cast<GameObjectComponent>(std::shared_ptr<RotatorComponent>(new RotatorComponent{ this, name, angularVelocity, orbitRadius })));
+	m_GameObjectComponentsVector.push_back(std::unique_ptr<RotatorComponent>(new RotatorComponent{ this, name, angularVelocity, orbitRadius }));
 
 	++m_ExtraComponentCount;
 }
 
-void GameObject::RemoveComponentWithName(std::string componentName)
+void GameObject::RemoveComponentWithName(const std::string& componentName)
 {
 
 	m_GameObjectComponentsVector.erase(std::remove_if(m_GameObjectComponentsVector.begin(), m_GameObjectComponentsVector.end(),
-														[componentName](std::shared_ptr<GameObjectComponent> element)
+														[componentName](const std::unique_ptr<GameObjectComponent>& element)
 														{
 															return (element->m_ComponentName == componentName);
 														}),
@@ -244,7 +267,7 @@ void GameObject::RemoveComponentWithName(std::string componentName)
 
 void GameObject::RemoveAllComponentsOfType(COMPONENT_TYPE componentType)
 {
-	//return if the desired deletion type is a default type
+	//return if the desired deletion type is a default type eg render, transform
 	for (auto forbiddenComponentType : m_DefaultComponents)
 	{
 		if (forbiddenComponentType == componentType)
@@ -255,7 +278,7 @@ void GameObject::RemoveAllComponentsOfType(COMPONENT_TYPE componentType)
 
 	//find the components to delete and delete them
 	m_GameObjectComponentsVector.erase(std::remove_if(m_GameObjectComponentsVector.begin(), m_GameObjectComponentsVector.end(),
-														[componentType](std::shared_ptr<GameObjectComponent> element)
+														[componentType](const std::unique_ptr<GameObjectComponent>& element)
 														{
 															return (element->m_ComponentType == componentType);
 														}), 
@@ -294,65 +317,61 @@ bool GameObject::CheckForComponentOfType(COMPONENT_TYPE componentType) const
 
 };
 
-std::weak_ptr<GameObjectComponent> GameObject::GetComponentByName(std::string componentName) const
+GameObjectComponent* const GameObject::GetComponentByName(const std::string& componentName) const
 {
-
 	for (const auto& component : m_GameObjectComponentsVector)
 	{
 		if (component->m_ComponentName == componentName)
 		{
-			return std::weak_ptr<GameObjectComponent>(component);
+			return component.get();
 		}
 	}
 
-	return std::weak_ptr<GameObjectComponent>{};
-
+	return nullptr;
 };
 
-std::weak_ptr<GameObjectComponent> GameObject::GetComponentByType(COMPONENT_TYPE componentType) const
+GameObjectComponent* const GameObject::GetComponentByType(COMPONENT_TYPE componentType) const
 {
 
 	for (const auto& component : m_GameObjectComponentsVector)
 	{
 		if (component->m_ComponentType == componentType)
 		{
-			return std::weak_ptr<GameObjectComponent>(component);
+			return component.get();
 		}
 	}
-
-	return std::weak_ptr<GameObjectComponent>{};
-
-
+	
+	return nullptr;
 };
 
-std::weak_ptr<TransformComponent> GameObject::GetLocalTransformComponent() const
+TransformComponent* const GameObject::GetLocalTransformComponent() const
 {
-	return std::weak_ptr<TransformComponent>(m_LocalTransformComponentPointer);
+	return m_LocalTransformComponentPointer.get();
 }
 
-std::weak_ptr<TransformComponent> GameObject::GetWorldTransformComponent() const
+TransformComponent* const GameObject::GetWorldTransformComponent() const
 {
-	return std::weak_ptr<TransformComponent>(m_WorldTransformComponentPointer);
+	return m_WorldTransformComponentPointer.get();
 }
 
-std::weak_ptr<TransformComponent> GameObject::GetCombinedTransformComponent() const
+const TransformComponent* const GameObject::GetCombinedTransformComponent() const
 {
-	return std::weak_ptr<TransformComponent>(m_CombinedTransformComponentPointer);
+	return m_CombinedTransformComponentPointer.get();
 }
 
-bool GameObject::HasThisChildOrGrandchild(std::weak_ptr<GameObject> object)
+bool GameObject::HasThisChildOrGrandchild(const GameObject* const object)
 {
 	if(GetChildCount() > 0)
 	{
 		for (auto& child : m_ChildrenPointerVector)
 		{
-			if (std::shared_ptr<GameObject>(object) == child)
+			if (object == child)
 			{
 				return true;
 			}
 			if (child->GetChildCount() > 0)
 			{
-				if (std::shared_ptr<GameObject>(object)->HasThisChildOrGrandchild(object))
+				if (child->HasThisChildOrGrandchild(object))
 				{
 					return true;
 				}
@@ -362,13 +381,13 @@ bool GameObject::HasThisChildOrGrandchild(std::weak_ptr<GameObject> object)
 	return false;
 }
 
-void GameObject::RemoveChild(std::shared_ptr<GameObject> child)
+void GameObject::RemoveChild(GameObject* const child)
 {
-	m_ChildrenPointerVector.erase(std::remove_if(m_ChildrenPointerVector.begin(), m_ChildrenPointerVector.end(), [child](std::shared_ptr<GameObject> element) {return (element == child); }),
+	m_ChildrenPointerVector.erase(std::remove_if(m_ChildrenPointerVector.begin(), m_ChildrenPointerVector.end(), [child](GameObject* const element) {return (element == child); }),
 									m_ChildrenPointerVector.end());
 }
 
-void GameObject::AddChild(std::shared_ptr<GameObject> child)
+void GameObject::AddChild(GameObject* const child)
 {
 	m_ChildrenPointerVector.push_back(child);
 }
@@ -376,7 +395,7 @@ void GameObject::AddChild(std::shared_ptr<GameObject> child)
 void GameObject::UpdateInheritedTransforms(PARENT_CHILD_TRANSFORM_RELATIONSHIP parameters)
 {
 
-	if (m_ParentPointer.expired() != true)
+	if (m_ParentPointer)
 	{
 
 		//update position
@@ -385,7 +404,7 @@ void GameObject::UpdateInheritedTransforms(PARENT_CHILD_TRANSFORM_RELATIONSHIP p
 		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToWorld:
 
 			//world position is parent position
-			m_WorldTransformComponentPointer->m_Position = std::shared_ptr<GameObject>(m_ParentPointer)->m_CombinedTransformComponentPointer->m_Position;
+			m_WorldTransformComponentPointer->m_Position = m_ParentPointer->m_CombinedTransformComponentPointer->m_Position;
 			//local position is offset from parent position to current real position
 			m_LocalTransformComponentPointer->m_Position = m_CombinedTransformComponentPointer->m_Position - m_WorldTransformComponentPointer->m_Position;
 			//combined position does not change
@@ -396,7 +415,7 @@ void GameObject::UpdateInheritedTransforms(PARENT_CHILD_TRANSFORM_RELATIONSHIP p
 		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToParent:
 
 			//world position is parent position
-			m_WorldTransformComponentPointer->m_Position = std::shared_ptr<GameObject>(m_ParentPointer)->m_CombinedTransformComponentPointer->m_Position;
+			m_WorldTransformComponentPointer->m_Position = m_ParentPointer->m_CombinedTransformComponentPointer->m_Position;
 			//local position does not change
 			//combined position is new world plus the preserved local
 			m_CombinedTransformComponentPointer->m_Position = m_LocalTransformComponentPointer->m_Position + m_WorldTransformComponentPointer->m_Position;
@@ -406,7 +425,7 @@ void GameObject::UpdateInheritedTransforms(PARENT_CHILD_TRANSFORM_RELATIONSHIP p
 		case TRANSFORM_RELATIONSHIP_FlAG::CopyParent:
 
 			//world position is parent position
-			m_WorldTransformComponentPointer->m_Position = std::shared_ptr<GameObject>(m_ParentPointer)->m_CombinedTransformComponentPointer->m_Position;
+			m_WorldTransformComponentPointer->m_Position = m_ParentPointer->m_CombinedTransformComponentPointer->m_Position;
 			//local position reset to origin (aka parent)
 			m_LocalTransformComponentPointer->m_Position = glm::vec3{ 0.f, 0.f, 0.f };
 			//combined position is new world plus the preserved local
@@ -422,7 +441,7 @@ void GameObject::UpdateInheritedTransforms(PARENT_CHILD_TRANSFORM_RELATIONSHIP p
 		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToWorld:
 
 			//world rotation is parent rotation
-			m_WorldTransformComponentPointer->m_Rotation = std::shared_ptr<GameObject>(m_ParentPointer)->m_CombinedTransformComponentPointer->m_Rotation;
+			m_WorldTransformComponentPointer->m_Rotation = m_ParentPointer->m_CombinedTransformComponentPointer->m_Rotation;
 			//local rotation is the offset from parent to current real 
 			m_LocalTransformComponentPointer->m_Rotation = m_CombinedTransformComponentPointer->m_Rotation - m_WorldTransformComponentPointer->m_Rotation;
 			//combined rotation does not change
@@ -432,7 +451,7 @@ void GameObject::UpdateInheritedTransforms(PARENT_CHILD_TRANSFORM_RELATIONSHIP p
 		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToParent:
 
 			//world rotation is parent rotation
-			m_WorldTransformComponentPointer->m_Rotation = std::shared_ptr<GameObject>(m_ParentPointer)->m_CombinedTransformComponentPointer->m_Rotation;
+			m_WorldTransformComponentPointer->m_Rotation = m_ParentPointer->m_CombinedTransformComponentPointer->m_Rotation;
 			//local rotation does not change
 			//combined rotation is new world plus the preserved local
 			m_CombinedTransformComponentPointer->m_Rotation = m_LocalTransformComponentPointer->m_Rotation + m_WorldTransformComponentPointer->m_Rotation;
@@ -442,7 +461,7 @@ void GameObject::UpdateInheritedTransforms(PARENT_CHILD_TRANSFORM_RELATIONSHIP p
 		case TRANSFORM_RELATIONSHIP_FlAG::CopyParent:
 			
 			//world rotation is parent rotation
-			m_WorldTransformComponentPointer->m_Rotation = std::shared_ptr<GameObject>(m_ParentPointer)->m_CombinedTransformComponentPointer->m_Rotation;
+			m_WorldTransformComponentPointer->m_Rotation = m_ParentPointer->m_CombinedTransformComponentPointer->m_Rotation;
 			//local position reset to origin (aka parent)
 			m_LocalTransformComponentPointer->m_Rotation = 0;
 			//combined position is new world

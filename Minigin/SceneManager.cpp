@@ -12,6 +12,11 @@
 //}
 
 
+Engine::SceneManager::~SceneManager()
+{
+	m_scenes.clear();
+}
+
 void Engine::SceneManager::Update(float deltaTime)
 {
 	for(auto& scene : m_scenes)

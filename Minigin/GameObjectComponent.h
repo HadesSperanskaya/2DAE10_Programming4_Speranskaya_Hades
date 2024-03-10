@@ -14,7 +14,7 @@ namespace Engine
 	public:
 
 		//constructor
-		GameObjectComponent(COMPONENT_TYPE componentType, std::string componentName, GameObject* gameObjectParentPointer);
+		GameObjectComponent(COMPONENT_TYPE componentType, const std::string& componentName, GameObject* gameObjectParentPointer);
 
 		//destructor
 		virtual ~GameObjectComponent() = default;
@@ -39,13 +39,11 @@ namespace Engine
 		//component parent object cannot change; components cannot be transferred between objects in my implementation.
 		GameObject* const m_OwnerGameObjectPointer;
 
-		//component type cannot change after consutruction, so it is const
+		//component type cannot change after construction, so it is const
 		const COMPONENT_TYPE m_ComponentType;
 
 		//component unique name can be changed after construction, so it is not const
 		std::string m_ComponentName;
-
-
 
 
 	private:

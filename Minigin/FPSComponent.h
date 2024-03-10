@@ -12,7 +12,7 @@ namespace Engine
 	public:
 
 		//constructor
-		FPSComponent(GameObject* gameObjectParentPointer, std::weak_ptr<GameObjectComponent> connectedTextComponent = std::weak_ptr<GameObjectComponent>{});
+		FPSComponent(GameObject* gameObjectParentPointer, TextComponent* connectedTextComponent = nullptr);
 
 		//destructor
 		~FPSComponent() = default;
@@ -26,7 +26,7 @@ namespace Engine
 
 		//functions
 		void Update(float deltaTime);
-		void SetTextComponentPointer(std::weak_ptr<GameObjectComponent> textComponent);
+		void SetTextComponentPointer(TextComponent* const textComponent);
 
 
 
@@ -36,7 +36,7 @@ namespace Engine
 		float m_FPSTotal;
 		float m_TimePassed;
 		float m_UpdateFrequency;
-		std::weak_ptr<TextComponent> m_TextComponentPointer;
+		TextComponent* m_TextComponentPointer;
 	};
 
 }

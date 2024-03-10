@@ -9,13 +9,12 @@ namespace Engine
 {
 	class Font;
 
-
     class TextComponent final : public GameObjectComponent
     {
 	public:
 
 		//constructors
-		TextComponent(GameObject* gameObjectParentPointer, std::string componentName, std::shared_ptr<Font> fontSharedPointer = nullptr, std::string textString = "");
+		TextComponent(GameObject* gameObjectParentPointer, const std::string& componentName, std::shared_ptr<Font> fontSharedPointer = nullptr, std::string textString = "", const glm::vec4& color = { 255,255,255,255 });
 
 		//destructor
 		~TextComponent() = default;
@@ -47,12 +46,14 @@ namespace Engine
 		//the dirty flag for marking that something needs to happen in the update function
 		bool m_NeedsUpdate;
 
+		const glm::vec4 m_Color; // only white text is supported now
+
 		std::string m_TextString;
 
 		//since this component generates its own text texture, the texture is unique
 		std::unique_ptr<Texture2DComponent> m_TextureComponentUniquePointer;
 
-		//this component has its own local transform, as it has a render component
+		//this component has its own local transform
 		std::unique_ptr<TransformComponent> m_TransformComponentUniquePointer;
 
 		//this component references a font resource that is not unique to it, so shared pointer

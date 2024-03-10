@@ -10,23 +10,32 @@ RotatorComponent::RotatorComponent(GameObject* gameObjectParentPointer, const st
 	m_AngularVeloctiy(angularVelocity),
 	m_OrbitRadius(orbitRadius)
 {
-	m_OrbitingTransformComponentPointer = gameObjectParentPointer->GetLocalTransformComponent();
 	m_OrbitTargetTransformPointer = gameObjectParentPointer->GetWorldTransformComponent();
 }
 
 
 void RotatorComponent::Update(float deltaTime)
 {
-	if (m_OrbitingTransformComponentPointer.expired() != true && m_OrbitTargetTransformPointer.expired() != true)
+	//if both pointers are valid - target and object that is doing the orbiting
+	if (m_OrbitTargetTransformPointer)
 	{
-		const float totalRotation = std::shared_ptr<TransformComponent>(m_OrbitingTransformComponentPointer)->m_Rotation + m_AngularVeloctiy * deltaTime;
+		float totalRotation = m_OwnerGameObjectPointer->GetLocalTransformComponent()->m_Rotation + m_AngularVeloctiy * deltaTime;
 
-		const float displacementX = std::sinf(totalRotation) * m_OrbitRadius;
-		const float displacementY = std::cosf(totalRotation) * m_OrbitRadius;
-	
+		if (totalRotation > PI_TIMES_TW0_VALUE)
+		{
+			do
+			{
+				totalRotation = float(totalRotation - PI_TIMES_TW0_VALUE);
+			} while (totalRotation > PI_TIMES_TW0_VALUE);
+		}
+		else if (totalRotation < 0)
+		{
+			totalRotation = float(PI_TIMES_TW0_VALUE - totalRotation);
+		}
 		m_OwnerGameObjectPointer->SetRotation(totalRotation);
 
-		m_OwnerGameObjectPointer->SetPosition(displacementX, displacementY);
+		m_OwnerGameObjectPointer->SetPosition(std::sinf(totalRotation) * m_OrbitRadius,
+											  std::cosf(totalRotation) * m_OrbitRadius);
 
 	}
 }

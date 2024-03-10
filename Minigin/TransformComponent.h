@@ -24,8 +24,8 @@ namespace Engine
 
 
 		//elements - public following the guideline "C.131: Avoid trivial getters and setters"
-		glm::vec3 m_Position;
 		float m_Rotation;
+		glm::vec3 m_Position;
 
 
 
