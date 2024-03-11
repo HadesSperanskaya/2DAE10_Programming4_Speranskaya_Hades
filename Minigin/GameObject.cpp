@@ -15,6 +15,7 @@
 #include "FPSComponent.h"
 #include "RenderComponent.h"
 #include "RotatorComponent.h"
+#include "CacheTrasher.h"
 
 using namespace Engine;
 
@@ -93,6 +94,17 @@ void GameObject::Render() const
 
 	//render using game object world position
 	m_RenderComponentPointer->Render(m_CombinedTransformComponentPointer->m_Position.x,
+									 m_CombinedTransformComponentPointer->m_Position.y,
+									 m_CombinedTransformComponentPointer->m_Rotation);
+	
+
+};
+
+void GameObject::RenderUI()
+{
+
+	//render using game object world position
+	m_RenderComponentPointer->RenderUI(m_CombinedTransformComponentPointer->m_Position.x,
 									 m_CombinedTransformComponentPointer->m_Position.y,
 									 m_CombinedTransformComponentPointer->m_Rotation);
 	
@@ -250,6 +262,21 @@ void GameObject::AddRotatorComponent(const std::string& name, float angularVeloc
 	m_GameObjectComponentsVector.push_back(std::unique_ptr<RotatorComponent>(new RotatorComponent{ this, name, angularVelocity, orbitRadius }));
 
 	++m_ExtraComponentCount;
+}
+
+void GameObject::AddCacheTrasherComponent()
+{
+	if (CheckForComponentOfType(COMPONENT_TYPE::CacheTrasher))
+	{
+		return;
+	}
+
+	m_GameObjectComponentsVector.push_back(std::unique_ptr<CacheTrasher>(new CacheTrasher{this}));
+
+	++m_ExtraComponentCount;
+
+	m_RenderComponentPointer->AddComponentToRender(m_GameObjectComponentsVector.back().get());
+
 }
 
 void GameObject::RemoveComponentWithName(const std::string& componentName)

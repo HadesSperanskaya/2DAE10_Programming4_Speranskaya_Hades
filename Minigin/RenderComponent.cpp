@@ -21,6 +21,17 @@ void RenderComponent::Render(float xPosition, float yPosition, float rotation) c
 	}
 }
 
+void RenderComponent::RenderUI(float xPosition, float yPosition, float rotation)
+{
+	for (auto& component : m_ComponentPointersVector)
+	{
+		if(component)
+		{
+			component->RenderUI(xPosition, yPosition, rotation);
+		}
+	}
+}
+
 void RenderComponent::AddComponentToRender(GameObjectComponent* componentToAdd)
 {
 	if(componentToAdd)

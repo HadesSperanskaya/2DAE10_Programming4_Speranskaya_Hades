@@ -33,6 +33,7 @@ namespace Engine
 		//functions
 		void Update(float deltaTime);
 		void Render() const;
+		void RenderUI();
 
 		//all game objects will have a transform component, so they all can have a set position method.
 		void SetPosition(float x, float y);
@@ -54,6 +55,8 @@ namespace Engine
 		void AddFPSComponent(GameObjectComponent* textComponentPointer = nullptr);
 
 		void AddRotatorComponent(const std::string& name, float angularVelocity = 0.5f, float orbitRadius = 40.f);
+
+		void AddCacheTrasherComponent();
 
 		//remove all components with this name,with caveat that there should only be one component with a specific name on any given object?
 		void RemoveComponentWithName(const std::string& componentName); 

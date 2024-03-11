@@ -24,7 +24,10 @@ namespace Engine
 
 
 		//functions
+
+
 		void Render(float xPosition, float yPosition, float rotation) const;
+		void RenderUI(float xPosition, float yPosition, float rotation);
 
 		void AddComponentToRender(GameObjectComponent* componentToAdd);
 
@@ -35,7 +38,7 @@ namespace Engine
 
 		//elements
 		//render component only needs to call the render functions of the renderable components, so it can have const pointer to const objects
-		std::vector<const GameObjectComponent*> m_ComponentPointersVector;
+		std::vector<GameObjectComponent*> m_ComponentPointersVector;
 
 
 

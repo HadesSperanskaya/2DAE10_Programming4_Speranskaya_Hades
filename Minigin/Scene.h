@@ -16,6 +16,7 @@ namespace Engine
 		//void FixedUpdate(float fixedTimeStepTime);
 		void Update(float deltaTime);
 		void Render() const;
+		void RenderUI();
 
 		~Scene();
 		Scene(const Scene& other) = delete;

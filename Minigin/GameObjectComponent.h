@@ -32,6 +32,7 @@ namespace Engine
 
 		//render function requires the parent game object's transform information to render the object in the correct place
 		virtual void Render(float xPosition, float yPosition, float rotation) const;
+		virtual void RenderUI(float xPosition, float yPosition, float rotation);
 
 
 		//elements - public following the guideline "C.131: Avoid trivial getters and setters"

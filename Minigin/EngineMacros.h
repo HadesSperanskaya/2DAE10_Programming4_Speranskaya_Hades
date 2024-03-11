@@ -12,8 +12,9 @@ namespace Engine
 	const std::string COMPONENT_TYPENAME_TEXTURE2D{ "Texture2D" };
 	const std::string COMPONENT_TYPENAME_TRANSFORM{ "Transform" };
 	const std::string COMPONENT_TYPENAME_FPS{ "FPS" };
-	const std::string COMPONENT_TYPENAME_RENDER{ "RenderComponent" };
-	const std::string COMPONENT_TYPENAME_ROTATOR{ "RotatorComponent" };
+	const std::string COMPONENT_TYPENAME_RENDER{ "Render" };
+	const std::string COMPONENT_TYPENAME_ROTATOR{ "Rotator" };
+	const std::string COMPONENT_TYPENAME_CACHETRASHER{ "CacheTrasher" };
 
 
 	//component type enum
@@ -24,7 +25,8 @@ namespace Engine
 		TransformComponent,
 		FPSComponent,
 		RenderComponent,
-		RotatorComponent
+		RotatorComponent,
+		CacheTrasher
 	};
 
 

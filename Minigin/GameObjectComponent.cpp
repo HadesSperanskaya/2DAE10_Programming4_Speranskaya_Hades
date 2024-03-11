@@ -26,3 +26,10 @@ void GameObjectComponent::Render(float x, float y, float rotation) const
 	rotation;
 };
 
+void GameObjectComponent::RenderUI(float x, float y, float rotation)
+{
+	//doing this so compiler does not give the unreferenced formal parameter error
+	x;
+	y;
+	rotation;
+};
