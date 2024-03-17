@@ -11,11 +11,10 @@
 
 #include "Minigin.h"
 #include "InputManager.h"
-#include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "Scene.h"
 
-SDL_Window* g_window{};
 
 void PrintSDLVersion()
 {
@@ -45,7 +44,15 @@ void PrintSDLVersion()
 		version.major, version.minor, version.patch);
 }
 
-Engine::Minigin::Minigin(const std::string &dataPath)
+using namespace Engine;
+
+std::unique_ptr<ResourceManager> Minigin::m_ResourceManagerPointer = nullptr;
+std::unique_ptr<Renderer> Minigin::m_RendererPointer = nullptr;
+std::unique_ptr<Scene> Minigin::m_ScenePointer = std::unique_ptr<Scene>(new Scene());
+std::unique_ptr<InputManager> Minigin::m_InputManagerPointer = std::unique_ptr<InputManager>(new InputManager());
+
+Minigin::Minigin(const std::string &dataPath) : 
+	m_Window(nullptr)
 {
 	PrintSDLVersion();
 	
@@ -54,39 +61,33 @@ Engine::Minigin::Minigin(const std::string &dataPath)
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
 
-	g_window = SDL_CreateWindow(
-		"Programming 4 assignment",
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		640,
-		480,
-		SDL_WINDOW_OPENGL
-	);
-	if (g_window == nullptr) 
+	//m_ScenePointer = std::unique_ptr<Scene>(new Scene());
+
+	m_Window = SDL_CreateWindow("Programming 4 assignment", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640,480, SDL_WINDOW_OPENGL);
+
+	if (m_Window == nullptr)
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	Renderer::GetInstance().Init(g_window);
+	m_RendererPointer = std::unique_ptr<Renderer>(new Renderer(m_Window));
 
-	ResourceManager::GetInstance().Init(dataPath);
+
+	m_ResourceManagerPointer = std::unique_ptr<ResourceManager>(new ResourceManager(dataPath, m_RendererPointer->GetSDLRenderer()));
+
+	//m_InputManagerPointer = std::unique_ptr<InputManager>(new InputManager());
 }
 
 Engine::Minigin::~Minigin()
 {
-	Renderer::GetInstance().Destroy();
-	SDL_DestroyWindow(g_window);
-	g_window = nullptr;
+	m_RendererPointer.release();
+	SDL_DestroyWindow(m_Window);
 	SDL_Quit();
 }
 
 void Engine::Minigin::Run(const std::function<void()>& load)
 {
 	load();
-
-	auto& renderer = Renderer::GetInstance();
-	auto& sceneManager = SceneManager::GetInstance();
-	auto& input = InputManager::GetInstance();
 
 	
 	bool doContinue = true;
@@ -123,7 +124,7 @@ void Engine::Minigin::Run(const std::function<void()>& load)
 		//update last time to be the current time
 		lastTime = currentTime;
 
-		doContinue = input.ProcessInput();
+		doContinue = m_InputManagerPointer->ProcessInput();
 
 
 		//fixed update functionatlity currenly commented out. may be relevant later for physics, so not deleted.
@@ -137,8 +138,8 @@ void Engine::Minigin::Run(const std::function<void()>& load)
 
 
 
-		sceneManager.Update(deltaTime);
-		renderer.Render();
+		m_ScenePointer->Update(deltaTime);
+		m_RendererPointer->Render(m_ScenePointer.get());
 
 
 		const auto sleepTime = currentTime + std::chrono::milliseconds(millisecondsPerFrame) - std::chrono::high_resolution_clock::now();

@@ -48,9 +48,9 @@ namespace Engine
 		GameObject* const GetChildAt(int index);
 
 		//add a component
-		void AddTexture2DComponent(const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer = nullptr);
+		void AddTexture2DComponent(const std::string& name, Texture2D* texturePointer = nullptr);
 	
-		void AddTextComponent(const std::string& name, std::shared_ptr<Font> fontSharedPointer = nullptr, const std::string& textString = "");
+		void AddTextComponent(const std::string& name, Font* fontPointer = nullptr, const std::string& textString = "");
 
 		void AddFPSComponent(GameObjectComponent* textComponentPointer = nullptr);
 

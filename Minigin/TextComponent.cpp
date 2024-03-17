@@ -5,23 +5,26 @@
 #include "TextComponent.h"
 #include "Font.h"
 #include "Texture2D.h"
+#include "Minigin.h"
+#include "ResourceManager.h"
 
 using namespace Engine;
 
-TextComponent::TextComponent(GameObject* gameObjectParentPointer, const std::string& componentName, std::shared_ptr<Font> fontSharedPointer, std::string textString, const glm::vec4& color)
+TextComponent::TextComponent(GameObject* gameObjectParentPointer, const std::string& componentName, Font* fontPointer, std::string textString, const glm::vec4& color)
 	:
 	GameObjectComponent(COMPONENT_TYPE::TextComponent, componentName, gameObjectParentPointer),
 	m_NeedsUpdate{ false },
 	m_Color{ color },
 	m_TextString{ textString },
-	m_FontSharedPointer{ fontSharedPointer }
+	m_FontPointer{ fontPointer }
 
 {
+	const SDL_Color colorConverted = { Uint8(m_Color.r), Uint8(m_Color.b), Uint8(m_Color.g), Uint8(m_Color.a) }; // only white text is supported now
+	Texture2D* newTexture = Minigin::m_ResourceManagerPointer->CreateTexture2DFromText(colorConverted, m_FontPointer, m_TextString);
 
-	m_TextureComponentUniquePointer = std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ m_OwnerGameObjectPointer, componentName + COMPONENT_TYPENAME_TEXTURE2D });
+	m_TextureComponentUniquePointer = std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ m_OwnerGameObjectPointer, componentName + COMPONENT_TYPENAME_TEXTURE2D, newTexture });
 	m_TransformComponentUniquePointer = std::unique_ptr<TransformComponent>(new TransformComponent{ m_OwnerGameObjectPointer });
 
-	UpdateTextureOfTextComponent();
 
 };
 
@@ -60,10 +63,10 @@ void TextComponent::SetPosition(float x, float y)
 	m_TransformComponentUniquePointer->m_Position = glm::vec3{ x, y, zeroZPosition };
 };
 
-void TextComponent::SetFont(std::shared_ptr<Font> fontSharedPointer)
+void TextComponent::SetFont(Font* fontSharedPointer)
 {
-	m_FontSharedPointer.reset();
-	m_FontSharedPointer = fontSharedPointer;
+
+	m_FontPointer = fontSharedPointer;
 	//set the flag to dirty
 	m_NeedsUpdate = true;
 
@@ -74,28 +77,23 @@ void TextComponent::UpdateTextureOfTextComponent()
 {
 	if (m_TextString.size() <= 0)
 	{
+		m_TextureComponentUniquePointer->m_TexturePointer->ReplaceSDLTexture(nullptr);
 		return;
 	}
 
 
 	const SDL_Color color = { Uint8(m_Color.r), Uint8(m_Color.b), Uint8(m_Color.g), Uint8(m_Color.a) }; // only white text is supported now
 
-	const auto surf = TTF_RenderText_Blended(m_FontSharedPointer->GetFont(), m_TextString.c_str(), color);
-	if (surf == nullptr)
-	{
-		throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
-	}
+	
+	SDL_Texture* newTexture = Minigin::m_ResourceManagerPointer.get()->CreateSDLTextureFromText(color, m_FontPointer, m_TextString);
 
-	auto texture = SDL_CreateTextureFromSurface(Renderer::GetInstance().GetSDLRenderer(), surf);
-	if (texture == nullptr)
+	if (newTexture == nullptr)
 	{
 		throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 	}
-	
-	SDL_FreeSurface(surf);
 
-	(m_TextureComponentUniquePointer->m_TextureSharedPointer).reset();
-	(m_TextureComponentUniquePointer->m_TextureSharedPointer) = std::make_shared<Texture2D>(texture);
+	m_TextureComponentUniquePointer->m_TexturePointer->ReplaceSDLTexture(newTexture);
+
 
 	//clear the dirty flag
 	m_NeedsUpdate = false;

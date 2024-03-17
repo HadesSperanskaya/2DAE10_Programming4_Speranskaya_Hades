@@ -4,9 +4,7 @@
 struct _TTF_Font;
 namespace Engine
 {
-	/**
-	 * Simple RAII wrapper for a _TTF_Font
-	 */
+	
 	class Font final
 	{
 	public:
@@ -19,6 +17,6 @@ namespace Engine
 		Font & operator= (const Font &) = delete;
 		Font & operator= (const Font &&) = delete;
 	private:
-		_TTF_Font* m_font;
+		_TTF_Font* m_Font;
 	};
 }

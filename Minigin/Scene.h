@@ -1,36 +1,45 @@
 #pragma once
-#include "SceneManager.h"
+#include <vector>
+#include <string>
+#include <memory>
 
 namespace Engine
 {
 	class GameObject;
+
 	class Scene final
 	{
-		friend Scene& SceneManager::CreateScene(const std::string& name);
+		
 	public:
-		void Add(std::shared_ptr<GameObject> object);
-		void Remove(std::shared_ptr<GameObject> object);
-		void RemoveAll();
+		//functions
 
-
-		//void FixedUpdate(float fixedTimeStepTime);
-		void Update(float deltaTime);
-		void Render() const;
-		void RenderUI();
-
+		//constructor
+		Scene() = default;
+		//destructor
 		~Scene();
+		//deleted 
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
 		Scene& operator=(const Scene& other) = delete;
 		Scene& operator=(Scene&& other) = delete;
 
+
+		void Add(GameObject* object);
+		void Remove(GameObject* object);
+		void RemoveAll();
+
+
+		void Update(float deltaTime);
+		void Render() const;
+		void RenderUI();
+
+		
+
 	private: 
-		explicit Scene(const std::string& name);
+		
+		//elements
+		std::vector<GameObject*> m_Objects{};
 
-		std::string m_name;
-		std::vector < std::shared_ptr<GameObject>> m_objects{};
-
-		static unsigned int m_idCounter; 
 	};
 
 }

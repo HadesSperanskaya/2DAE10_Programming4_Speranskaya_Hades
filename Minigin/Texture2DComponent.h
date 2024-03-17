@@ -1,6 +1,6 @@
 #pragma once
-#include "GameObjectComponent.h"
 #include <memory>
+#include "GameObjectComponent.h"
 
 namespace Engine
 {
@@ -13,7 +13,7 @@ namespace Engine
 	public:
 
 		//constructor
-		Texture2DComponent(GameObject* gameObjectParentPointer, const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer = nullptr);
+		Texture2DComponent(GameObject* gameObjectParentPointer, const std::string& name, Texture2D* texturePointer = nullptr);
 
 		//destructor
 		~Texture2DComponent() = default;
@@ -28,11 +28,8 @@ namespace Engine
 		void Render(float xPosition, float yPosition, float rotation) const;
 
 
-
-		//element - public following the guideline "C.131: Avoid trivial getters and setters"
-		std::shared_ptr<Texture2D> m_TextureSharedPointer{};
-
-
+		//elements
+		Texture2D* m_TexturePointer{};
 
 
 	private:

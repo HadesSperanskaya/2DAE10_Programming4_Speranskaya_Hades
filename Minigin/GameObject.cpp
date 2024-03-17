@@ -193,16 +193,16 @@ GameObject* const GameObject::GetChildAt(int index)
 	return m_ChildrenPointerVector[index];
 }
 
-void GameObject::AddTexture2DComponent(const std::string& name, std::shared_ptr<Texture2D> textureSharedPointer)
+void GameObject::AddTexture2DComponent(const std::string& name, Texture2D* texturePointer)
 {
 	if (CheckForComponentOfType(COMPONENT_TYPE::Texture2DComponent))
 	{
 		return;
 	}
 
-	if(textureSharedPointer)
+	if(texturePointer)
 	{
-		m_GameObjectComponentsVector.push_back(std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ this, name, textureSharedPointer }));
+		m_GameObjectComponentsVector.push_back(std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ this, name, texturePointer }));
 	}
 	else
 	{
@@ -216,7 +216,7 @@ void GameObject::AddTexture2DComponent(const std::string& name, std::shared_ptr<
 	m_RenderComponentPointer->AddComponentToRender(m_GameObjectComponentsVector.back().get());
 };
 
-void GameObject::AddTextComponent(const std::string& name, std::shared_ptr<Font> fontSharedPointer, const std::string& textString)
+void GameObject::AddTextComponent(const std::string& name, Font* fontPointer, const std::string& textString)
 {
 	//type checking is a little cheaper, and an object is probably not going to have more than one text component added very often?
 	if(CheckForComponentOfType(COMPONENT_TYPE::TextComponent))
@@ -227,7 +227,7 @@ void GameObject::AddTextComponent(const std::string& name, std::shared_ptr<Font>
 		}
 	}
 
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<TextComponent>(new TextComponent{ this, name, fontSharedPointer, textString }));
+	m_GameObjectComponentsVector.push_back(std::unique_ptr<TextComponent>(new TextComponent{ this, name, fontPointer, textString }));
 
 	++m_ExtraComponentCount;
 

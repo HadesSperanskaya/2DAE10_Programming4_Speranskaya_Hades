@@ -1,52 +1,49 @@
+#include <algorithm>
 #include "Scene.h"
 #include "GameObject.h"
 
-#include <algorithm>
 
 using namespace Engine;
 
-unsigned int Scene::m_idCounter = 0;
-
-Scene::Scene(const std::string& name) : m_name(name) {}
-
-Scene::~Scene() = default;
-
-void Scene::Add(std::shared_ptr<GameObject> object)
+Scene::~Scene()
 {
-	m_objects.emplace_back(std::move(object));
+	for (auto& object : m_Objects)
+	{
+		object->~GameObject();
+		object = nullptr;
+	}
+
+	m_Objects.clear();
+};
+
+void Scene::Add(GameObject* object)
+{
+	m_Objects.push_back(object);
 }
 
-void Scene::Remove(std::shared_ptr<GameObject> object)
+void Scene::Remove(GameObject* object)
 {
-	m_objects.erase(std::remove(m_objects.begin(), m_objects.end(), object), m_objects.end());
+	m_Objects.erase(std::remove_if(m_Objects.begin(), m_Objects.end(),
+								[object](GameObject* element) { return (element == object); }),
+								m_Objects.end());
 }
 
 void Scene::RemoveAll()
 {
-	m_objects.clear();
+	m_Objects.clear();
 }
-
-//void Scene::FixedUpdate(float fixedTimeStepTime)
-//{
-//	for (auto& object : m_objects)
-//	{
-//		object->FixedUpdate(fixedTimeStepTime);
-//	}
-//}
 
 void Scene::Update(float deltaTime)
 {
-	for(auto& object : m_objects)
+	for(auto& object : m_Objects)
 	{
 		object->Update(deltaTime);
 	}
 }
 
-
-
 void Scene::Render() const
 {
-	for (const auto& object : m_objects)
+	for (const auto& object : m_Objects)
 	{
 		object->Render();
 	}
@@ -54,7 +51,7 @@ void Scene::Render() const
 
 void Scene::RenderUI()
 {
-	for (const auto& object : m_objects)
+	for (auto& object : m_Objects)
 	{
 		object->RenderUI();
 	}

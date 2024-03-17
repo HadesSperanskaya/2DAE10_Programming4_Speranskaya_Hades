@@ -14,7 +14,7 @@ namespace Engine
 	public:
 
 		//constructors
-		TextComponent(GameObject* gameObjectParentPointer, const std::string& componentName, std::shared_ptr<Font> fontSharedPointer = nullptr, std::string textString = "", const glm::vec4& color = { 255,255,255,255 });
+		TextComponent(GameObject* gameObjectParentPointer, const std::string& componentName, Font* fontPointer = nullptr, std::string textString = "", const glm::vec4& color = { 255,255,255,255 });
 
 		//destructor
 		~TextComponent() = default;
@@ -32,7 +32,7 @@ namespace Engine
 
 		void SetText(const std::string& text);
 		void SetPosition(float x, float y);
-		void SetFont(std::shared_ptr<Font> fontSharedPointer);
+		void SetFont(Font* fontSharedPointer);
 
 
 	private:
@@ -57,7 +57,7 @@ namespace Engine
 		std::unique_ptr<TransformComponent> m_TransformComponentUniquePointer;
 
 		//this component references a font resource that is not unique to it, so shared pointer
-		std::shared_ptr<Font> m_FontSharedPointer;
+		Font* m_FontPointer;
 
 
     };
