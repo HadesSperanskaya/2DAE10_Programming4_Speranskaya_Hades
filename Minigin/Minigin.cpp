@@ -46,10 +46,7 @@ void PrintSDLVersion()
 
 using namespace Engine;
 
-std::unique_ptr<ResourceManager> Minigin::m_ResourceManagerPointer = nullptr;
-std::unique_ptr<Renderer> Minigin::m_RendererPointer = nullptr;
-std::unique_ptr<Scene> Minigin::m_ScenePointer = std::unique_ptr<Scene>(new Scene());
-std::unique_ptr<InputManager> Minigin::m_InputManagerPointer = std::unique_ptr<InputManager>(new InputManager());
+
 
 Minigin::Minigin(const std::string &dataPath) : 
 	m_Window(nullptr)
@@ -61,7 +58,7 @@ Minigin::Minigin(const std::string &dataPath) :
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
 
-	//m_ScenePointer = std::unique_ptr<Scene>(new Scene());
+	m_ScenePointer = std::unique_ptr<Scene>(new Scene());
 
 	m_Window = SDL_CreateWindow("Programming 4 assignment", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640,480, SDL_WINDOW_OPENGL);
 
@@ -72,22 +69,22 @@ Minigin::Minigin(const std::string &dataPath) :
 
 	m_RendererPointer = std::unique_ptr<Renderer>(new Renderer(m_Window));
 
+	m_InputManagerPointer = std::unique_ptr<InputManager>(new InputManager());
 
-	m_ResourceManagerPointer = std::unique_ptr<ResourceManager>(new ResourceManager(dataPath, m_RendererPointer->GetSDLRenderer()));
+	ResourceManager::GetInstance().Initialise(dataPath, m_RendererPointer->GetSDLRenderer());
 
-	//m_InputManagerPointer = std::unique_ptr<InputManager>(new InputManager());
 }
 
 Engine::Minigin::~Minigin()
 {
-	m_RendererPointer.release();
+	m_RendererPointer.reset();
 	SDL_DestroyWindow(m_Window);
 	SDL_Quit();
 }
 
-void Engine::Minigin::Run(const std::function<void()>& load)
+void Engine::Minigin::Run(const std::function<void(Minigin* engine)>& load)
 {
-	load();
+	load(this);
 
 	
 	bool doContinue = true;

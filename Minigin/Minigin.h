@@ -18,7 +18,7 @@ namespace Engine
 	public:
 		explicit Minigin(const std::string& dataPath);
 		~Minigin();
-		void Run(const std::function<void()>& load);
+		void Run(const std::function<void(Minigin* engine)>& load);
 
 		Minigin(const Minigin& other) = delete;
 		Minigin(Minigin&& other) = delete;
@@ -26,13 +26,12 @@ namespace Engine
 		Minigin& operator=(Minigin&& other) = delete;
 
 
-		static std::unique_ptr<ResourceManager> m_ResourceManagerPointer;
-		static std::unique_ptr<Renderer> m_RendererPointer;
-		static std::unique_ptr<Scene> m_ScenePointer;
-		static std::unique_ptr<InputManager> m_InputManagerPointer;
+		std::unique_ptr<Scene> m_ScenePointer;
 
 
 	private:
+		std::unique_ptr<InputManager> m_InputManagerPointer;
+		std::unique_ptr<Renderer> m_RendererPointer;
 
 		SDL_Window* m_Window;
 

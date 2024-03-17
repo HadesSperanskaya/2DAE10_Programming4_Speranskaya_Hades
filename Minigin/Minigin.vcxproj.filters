@@ -136,6 +136,9 @@
     <ClInclude Include="FPSComponent.h">
       <Filter>GameObjectComponents\AssignmentExclusiveComponents</Filter>
     </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Texture2D.cpp">

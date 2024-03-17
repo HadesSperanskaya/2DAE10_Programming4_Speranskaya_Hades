@@ -24,7 +24,7 @@ void Texture2DComponent::Render(float xPosition, float yPosition, float rotation
 
 	if (m_TexturePointer)
 	{
-		m_TexturePointer->RenderTexture(xPosition, yPosition);
+		Renderer::RenderTexture(m_TexturePointer, xPosition, yPosition);
 	}
 }
 

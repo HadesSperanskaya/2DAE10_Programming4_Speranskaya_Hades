@@ -1,16 +1,17 @@
 #include <stdexcept>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+
 #include "ResourceManager.h"
-#include "Texture2D.h"
-#include "Font.h"
+
 
 using namespace Engine;
 
-ResourceManager::ResourceManager(const std::string& dataPath, SDL_Renderer* sdlRenderer) :
-	m_DataPath(dataPath),
-	m_SDLRenderer(sdlRenderer)
+void ResourceManager::Initialise(const std::string& dataPath, SDL_Renderer* sdlRenderer)
 {
+	m_DataPath = dataPath;
+	m_SDLRenderer = sdlRenderer;
+
 	if (TTF_Init() != 0)
 	{
 		throw std::runtime_error(std::string("Failed to load support for fonts: ") + SDL_GetError());
@@ -25,7 +26,7 @@ ResourceManager::~ResourceManager()
 
 Texture2D* ResourceManager::LoadTexture(const std::string& file)
 {
-	m_Texture2DResourcePointers.push_back(std::unique_ptr<Texture2D>(new Texture2D(m_DataPath + file)));
+	m_Texture2DResourcePointers.push_back(std::unique_ptr<Texture2D>(new Texture2D(IMG_LoadTexture(m_SDLRenderer, (m_DataPath + file).c_str()))));
 	return m_Texture2DResourcePointers.back().get();
 }
 
@@ -37,7 +38,7 @@ Font* ResourceManager::LoadFont(const std::string& file, unsigned int size)
 
 Texture2D* ResourceManager::CreateTexture2DFromText(const SDL_Color color, Font* font, const std::string& text)
 {
-	m_Texture2DResourcePointers.push_back(std::unique_ptr<Texture2D>(new Texture2D(color, font, text)));
+	m_Texture2DResourcePointers.push_back(std::unique_ptr<Texture2D>(new Texture2D(CreateSDLTextureFromText(color, font, text))));
 	return m_Texture2DResourcePointers.back().get();
 }
 

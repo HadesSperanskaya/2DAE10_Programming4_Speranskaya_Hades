@@ -20,7 +20,7 @@ TextComponent::TextComponent(GameObject* gameObjectParentPointer, const std::str
 
 {
 	const SDL_Color colorConverted = { Uint8(m_Color.r), Uint8(m_Color.b), Uint8(m_Color.g), Uint8(m_Color.a) }; // only white text is supported now
-	Texture2D* newTexture = Minigin::m_ResourceManagerPointer->CreateTexture2DFromText(colorConverted, m_FontPointer, m_TextString);
+	Texture2D* newTexture = ResourceManager::GetInstance().CreateTexture2DFromText(colorConverted, m_FontPointer, m_TextString);
 
 	m_TextureComponentUniquePointer = std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ m_OwnerGameObjectPointer, componentName + COMPONENT_TYPENAME_TEXTURE2D, newTexture });
 	m_TransformComponentUniquePointer = std::unique_ptr<TransformComponent>(new TransformComponent{ m_OwnerGameObjectPointer });
@@ -85,7 +85,7 @@ void TextComponent::UpdateTextureOfTextComponent()
 	const SDL_Color color = { Uint8(m_Color.r), Uint8(m_Color.b), Uint8(m_Color.g), Uint8(m_Color.a) }; // only white text is supported now
 
 	
-	SDL_Texture* newTexture = Minigin::m_ResourceManagerPointer.get()->CreateSDLTextureFromText(color, m_FontPointer, m_TextString);
+	SDL_Texture* newTexture = ResourceManager::GetInstance().CreateSDLTextureFromText(color, m_FontPointer, m_TextString);
 
 	if (newTexture == nullptr)
 	{

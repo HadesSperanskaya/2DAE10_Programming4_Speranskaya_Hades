@@ -2,10 +2,10 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include "GameObject.h"
 
 namespace Engine
 {
-	class GameObject;
 
 	class Scene final
 	{
@@ -38,7 +38,7 @@ namespace Engine
 	private: 
 		
 		//elements
-		std::vector<GameObject*> m_Objects{};
+		std::vector<std::unique_ptr<GameObject>> m_Objects;
 
 	};
 

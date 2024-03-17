@@ -7,24 +7,19 @@ using namespace Engine;
 
 Scene::~Scene()
 {
-	for (auto& object : m_Objects)
-	{
-		object->~GameObject();
-		object = nullptr;
-	}
 
 	m_Objects.clear();
 };
 
 void Scene::Add(GameObject* object)
 {
-	m_Objects.push_back(object);
+	m_Objects.push_back(std::unique_ptr<GameObject>(object));
 }
 
 void Scene::Remove(GameObject* object)
 {
 	m_Objects.erase(std::remove_if(m_Objects.begin(), m_Objects.end(),
-								[object](GameObject* element) { return (element == object); }),
+								[object](const std::unique_ptr<GameObject>& element) { return (element.get() == object); }),
 								m_Objects.end());
 }
 

@@ -1,10 +1,16 @@
 #include <stdexcept>
-#include "Renderer.h"
-#include "Scene.h"
+
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl2.h"
 
+#include "Texture2D.h"
+#include "Renderer.h"
+#include "Scene.h"
+
+
 using namespace Engine;
+
+SDL_Renderer* Renderer::m_SDLRenderer = nullptr;
 
 int GetOpenGLDriverIndex()
 {
@@ -72,6 +78,25 @@ void Renderer::Render(Scene* scene)
 
 	SDL_RenderPresent(m_SDLRenderer);
 };
+
+void Renderer::RenderTexture(Texture2D* texture, const float x, const float y) 
+{
+	SDL_Rect dst{};
+	dst.x = static_cast<int>(x);
+	dst.y = static_cast<int>(y);
+	SDL_QueryTexture(texture->GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
+	SDL_RenderCopy(m_SDLRenderer, texture->GetSDLTexture(), nullptr, &dst);
+}
+
+void Renderer::RenderTexture(Texture2D* texture, const float x, const float y, const float width, const float height)
+{
+	SDL_Rect dst{};
+	dst.x = static_cast<int>(x);
+	dst.y = static_cast<int>(y);
+	dst.w = static_cast<int>(width);
+	dst.h = static_cast<int>(height);
+	SDL_RenderCopy(m_SDLRenderer, texture->GetSDLTexture(), nullptr, &dst);
+}
 
 SDL_Renderer* Renderer::GetSDLRenderer() const
 {
