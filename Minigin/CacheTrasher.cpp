@@ -12,7 +12,6 @@
 
 using namespace Engine;
 
-
 CacheTrasher::CacheTrasher(GameObject* gameObjectParentPointer) :
 	GameObjectComponent(COMPONENT_TYPE::CacheTrasher, COMPONENT_TYPENAME_CACHETRASHER, gameObjectParentPointer)
 	
@@ -25,8 +24,6 @@ CacheTrasher::CacheTrasher(GameObject* gameObjectParentPointer) :
     RunExerciseTwoCalculations();
 
 }
-
-
 
 void CacheTrasher::Update(float deltaTime)
 {
@@ -45,6 +42,7 @@ void CacheTrasher::Update(float deltaTime)
 
 
 }
+
 void CacheTrasher::RenderUI(float xPosition, float yPosition, float rotation)
 {
     xPosition;
@@ -85,9 +83,6 @@ void CacheTrasher::RenderUI(float xPosition, float yPosition, float rotation)
 
 }
 
-
-
-
 void CacheTrasher::RunExerciseOneCalculations()
 {
 
@@ -115,7 +110,6 @@ void CacheTrasher::RunExerciseOneCalculations()
     m_UpdateExerciseOne = false;
 
 }
-
 
 void CacheTrasher::RunExerciseTwoCalculations()
 {
@@ -172,8 +166,6 @@ void CacheTrasher::RunExerciseTwoCalculations()
 
     m_UpdateExerciseTwo = false;
 }
-
-
 
 void CacheTrasher::ProccessRawData(const std::vector<float>& vectorOfRawData, float* outputTarget)
 {

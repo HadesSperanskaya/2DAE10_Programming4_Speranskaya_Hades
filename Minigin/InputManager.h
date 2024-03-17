@@ -1,6 +1,6 @@
 #pragma once
 #include "Singleton.h"
-//#include <Xinput.h>
+#include <Xinput.h>
 
 namespace Engine
 {
@@ -13,7 +13,7 @@ namespace Engine
 
 
 	private:
-		//XINPUT_STATE m_CurrentState;
+		XINPUT_STATE m_CurrentState;
 
 	};
 
