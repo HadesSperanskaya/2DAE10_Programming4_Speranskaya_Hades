@@ -5,6 +5,7 @@
 #include <iostream>
 #include <set>
 #include <numeric>
+
 #include "CacheTrasher.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl2.h"
@@ -169,8 +170,6 @@ void CacheTrasher::RunExerciseTwoCalculations()
 
 void CacheTrasher::ProccessRawData(const std::vector<float>& vectorOfRawData, float* outputTarget)
 {
-
-
     for (int set{}; set < m_StepCount; ++set)
     {
         std::multiset<float> resultSet;

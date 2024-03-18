@@ -4,18 +4,18 @@
 
 #include "EngineMacros.h"
 
-#include "ResourceManager.h"
+#include "ResourceOwner.h"
 #include "Renderer.h"
 
 #include "Texture2D.h"
 
+#include "GameObjectComponent.h"
 #include "Texture2DComponent.h"
 #include "TransformComponent.h"
 #include "TextComponent.h"
 #include "FPSComponent.h"
 #include "RenderComponent.h"
 #include "RotatorComponent.h"
-#include "CacheTrasher.h"
 
 using namespace Engine;
 
@@ -25,12 +25,8 @@ const COMPONENT_TYPE GameObject::m_DefaultComponents[2]{COMPONENT_TYPE::Transfor
 
 
 GameObject::GameObject():
-	m_WorldTransformComponentPointer{ std::unique_ptr<TransformComponent>(new TransformComponent{this}) },
-	m_LocalTransformComponentPointer{ std::unique_ptr<TransformComponent>(new TransformComponent{this})},
-	m_CombinedTransformComponentPointer{ std::unique_ptr<TransformComponent>(new TransformComponent{this}) },
-	m_RenderComponentPointer{ std::unique_ptr<RenderComponent>(new RenderComponent{this}) },
-	m_ExtraComponentCount{0},
-	m_ParentPointer{ nullptr }
+	m_TransformComponentPointer{ std::make_unique<TransformComponent>(this) },
+	m_RenderComponentPointer{ std::make_unique<RenderComponent>(this) }
 {
 	
 };
@@ -44,7 +40,7 @@ GameObject::~GameObject()
 		m_ParentPointer->RemoveChild(this);
 	}
 
-	//if has children, remove itself from the childre
+	//if has children, remove itself from the children
 	for (const auto& child : m_ChildrenPointerVector)
 	{
 		if (child)
@@ -52,9 +48,6 @@ GameObject::~GameObject()
 			child->SetParent(nullptr);
 		}
 	}
-
-	m_GameObjectComponentsVector.clear();
-
 
 
 };
@@ -64,22 +57,17 @@ void GameObject::Update(float deltaTime)
 {
 	if (m_ParentWasChanged) 
 	{
-		UpdateInheritedTransforms(m_TransformInheritanceParametersParentSwitch);
+		m_TransformComponentPointer->UpdateDueToNewParentAssigned(m_ParentPointer);
 
 		m_ParentWasChanged = false;
 	}
 
 	if (m_ParentTransformWasUpdated)
 	{
-		m_WorldTransformComponentPointer->m_Position = m_ParentPointer->m_CombinedTransformComponentPointer->m_Position;
-		m_WorldTransformComponentPointer->m_Rotation = m_ParentPointer->m_CombinedTransformComponentPointer->m_Rotation;
+		m_TransformComponentPointer->UpdateDueToParentBeingTransformed();
 
 		m_ParentTransformWasUpdated = false;
 	}
-
-
-	m_CombinedTransformComponentPointer->m_Position = m_WorldTransformComponentPointer->m_Position + m_LocalTransformComponentPointer->m_Position;
-	m_CombinedTransformComponentPointer->m_Rotation = m_WorldTransformComponentPointer->m_Rotation + m_LocalTransformComponentPointer->m_Rotation;
 
 
 
@@ -93,9 +81,7 @@ void GameObject::Render() const
 {
 
 	//render using game object world position
-	m_RenderComponentPointer->Render(m_CombinedTransformComponentPointer->m_Position.x,
-									 m_CombinedTransformComponentPointer->m_Position.y,
-									 m_CombinedTransformComponentPointer->m_Rotation);
+	m_RenderComponentPointer->Render(m_TransformComponentPointer->m_Combined);
 	
 
 };
@@ -104,20 +90,18 @@ void GameObject::RenderUI()
 {
 
 	//render using game object world position
-	m_RenderComponentPointer->RenderUI(m_CombinedTransformComponentPointer->m_Position.x,
-									 m_CombinedTransformComponentPointer->m_Position.y,
-									 m_CombinedTransformComponentPointer->m_Rotation);
+	m_RenderComponentPointer->RenderUI(m_TransformComponentPointer->m_Combined);
 	
 
 };
 
 //set local position
-void GameObject::SetPosition(float x, float y)
+void GameObject::SetLocalPosition(float x, float y)
 {
-	m_LocalTransformComponentPointer->m_Position.x = x;
-	m_LocalTransformComponentPointer->m_Position.y = y;
 
-	m_CombinedTransformComponentPointer->m_Position = m_WorldTransformComponentPointer->m_Position + m_LocalTransformComponentPointer->m_Position;
+	m_TransformComponentPointer->m_Local.position = glm::vec3(x, y, 0);
+
+	m_TransformComponentPointer->m_Combined.position = m_TransformComponentPointer->m_Local.position + m_TransformComponentPointer->m_World->position;
 
 	//set all children as needing to have their world transform infos updated
 	for (auto child : m_ChildrenPointerVector)
@@ -128,11 +112,11 @@ void GameObject::SetPosition(float x, float y)
 };
 
 //set local rotation
-void GameObject::SetRotation(float rotation)
+void GameObject::SetLocalRotation(float rotation)
 {
-	m_LocalTransformComponentPointer->m_Rotation = rotation;
+	m_TransformComponentPointer->m_Local.rotation = rotation;
 
-	m_CombinedTransformComponentPointer->m_Rotation = m_WorldTransformComponentPointer->m_Rotation + m_LocalTransformComponentPointer->m_Rotation;
+	m_TransformComponentPointer->m_Combined.rotation = m_TransformComponentPointer->m_Local.rotation + m_TransformComponentPointer->m_World->rotation;
 
 	//set all children as needing to have their world transform infos updated
 	for (const auto& child : m_ChildrenPointerVector)
@@ -149,6 +133,13 @@ void GameObject::SetParent(GameObject* parent)
 	{
 		return;
 	}
+
+	//if the parent is already that object, also return
+	if (parent == m_ParentPointer)
+	{
+		return;
+	}
+
 
 	//return if to-be parent is already a child or grandchild or greatgranchild of this object
 	if (parent && HasThisChildOrGrandchild(parent))
@@ -173,7 +164,7 @@ void GameObject::SetParent(GameObject* parent)
 
 	m_ParentWasChanged = true;
 
-	UpdateInheritedTransforms(m_TransformInheritanceParametersParentSwitch);
+	m_TransformComponentPointer->UpdateDueToNewParentAssigned(m_ParentPointer);
 
 
 }
@@ -195,24 +186,17 @@ GameObject* const GameObject::GetChildAt(int index)
 
 void GameObject::AddTexture2DComponent(const std::string& name, Texture2D* texturePointer)
 {
+	//can only add one texture to game object; components that have their own visuals msut have their own texture components to manage
 	if (CheckForComponentOfType(COMPONENT_TYPE::Texture2DComponent))
 	{
 		return;
 	}
 
-	if(texturePointer)
-	{
-		m_GameObjectComponentsVector.push_back(std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ this, name, texturePointer }));
-	}
-	else
-	{
-		m_GameObjectComponentsVector.push_back(std::unique_ptr<Texture2DComponent>(new Texture2DComponent{ this, name }));
-
-	}
+	m_GameObjectComponentsVector.push_back(std::make_unique<Texture2DComponent>(this, name, texturePointer));
 
 	++m_ExtraComponentCount;
 
-	//give the render component a raw pointer to love and treasure and render
+	//give the render component the raw pointer to love and treasure and render;
 	m_RenderComponentPointer->AddComponentToRender(m_GameObjectComponentsVector.back().get());
 };
 
@@ -227,7 +211,7 @@ void GameObject::AddTextComponent(const std::string& name, Font* fontPointer, co
 		}
 	}
 
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<TextComponent>(new TextComponent{ this, name, fontPointer, textString }));
+	m_GameObjectComponentsVector.push_back(std::make_unique<TextComponent>(this, name, fontPointer, textString));
 
 	++m_ExtraComponentCount;
 
@@ -238,7 +222,7 @@ void GameObject::AddTextComponent(const std::string& name, Font* fontPointer, co
 
 void GameObject::AddFPSComponent(GameObjectComponent* textComponentPointer)
 {
-	//an object does not need more than one of these for sure
+	//an object does not need more than one of these for sure. FPS component is rendered by a textcomponent that it knows about
 	if (CheckForComponentOfType(COMPONENT_TYPE::FPSComponent))
 	{
 		return;
@@ -246,7 +230,7 @@ void GameObject::AddFPSComponent(GameObjectComponent* textComponentPointer)
 
 	if(textComponentPointer->m_ComponentType == COMPONENT_TYPE::TextComponent)
 	{
-		m_GameObjectComponentsVector.push_back(std::unique_ptr <FPSComponent>(new FPSComponent{ this, static_cast<TextComponent*>(textComponentPointer) }));
+		m_GameObjectComponentsVector.push_back(std::make_unique<FPSComponent>(this, textComponentPointer));
 
 		++m_ExtraComponentCount;
 	}
@@ -259,24 +243,9 @@ void GameObject::AddRotatorComponent(const std::string& name, float angularVeloc
 		return;
 	}
 
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<RotatorComponent>(new RotatorComponent{ this, name, angularVelocity, orbitRadius }));
+	m_GameObjectComponentsVector.push_back(std::make_unique<RotatorComponent>(this, name, angularVelocity, orbitRadius));
 
 	++m_ExtraComponentCount;
-}
-
-void GameObject::AddCacheTrasherComponent()
-{
-	if (CheckForComponentOfType(COMPONENT_TYPE::CacheTrasher))
-	{
-		return;
-	}
-
-	m_GameObjectComponentsVector.push_back(std::unique_ptr<CacheTrasher>(new CacheTrasher{this}));
-
-	++m_ExtraComponentCount;
-
-	m_RenderComponentPointer->AddComponentToRender(m_GameObjectComponentsVector.back().get());
-
 }
 
 void GameObject::RemoveComponentWithName(const std::string& componentName)
@@ -294,7 +263,7 @@ void GameObject::RemoveComponentWithName(const std::string& componentName)
 
 void GameObject::RemoveAllComponentsOfType(COMPONENT_TYPE componentType)
 {
-	//return if the desired deletion type is a default type eg render, transform
+	//return if the desired deletion type is a default type eg render, transform. do not even have to bother trying to remove them
 	for (auto forbiddenComponentType : m_DefaultComponents)
 	{
 		if (forbiddenComponentType == componentType)
@@ -371,20 +340,12 @@ GameObjectComponent* const GameObject::GetComponentByType(COMPONENT_TYPE compone
 	return nullptr;
 };
 
-TransformComponent* const GameObject::GetLocalTransformComponent() const
+TransformComponent* const GameObject::GetTransformComponent() const
 {
-	return m_LocalTransformComponentPointer.get();
+	return m_TransformComponentPointer.get();
 }
 
-TransformComponent* const GameObject::GetWorldTransformComponent() const
-{
-	return m_WorldTransformComponentPointer.get();
-}
 
-const TransformComponent* const GameObject::GetCombinedTransformComponent() const
-{
-	return m_CombinedTransformComponentPointer.get();
-}
 
 bool GameObject::HasThisChildOrGrandchild(const GameObject* const object)
 {
@@ -410,7 +371,8 @@ bool GameObject::HasThisChildOrGrandchild(const GameObject* const object)
 
 void GameObject::RemoveChild(GameObject* const child)
 {
-	m_ChildrenPointerVector.erase(std::remove_if(m_ChildrenPointerVector.begin(), m_ChildrenPointerVector.end(), [child](GameObject* const element) {return (element == child); }),
+	m_ChildrenPointerVector.erase(std::remove_if(m_ChildrenPointerVector.begin(), m_ChildrenPointerVector.end(), 
+									[child](GameObject* const element) {return (element == child); }),
 									m_ChildrenPointerVector.end());
 }
 
@@ -419,153 +381,3 @@ void GameObject::AddChild(GameObject* const child)
 	m_ChildrenPointerVector.push_back(child);
 }
 
-void GameObject::UpdateInheritedTransforms(PARENT_CHILD_TRANSFORM_RELATIONSHIP parameters)
-{
-
-	if (m_ParentPointer)
-	{
-
-		//update position
-		switch (parameters.Position)
-		{
-		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToWorld:
-
-			//world position is parent position
-			m_WorldTransformComponentPointer->m_Position = m_ParentPointer->m_CombinedTransformComponentPointer->m_Position;
-			//local position is offset from parent position to current real position
-			m_LocalTransformComponentPointer->m_Position = m_CombinedTransformComponentPointer->m_Position - m_WorldTransformComponentPointer->m_Position;
-			//combined position does not change
-
-
-			break;
-
-		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToParent:
-
-			//world position is parent position
-			m_WorldTransformComponentPointer->m_Position = m_ParentPointer->m_CombinedTransformComponentPointer->m_Position;
-			//local position does not change
-			//combined position is new world plus the preserved local
-			m_CombinedTransformComponentPointer->m_Position = m_LocalTransformComponentPointer->m_Position + m_WorldTransformComponentPointer->m_Position;
-
-			break;
-
-		case TRANSFORM_RELATIONSHIP_FlAG::CopyParent:
-
-			//world position is parent position
-			m_WorldTransformComponentPointer->m_Position = m_ParentPointer->m_CombinedTransformComponentPointer->m_Position;
-			//local position reset to origin (aka parent)
-			m_LocalTransformComponentPointer->m_Position = glm::vec3{ 0.f, 0.f, 0.f };
-			//combined position is new world plus the preserved local
-			m_CombinedTransformComponentPointer->m_Position = m_WorldTransformComponentPointer->m_Position;
-
-			break;
-		}
-
-
-		//update rotation
-		switch (parameters.Rotation)
-		{
-		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToWorld:
-
-			//world rotation is parent rotation
-			m_WorldTransformComponentPointer->m_Rotation = m_ParentPointer->m_CombinedTransformComponentPointer->m_Rotation;
-			//local rotation is the offset from parent to current real 
-			m_LocalTransformComponentPointer->m_Rotation = m_CombinedTransformComponentPointer->m_Rotation - m_WorldTransformComponentPointer->m_Rotation;
-			//combined rotation does not change
-
-			break;
-
-		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToParent:
-
-			//world rotation is parent rotation
-			m_WorldTransformComponentPointer->m_Rotation = m_ParentPointer->m_CombinedTransformComponentPointer->m_Rotation;
-			//local rotation does not change
-			//combined rotation is new world plus the preserved local
-			m_CombinedTransformComponentPointer->m_Rotation = m_LocalTransformComponentPointer->m_Rotation + m_WorldTransformComponentPointer->m_Rotation;
-
-			break;
-
-		case TRANSFORM_RELATIONSHIP_FlAG::CopyParent:
-			
-			//world rotation is parent rotation
-			m_WorldTransformComponentPointer->m_Rotation = m_ParentPointer->m_CombinedTransformComponentPointer->m_Rotation;
-			//local position reset to origin (aka parent)
-			m_LocalTransformComponentPointer->m_Rotation = 0;
-			//combined position is new world
-			m_CombinedTransformComponentPointer->m_Rotation = m_WorldTransformComponentPointer->m_Rotation;
-
-			break;
-		}
-
-
-	}
-	else
-	{
-		//update position
-		switch (parameters.Position)
-		{
-		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToWorld:
-
-			//local is the offset from the scene origin. combined position does not change
-			m_LocalTransformComponentPointer->m_Position = m_CombinedTransformComponentPointer->m_Position;
-			//world is the scene origin
-			m_WorldTransformComponentPointer->m_Position = glm::vec3{ 0.f, 0.f, 0.f };
-
-			break;
-
-		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToParent:
-
-			//world is the scene origin
-			m_WorldTransformComponentPointer->m_Position = glm::vec3{ 0.f, 0.f, 0.f };
-			//local position does not change
-			//combined position is just the preserved local
-			m_CombinedTransformComponentPointer->m_Position = m_LocalTransformComponentPointer->m_Position;
-
-			break;
-
-		case TRANSFORM_RELATIONSHIP_FlAG::CopyParent:
-
-			//fully move to scene origin
-			m_WorldTransformComponentPointer->m_Position = glm::vec3{ 0.f, 0.f, 0.f };
-			m_LocalTransformComponentPointer->m_Position = glm::vec3{ 0.f, 0.f, 0.f };
-			m_CombinedTransformComponentPointer->m_Position = glm::vec3{ 0.f, 0.f, 0.f };
-
-			break;
-		}
-
-
-		//update rotation
-		switch (parameters.Rotation)
-		{
-		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToWorld:
-
-			//set local rotation as total rotation
-			m_LocalTransformComponentPointer->m_Rotation = m_CombinedTransformComponentPointer->m_Rotation;
-			//world rotation is null
-			m_WorldTransformComponentPointer->m_Rotation = 0;
-
-			break;
-
-		case TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToParent:
-
-			//world rotation is null
-			m_WorldTransformComponentPointer->m_Rotation = 0;
-			//local rotation does not change
-			//combined rotation is just the preserved local
-			m_CombinedTransformComponentPointer->m_Rotation = m_LocalTransformComponentPointer->m_Rotation;
-
-			break;
-
-		case TRANSFORM_RELATIONSHIP_FlAG::CopyParent:
-
-			//reset rotation to null
-			m_WorldTransformComponentPointer->m_Rotation = 0;
-			m_LocalTransformComponentPointer->m_Rotation = 0;
-			m_CombinedTransformComponentPointer->m_Rotation = 0;
-
-			break;
-		}
-
-
-	}
-};

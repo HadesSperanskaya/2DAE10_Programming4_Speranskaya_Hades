@@ -1,12 +1,12 @@
 #include <stdexcept>
-#include <SDL_ttf.h>
 #include "Font.h"
 
-TTF_Font* Engine::Font::GetFont() const {
-	return m_Font;
-}
+using namespace Engine;
 
-Engine::Font::Font(const std::string& fullPath, unsigned int size) : m_Font(nullptr)
+
+
+Font::Font(const std::string& fullPath, unsigned int size) : 
+	m_Font{ nullptr }
 {
 	m_Font = TTF_OpenFont(fullPath.c_str(), size);
 	if (m_Font == nullptr) 
@@ -15,7 +15,12 @@ Engine::Font::Font(const std::string& fullPath, unsigned int size) : m_Font(null
 	}
 }
 
-Engine::Font::~Font()
+Font::~Font()
 {
 	TTF_CloseFont(m_Font);
+}
+
+TTF_Font* Font::GetFont() const
+{
+	return m_Font;
 }

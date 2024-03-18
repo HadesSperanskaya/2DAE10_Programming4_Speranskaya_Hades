@@ -1,23 +1,25 @@
-#pragma once
+#include <glm/glm.hpp>
+
 #include "GameObjectComponent.h"
 
-#include "Texture2DComponent.h"
-#include "TransformComponent.h"
-#include "Font.h"
-
+#ifndef COMPONENT_TEXT_HEADER
+#define COMPONENT_TEXT_HEADER
 namespace Engine
 {
 	class Font;
+	class Texture2D;
+	class Texture2DComponent;
+	struct Transform;
 
     class TextComponent final : public GameObjectComponent
     {
 	public:
 
 		//constructors
-		TextComponent(GameObject* gameObjectParentPointer, const std::string& componentName, Font* fontPointer = nullptr, std::string textString = "", const glm::vec4& color = { 255,255,255,255 });
+		TextComponent(GameObject* gameObjectParentPointer, const std::string& componentName, Font* fontPointer = nullptr, std::string textString = "");
 
 		//destructor
-		~TextComponent() = default;
+		virtual ~TextComponent() = default;
 
 		//copy and move constructors and assignment operators
 		TextComponent(const TextComponent& other) = delete;
@@ -27,26 +29,29 @@ namespace Engine
 
 
 		//functions
-		void Update(float deltaTime);
-		void Render(float xPosition, float yPosition, float rotation) const;
+		virtual void Update(float deltaTime);
+		virtual void Render(const Transform& transform) const;
 
 		void SetText(const std::string& text);
 		void SetPosition(float x, float y);
+		void SetRotation(float rotation);
 		void SetFont(Font* fontSharedPointer);
 
 
 	private:
 
 		//functions
+		TextComponent() = delete;
+
 		void UpdateTextureOfTextComponent();
 
 
 		//elements
 
 		//the dirty flag for marking that something needs to happen in the update function
-		bool m_NeedsUpdate;
+		bool m_NeedsUpdate{ false };
 
-		const glm::vec4 m_Color; // only white text is supported now
+		const glm::vec4 m_Color{ 255,255,255,255 }; // only white text is supported now
 
 		std::string m_TextString;
 
@@ -54,7 +59,7 @@ namespace Engine
 		std::unique_ptr<Texture2DComponent> m_TextureComponentUniquePointer;
 
 		//this component has its own local transform
-		std::unique_ptr<TransformComponent> m_TransformComponentUniquePointer;
+		std::unique_ptr<Transform> m_TransformUniquePointer;
 
 		//this component references a font resource that is not unique to it, so shared pointer
 		Font* m_FontPointer;
@@ -63,3 +68,4 @@ namespace Engine
     };
 }
 
+#endif

@@ -1,11 +1,15 @@
-#pragma once
-#include "GameObjectComponent.h"
 #include <vector>
+
+#include "GameObjectComponent.h"
+
+#ifndef COMPONENT_RENDER_HEADER
+#define COMPONENT_RENDER_HEADER
 
 namespace Engine
 {
 
 	class Texture2DComponent;
+	struct Transform;
 
     class RenderComponent : public GameObjectComponent
     {
@@ -14,7 +18,7 @@ namespace Engine
 		RenderComponent(GameObject* gameObjectParentPointer);
 
 		//destructor
-		~RenderComponent() = default;
+		virtual ~RenderComponent() = default;
 
 		//copy and move constructors and assignment operators
 		RenderComponent(const RenderComponent& other) = delete;
@@ -26,8 +30,8 @@ namespace Engine
 		//functions
 
 
-		void Render(float xPosition, float yPosition, float rotation) const;
-		void RenderUI(float xPosition, float yPosition, float rotation);
+		virtual void Render(const Transform& transform) const;
+		virtual void RenderUI(const Transform& transform);
 
 		void AddComponentToRender(GameObjectComponent* componentToAdd);
 
@@ -35,9 +39,11 @@ namespace Engine
 
 
 	private:
+		//functions, explicitly deleted constructor
+		RenderComponent() = delete;
 
 		//elements
-		//render component only needs to call the render functions of the renderable components, so it can have const pointer to const objects
+		//render component only needs to call the render functions of the renderable components
 		std::vector<GameObjectComponent*> m_ComponentPointersVector;
 
 
@@ -45,3 +51,4 @@ namespace Engine
     };
 }
 
+#endif

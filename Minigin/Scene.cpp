@@ -5,12 +5,6 @@
 
 using namespace Engine;
 
-Scene::~Scene()
-{
-
-	m_Objects.clear();
-};
-
 void Scene::Add(GameObject* object)
 {
 	m_Objects.push_back(std::unique_ptr<GameObject>(object));

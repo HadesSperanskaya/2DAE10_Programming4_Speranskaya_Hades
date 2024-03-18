@@ -1,6 +1,8 @@
-#pragma once
+
 #include <string>
 
+#ifndef ENGINE_MACROS_HEADER
+#define ENGINE_MACROS_HEADER
 namespace Engine
 {
 	const double PI_VALUE{ 3.1415926 };
@@ -41,10 +43,12 @@ namespace Engine
 	//struct to hold info on how a child s
 	struct PARENT_CHILD_TRANSFORM_RELATIONSHIP
 	{
-		TRANSFORM_RELATIONSHIP_FlAG Position{ TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToParent };
-		TRANSFORM_RELATIONSHIP_FlAG Rotation{ TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToParent };
+		//potentially may expand to have the transform, rotate, and scale be separate
+		TRANSFORM_RELATIONSHIP_FlAG all{ TRANSFORM_RELATIONSHIP_FlAG::PreserveCurrentRelativeToParent };
 	};
 
 
 
 }
+
+#endif

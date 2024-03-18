@@ -1,21 +1,22 @@
-#pragma once
 #include "GameObjectComponent.h"
-#include "TextComponent.h"
 
+
+#ifndef COMPONENT_FPS_HEADER
+#define COMPONENT_FPS_HEADER
 namespace Engine
 {
 
 	class TextComponent;
 
-	class FPSComponent : public GameObjectComponent
+	class FPSComponent final : public GameObjectComponent
 	{
 	public:
 
 		//constructor
-		FPSComponent(GameObject* gameObjectParentPointer, TextComponent* connectedTextComponent = nullptr);
+		explicit FPSComponent(GameObject* gameObjectParentPointer, TextComponent* connectedTextComponent);
 
 		//destructor
-		~FPSComponent() = default;
+		virtual ~FPSComponent() = default;
 
 		//constructors and movers
 		FPSComponent(const FPSComponent& other) = delete;
@@ -25,19 +26,24 @@ namespace Engine
 
 
 		//functions
-		void Update(float deltaTime);
+		virtual void Update(float deltaTime);
 		void SetTextComponentPointer(TextComponent* const textComponent);
 
 
 
 	private:
+		//functions
+		FPSComponent() = delete;
+
 		//elements
-		float m_CyclesRun;
-		float m_FPSTotal;
-		float m_TimePassed;
+		float m_CyclesRun{0};
+		float m_FPSTotal{0};
+		float m_TimePassed{0};
 		float m_UpdateFrequency;
-		TextComponent* m_TextComponentPointer;
+
+		TextComponent* m_TextComponentPointer{nullptr};
 	};
 
 }
 
+#endif

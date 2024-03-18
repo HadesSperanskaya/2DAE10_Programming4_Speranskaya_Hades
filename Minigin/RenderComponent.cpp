@@ -1,4 +1,5 @@
 #include "RenderComponent.h"
+#include "TransformComponent.h"
 
 using namespace Engine;
 
@@ -10,24 +11,24 @@ RenderComponent::RenderComponent(GameObject* gameObjectParentPointer) :
 
 
 
-void RenderComponent::Render(float xPosition, float yPosition, float rotation) const
+void RenderComponent::Render(const Transform& transform) const
 {
 	for (auto& component : m_ComponentPointersVector)
 	{
 		if(component)
 		{
-			component->Render(xPosition, yPosition, rotation);
+			component->Render(transform);
 		}
 	}
 }
 
-void RenderComponent::RenderUI(float xPosition, float yPosition, float rotation)
+void RenderComponent::RenderUI(const Transform& transform)
 {
 	for (auto& component : m_ComponentPointersVector)
 	{
 		if(component)
 		{
-			component->RenderUI(xPosition, yPosition, rotation);
+			component->RenderUI(transform);
 		}
 	}
 }

@@ -98,7 +98,3 @@ void Renderer::RenderTexture(Texture2D* texture, const float x, const float y, c
 	SDL_RenderCopy(m_SDLRenderer, texture->GetSDLTexture(), nullptr, &dst);
 }
 
-SDL_Renderer* Renderer::GetSDLRenderer() const
-{
-	return m_SDLRenderer;
-};

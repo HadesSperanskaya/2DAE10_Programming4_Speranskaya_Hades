@@ -1,5 +1,7 @@
 #include <regex>
+
 #include "FPSComponent.h"
+#include "TextComponent.h"
 
 
 using namespace Engine;
@@ -7,11 +9,7 @@ using namespace Engine;
 
 FPSComponent::FPSComponent(GameObject* gameObjectParentPointer, TextComponent* connectedTextComponent) :
 	GameObjectComponent(COMPONENT_TYPE::FPSComponent, COMPONENT_TYPENAME_FPS, gameObjectParentPointer),
-	m_CyclesRun{ 0 },
-	m_FPSTotal{ 0 },
-	m_TimePassed{ 0 },
-	m_UpdateFrequency{1},
-	m_TextComponentPointer{}
+	m_UpdateFrequency{1} //every second, essentially
 {
 	if (connectedTextComponent && connectedTextComponent->m_OwnerGameObjectPointer == gameObjectParentPointer)
 	{
@@ -60,12 +58,15 @@ void FPSComponent::Update(float deltaTime)
 
 }
 
-
 void FPSComponent::SetTextComponentPointer(TextComponent* textComponent)
 {
 	if (textComponent  && textComponent->m_OwnerGameObjectPointer == m_OwnerGameObjectPointer)
 	{
 		m_TextComponentPointer = textComponent;
 
+	}
+	else
+	{
+		m_TextComponentPointer = nullptr;
 	}
 }

@@ -10,9 +10,9 @@
 #include <wingdi.h>
 
 #include "Minigin.h"
-#include "InputManager.h"
+#include "InputHandler.h"
 #include "Renderer.h"
-#include "ResourceManager.h"
+#include "ResourceOwner.h"
 #include "Scene.h"
 
 
@@ -46,10 +46,11 @@ void PrintSDLVersion()
 
 using namespace Engine;
 
-
+std::unique_ptr<Scene> Minigin::m_ScenePointer;
+std::unique_ptr<InputHandler> Minigin::m_InputHandlerPointer;
 
 Minigin::Minigin(const std::string &dataPath) : 
-	m_Window(nullptr)
+	m_WindowPointer(nullptr)
 {
 	PrintSDLVersion();
 	
@@ -58,27 +59,28 @@ Minigin::Minigin(const std::string &dataPath) :
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
 
-	m_ScenePointer = std::unique_ptr<Scene>(new Scene());
+	m_WindowPointer = SDL_CreateWindow("Programming 4 assignment", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640,480, SDL_WINDOW_OPENGL);
 
-	m_Window = SDL_CreateWindow("Programming 4 assignment", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640,480, SDL_WINDOW_OPENGL);
-
-	if (m_Window == nullptr)
+	if (m_WindowPointer == nullptr)
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	m_RendererPointer = std::unique_ptr<Renderer>(new Renderer(m_Window));
 
-	m_InputManagerPointer = std::unique_ptr<InputManager>(new InputManager());
+	m_RendererPointer = std::make_unique<Renderer>(m_WindowPointer);
 
-	ResourceManager::GetInstance().Initialise(dataPath, m_RendererPointer->GetSDLRenderer());
+	m_ResourceOwnerPointer = std::make_unique<ResourceOwner>(dataPath, m_RendererPointer->m_SDLRenderer);
 
+	m_ScenePointer = std::make_unique<Scene>();
+
+	m_InputHandlerPointer = std::make_unique<InputHandler>();
 }
 
 Engine::Minigin::~Minigin()
 {
 	m_RendererPointer.reset();
-	SDL_DestroyWindow(m_Window);
+
+	SDL_DestroyWindow(m_WindowPointer);
 	SDL_Quit();
 }
 
@@ -121,7 +123,7 @@ void Engine::Minigin::Run(const std::function<void(Minigin* engine)>& load)
 		//update last time to be the current time
 		lastTime = currentTime;
 
-		doContinue = m_InputManagerPointer->ProcessInput();
+		doContinue = m_InputHandlerPointer->ProcessInput();
 
 
 		//fixed update functionatlity currenly commented out. may be relevant later for physics, so not deleted.

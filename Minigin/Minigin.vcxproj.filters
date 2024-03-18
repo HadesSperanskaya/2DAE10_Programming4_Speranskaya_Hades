@@ -11,12 +11,6 @@
     <Filter Include="GameResources">
       <UniqueIdentifier>{57d2581b-64ac-4306-8305-c9a1297edbd6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameResources\ResourceManager">
-      <UniqueIdentifier>{17724798-7c76-4c05-861e-548b126be03a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObjectActors">
-      <UniqueIdentifier>{3a667547-df2a-43d4-b644-da0fd4881ada}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{0162e7ae-3b8d-4226-8512-19ad1d1f825f}</UniqueIdentifier>
     </Filter>
@@ -41,14 +35,17 @@
     <Filter Include="Input\Commands">
       <UniqueIdentifier>{5ed08f80-66d1-4df0-a7c4-fce213d5f4c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Input\ControllerBindings">
-      <UniqueIdentifier>{91b94ed7-2dce-471d-910b-29aaf84bb949}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Main">
       <UniqueIdentifier>{e3f3ddf0-58fc-4fde-bbe6-a039aae1ae64}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameObjectComponents\AssignmentExclusiveComponents">
       <UniqueIdentifier>{8bbb36a9-2c97-46bc-940f-39173df598c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameResources\ResourceOwner">
+      <UniqueIdentifier>{17724798-7c76-4c05-861e-548b126be03a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{3a667547-df2a-43d4-b644-da0fd4881ada}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -58,16 +55,16 @@
     <ClInclude Include="Font.h">
       <Filter>GameResources</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>GameResources\ResourceManager</Filter>
+    <ClInclude Include="ResourceOwner.h">
+      <Filter>GameResources\ResourceOwner</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>GameObjectActors</Filter>
+      <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="InputManager.h">
+    <ClInclude Include="InputHandler.h">
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
@@ -118,11 +115,8 @@
     <ClInclude Include="Command.h">
       <Filter>Input\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="CommandsSetMovement.h">
+    <ClInclude Include="CommandsSetPlayer.h">
       <Filter>Input\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="ControllerBindings.h">
-      <Filter>Input\ControllerBindings</Filter>
     </ClInclude>
     <ClInclude Include="EngineMacros.h">
       <Filter>Main</Filter>
@@ -130,14 +124,14 @@
     <ClInclude Include="Minigin.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="CacheTrasher.h">
-      <Filter>GameObjectComponents\AssignmentExclusiveComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="FPSComponent.h">
-      <Filter>GameObjectComponents\AssignmentExclusiveComponents</Filter>
-    </ClInclude>
     <ClInclude Include="Singleton.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="HeaderFileAliasMacros.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSComponent.h">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -147,16 +141,16 @@
     <ClCompile Include="Font.cpp">
       <Filter>GameResources</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>GameResources\ResourceManager</Filter>
+    <ClCompile Include="ResourceOwner.cpp">
+      <Filter>GameResources\ResourceOwner</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
-      <Filter>GameObjectActors</Filter>
+      <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="InputManager.cpp">
+    <ClCompile Include="InputHandler.cpp">
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
@@ -201,7 +195,7 @@
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\backends\imgui_impl_opengl2.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="CommandsSetMovement.cpp">
+    <ClCompile Include="CommandsSetPlayer.cpp">
       <Filter>Input\Commands</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
@@ -210,11 +204,8 @@
     <ClCompile Include="Minigin.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="CacheTrasher.cpp">
-      <Filter>GameObjectComponents\AssignmentExclusiveComponents</Filter>
-    </ClCompile>
     <ClCompile Include="FPSComponent.cpp">
-      <Filter>GameObjectComponents\AssignmentExclusiveComponents</Filter>
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

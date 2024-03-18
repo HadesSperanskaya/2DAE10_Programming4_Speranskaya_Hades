@@ -1,14 +1,17 @@
-#pragma once
 #include <memory>
 #include <vector>
+#include "EngineMacros.h"
 
-
-#include "GameObjectComponent.h"
+#ifndef GAMEOBJECT_HEADER
+#define GAMEOBJECT_HEADER
 
 namespace Engine
 {
 	class Texture2D;
 	class Font;
+
+	class GameObjectComponent;
+
 	class TextComponent;
 	class TransformComponent;
 	class RenderComponent;
@@ -36,8 +39,8 @@ namespace Engine
 		void RenderUI();
 
 		//all game objects will have a transform component, so they all can have a set position method.
-		void SetPosition(float x, float y);
-		void SetRotation(float rotation);
+		void SetLocalPosition(float x, float y);
+		void SetLocalRotation(float rotation);
 
 		//set parent
 		void SetParent(GameObject* parent);
@@ -56,8 +59,6 @@ namespace Engine
 
 		void AddRotatorComponent(const std::string& name, float angularVelocity = 0.5f, float orbitRadius = 40.f);
 
-		void AddCacheTrasherComponent();
-
 		//remove all components with this name,with caveat that there should only be one component with a specific name on any given object?
 		void RemoveComponentWithName(const std::string& componentName); 
 
@@ -75,21 +76,17 @@ namespace Engine
 		GameObjectComponent* const GetComponentByName(const std::string& componentName) const;
 		GameObjectComponent* const GetComponentByType(COMPONENT_TYPE componentType) const;
 
-		TransformComponent* const GetLocalTransformComponent() const;
-		TransformComponent* const GetWorldTransformComponent() const;
+		TransformComponent* const GetTransformComponent() const;
 
-		//nothing outside should be able to change the combined transform values
-		const TransformComponent* const GetCombinedTransformComponent() const;
 
 
 	private:
+
 		//functions
 		bool HasThisChildOrGrandchild(const GameObject* const object);
 
 		void RemoveChild(GameObject* const child);
 		void AddChild(GameObject* const child);
-
-		void UpdateInheritedTransforms(PARENT_CHILD_TRANSFORM_RELATIONSHIP parameters);
 
 
 
@@ -100,24 +97,20 @@ namespace Engine
 
 
 		//components that every game object must have
-		std::unique_ptr<TransformComponent> m_WorldTransformComponentPointer;
-		std::unique_ptr<TransformComponent>  m_LocalTransformComponentPointer;
-		std::unique_ptr<TransformComponent>  m_CombinedTransformComponentPointer;
+		std::unique_ptr<TransformComponent> m_TransformComponentPointer;
 		std::unique_ptr<RenderComponent>  m_RenderComponentPointer;
 
-		//structs holding info on how to handle transforms relating to parent stuff
-		PARENT_CHILD_TRANSFORM_RELATIONSHIP m_TransformInheritanceParametersParentSwitch;
-		PARENT_CHILD_TRANSFORM_RELATIONSHIP m_TransformInheritanceParametersParentUpdate;
+
 
 
 
 		//vector of extra components
 		std::vector<std::unique_ptr<GameObjectComponent>> m_GameObjectComponentsVector; 
-		int m_ExtraComponentCount;
+		int m_ExtraComponentCount{ 0 };
 
 
 		//elements for hierarchical relationship with other game objects
-		GameObject* m_ParentPointer;
+		GameObject* m_ParentPointer{ nullptr };
 		std::vector<GameObject*> m_ChildrenPointerVector;
 
 
@@ -128,3 +121,5 @@ namespace Engine
 
 	};
 }
+
+#endif

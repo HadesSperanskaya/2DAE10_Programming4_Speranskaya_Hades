@@ -1,11 +1,12 @@
-#pragma once
-#include "GameObjectComponent.h"
-#include "TextComponent.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_opengl2.h"
 #include <array>
 
+#include "GameObjectComponent.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl2.h"
 
+
+#ifndef COMPONENT_CACHE_TRASHER_HEADER
+#define COMPONENT_CACHE_TRASHER_HEADER
 namespace Engine
 {
 	struct Transform
@@ -64,8 +65,8 @@ namespace Engine
 
 		//elements
 		const int m_RepetitionsToDo{ 10 };
-		bool m_UpdateExerciseOne{};
-		bool m_UpdateExerciseTwo{};
+		bool m_UpdateExerciseOne{false};
+		bool m_UpdateExerciseTwo{false};
 
 
 		static const int m_ArraySize{ 9000000 };
@@ -84,3 +85,5 @@ namespace Engine
 	};
 
 }
+
+#endif

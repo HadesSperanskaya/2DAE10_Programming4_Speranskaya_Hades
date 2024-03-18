@@ -1,5 +1,7 @@
-#pragma once
 #include <SDL.h>
+
+#ifndef RENDERER_HEADER
+#define RENDERER_HEADER
 
 namespace Engine
 {
@@ -11,7 +13,7 @@ namespace Engine
 		
 	public:
 		//functions
-		Renderer(SDL_Window* window);
+		explicit Renderer(SDL_Window* window);
 		~Renderer();
 
 		Renderer(const Renderer& other) = delete;
@@ -24,7 +26,6 @@ namespace Engine
 		static void RenderTexture(Texture2D* texture, float x, float y);
 		static void RenderTexture(Texture2D* texture, float x, float y, float width, float height);
 
-		SDL_Renderer* GetSDLRenderer() const;
 
 		//elements
 		SDL_Color m_BackgroundColor{};
@@ -32,9 +33,13 @@ namespace Engine
 
 
 	private:
+		//functions
+		//default construct explicitly deleted.
+		Renderer() = delete;
 
 		//elements
 		SDL_Window* m_Window{nullptr};
 	};
 }
 
+#endif

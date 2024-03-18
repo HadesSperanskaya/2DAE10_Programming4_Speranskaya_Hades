@@ -1,6 +1,5 @@
-#include <string>
 #include "GameObjectComponent.h"
-
+#include "TransformComponent.h"
 
 using namespace Engine;
 
@@ -12,24 +11,3 @@ GameObjectComponent::GameObjectComponent(COMPONENT_TYPE componentType, const std
 
 };
 
-void GameObjectComponent::Update(float deltaTime)
-{
-	//doing this so compiler does not give the unreferenced formal parameter error
-	deltaTime;
-};
-
-void GameObjectComponent::Render(float x, float y, float rotation) const
-{
-	//doing this so compiler does not give the unreferenced formal parameter error
-	x;
-	y;
-	rotation;
-};
-
-void GameObjectComponent::RenderUI(float x, float y, float rotation)
-{
-	//doing this so compiler does not give the unreferenced formal parameter error
-	x;
-	y;
-	rotation;
-};

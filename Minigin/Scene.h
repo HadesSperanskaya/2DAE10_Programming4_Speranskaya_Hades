@@ -1,22 +1,24 @@
-#pragma once
 #include <vector>
-#include <string>
 #include <memory>
-#include "GameObject.h"
+
+
+#ifndef SCENE_HEADER     
+#define SCENE_HEADER
 
 namespace Engine
 {
+	class GameObject;
 
 	class Scene final
 	{
-		
+
 	public:
 		//functions
 
 		//constructor
 		Scene() = default;
 		//destructor
-		~Scene();
+		~Scene() = default;
 		//deleted 
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
@@ -33,13 +35,22 @@ namespace Engine
 		void Render() const;
 		void RenderUI();
 
-		
 
-	private: 
-		
+
+	private:
+
 		//elements
 		std::vector<std::unique_ptr<GameObject>> m_Objects;
 
 	};
 
 }
+
+
+#endif 
+
+
+
+
+
+

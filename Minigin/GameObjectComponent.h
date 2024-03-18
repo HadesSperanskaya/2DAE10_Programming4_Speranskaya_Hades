@@ -1,13 +1,15 @@
-#pragma once
 #include <memory>
 #include <string>
 
 //including macros here so that all components will have access to them as well.
 #include "EngineMacros.h"
 
+#ifndef GAMEOBJECT_COMPONENT_BASE_HEADER
+#define GAMEOBJECT_COMPONENT_BASE_HEADER
 namespace Engine
 {
 	class GameObject;
+	struct Transform;
 
 	class GameObjectComponent
 	{
@@ -31,8 +33,8 @@ namespace Engine
 		virtual void Update(float deltaTime);
 
 		//render function requires the parent game object's transform information to render the object in the correct place
-		virtual void Render(float xPosition, float yPosition, float rotation) const;
-		virtual void RenderUI(float xPosition, float yPosition, float rotation);
+		virtual void Render(const Transform& transform) const;
+		virtual void RenderUI(const Transform& transform);
 
 
 		//elements - public following the guideline "C.131: Avoid trivial getters and setters"
@@ -43,13 +45,16 @@ namespace Engine
 		//component type cannot change after construction, so it is const
 		const COMPONENT_TYPE m_ComponentType;
 
-		//component unique name can be changed after construction, so it is not const
-		std::string m_ComponentName;
+		//component unique name, cannot be changed after construction
+		const std::string m_ComponentName;
 
 
 	private:
-		
+		//functions
+		//explicitly deleted default constructor
+		GameObjectComponent() = delete;
 
 	};
 }
 
+#endif

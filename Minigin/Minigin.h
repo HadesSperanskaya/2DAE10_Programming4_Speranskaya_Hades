@@ -3,14 +3,17 @@
 #include <functional>
 #include <memory>
 
+
+#ifndef ENGINE_HEADER
+#define ENGINE_HEADER
 struct SDL_Window;
 
 namespace Engine
 {
 	class Renderer;
 	class Scene;
-	class ResourceManager;
-	class InputManager;
+	class ResourceOwner;
+	class InputHandler;
 
 
 	class Minigin
@@ -26,14 +29,17 @@ namespace Engine
 		Minigin& operator=(Minigin&& other) = delete;
 
 
-		std::unique_ptr<Scene> m_ScenePointer;
-
+		static std::unique_ptr<Scene> m_ScenePointer;
+		static std::unique_ptr<InputHandler> m_InputHandlerPointer;
 
 	private:
-		std::unique_ptr<InputManager> m_InputManagerPointer;
+		
 		std::unique_ptr<Renderer> m_RendererPointer;
+		std::unique_ptr<ResourceOwner> m_ResourceOwnerPointer;
 
-		SDL_Window* m_Window;
+		SDL_Window* m_WindowPointer;
 
 	};
 }
+
+#endif

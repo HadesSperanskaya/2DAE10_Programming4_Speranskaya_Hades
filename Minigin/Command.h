@@ -1,8 +1,10 @@
-#pragma once
+#ifndef COMMAND_BASE_HEADER
+#define COMMAND_BASE_HEADER
 
 namespace Engine
 {
 	class GameObject;
+
 	class Command
 	{
 	public:
@@ -17,3 +19,5 @@ namespace Engine
 		void Execute(GameObject& actor) { actor; };
 	};
 }
+
+#endif

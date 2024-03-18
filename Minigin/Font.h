@@ -1,14 +1,17 @@
-#pragma once
 #include <string>
+#include <SDL_ttf.h>
 
-struct _TTF_Font;
+#ifndef FONT_HEADER
+#define FONT_HEADER
+
 namespace Engine
 {
 	
 	class Font final
 	{
 	public:
-		_TTF_Font* GetFont() const;
+		//functions
+	
 		explicit Font(const std::string& fullPath, unsigned int size);
 		~Font();
 
@@ -16,7 +19,18 @@ namespace Engine
 		Font(Font &&) = delete;
 		Font & operator= (const Font &) = delete;
 		Font & operator= (const Font &&) = delete;
+
+		_TTF_Font* GetFont() const;
+
 	private:
+
+		//functions
+		Font() = delete;
+
+		//elements
 		_TTF_Font* m_Font;
 	};
 }
+
+
+#endif

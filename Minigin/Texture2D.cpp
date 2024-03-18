@@ -1,11 +1,3 @@
-#include <stdexcept>
-
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-
-#include "Minigin.h"
-#include "Renderer.h"
-#include "Font.h"
 #include "Texture2D.h"
 
 using namespace Engine;
@@ -15,8 +7,6 @@ Texture2D::Texture2D(SDL_Texture* texture)
 {
 	m_Texture = texture;
 }
-
-
 
 Texture2D::~Texture2D()
 {
@@ -34,7 +24,6 @@ SDL_Texture* Texture2D::GetSDLTexture() const
 {
 	return m_Texture;
 }
-
 
 void Texture2D::ReplaceSDLTexture(SDL_Texture* texture)
 {

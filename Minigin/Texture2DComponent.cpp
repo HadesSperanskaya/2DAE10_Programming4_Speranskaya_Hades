@@ -2,6 +2,7 @@
 
 #include "Texture2DComponent.h"
 #include "Texture2D.h"
+#include "TransformComponent.h"
 
 
 using namespace Engine;
@@ -16,15 +17,14 @@ Texture2DComponent::Texture2DComponent(GameObject* gameObjectParentPointer, cons
 };
 
 
-void Texture2DComponent::Render(float xPosition, float yPosition, float rotation) const
+void Texture2DComponent::Render(const Transform& transform) const
 {
 
 	//to do: implement rotation of texture. for not just stop it throwing error c4100 unreferenced formal parameter
-	rotation;
 
 	if (m_TexturePointer)
 	{
-		Renderer::RenderTexture(m_TexturePointer, xPosition, yPosition);
+		Renderer::RenderTexture(m_TexturePointer, transform.position.x, transform.position.y);
 	}
 }
 
