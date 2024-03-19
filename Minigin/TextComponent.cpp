@@ -7,6 +7,7 @@
 #include "Texture2DComponent.h"
 #include "ResourceOwner.h"
 #include "TransformComponent.h"
+#include "GameObject.h"
 
 using namespace Engine;
 
@@ -28,11 +29,8 @@ TextComponent::TextComponent(GameObject* gameObjectParentPointer, const std::str
 };
 
 
-
-void TextComponent::Update(float deltaTime)
+void TextComponent::Update()
 {
-	deltaTime; 
-
 	if (m_NeedsUpdate)
 	{
 		UpdateTextureOfTextComponent();

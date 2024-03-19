@@ -1,8 +1,9 @@
 #include <string>
-#include <SDL_ttf.h>
 
 #ifndef FONT_HEADER
 #define FONT_HEADER
+
+struct _TTF_Font;
 
 namespace Engine
 {
@@ -12,7 +13,7 @@ namespace Engine
 	public:
 		//functions
 	
-		explicit Font(const std::string& fullPath, unsigned int size);
+		Font(const std::string& fullPath, unsigned int size);
 		~Font();
 
 		Font(const Font &) = delete;

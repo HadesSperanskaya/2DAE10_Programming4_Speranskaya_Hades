@@ -8,13 +8,16 @@
 #include "Renderer.h"
 
 #include "Texture2D.h"
+#include "Font.h"
 
 #include "GameObjectComponent.h"
+
 #include "Texture2DComponent.h"
 #include "TransformComponent.h"
+#include "RenderComponent.h"
+
 #include "TextComponent.h"
 #include "FPSComponent.h"
-#include "RenderComponent.h"
 #include "RotatorComponent.h"
 
 using namespace Engine;
@@ -53,7 +56,7 @@ GameObject::~GameObject()
 };
 
 
-void GameObject::Update(float deltaTime)
+void GameObject::Update()
 {
 	if (m_ParentWasChanged) 
 	{
@@ -73,7 +76,7 @@ void GameObject::Update(float deltaTime)
 
 	for (int vectorIndex{ 0 }; vectorIndex < m_ExtraComponentCount; ++vectorIndex)
 	{
-		m_GameObjectComponentsVector[vectorIndex]->Update(deltaTime);
+		m_GameObjectComponentsVector[vectorIndex]->Update();
 	}
 };
 
@@ -230,20 +233,20 @@ void GameObject::AddFPSComponent(GameObjectComponent* textComponentPointer)
 
 	if(textComponentPointer->m_ComponentType == COMPONENT_TYPE::TextComponent)
 	{
-		m_GameObjectComponentsVector.push_back(std::make_unique<FPSComponent>(this, textComponentPointer));
+		m_GameObjectComponentsVector.push_back(std::make_unique<FPSComponent>(this, static_cast<TextComponent*>(textComponentPointer)));
 
 		++m_ExtraComponentCount;
 	}
 }
 
-void GameObject::AddRotatorComponent(const std::string& name, float angularVelocity, float orbitRadius)
+void GameObject::AddRotatorComponent(const std::string& name)
 {
 	if (CheckForComponentWithName(name))
 	{
 		return;
 	}
 
-	m_GameObjectComponentsVector.push_back(std::make_unique<RotatorComponent>(this, name, angularVelocity, orbitRadius));
+	m_GameObjectComponentsVector.push_back(std::make_unique<RotatorComponent>(this, name));
 
 	++m_ExtraComponentCount;
 }

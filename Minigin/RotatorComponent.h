@@ -5,8 +5,9 @@
 namespace Engine
 {
 	class TransformComponent;
+	class GameObject;
 
-    class RotatorComponent: public GameObjectComponent
+    class RotatorComponent final: public GameObjectComponent
     {
 
 	public:
@@ -24,8 +25,7 @@ namespace Engine
 
 
 		//functions
-		virtual void Update(float deltaTime);
-
+		void Update();
 
 
 		//elements
@@ -37,9 +37,8 @@ namespace Engine
 
 
 	private:
-		//functions
+		//explicitly deleted default constructor
 		RotatorComponent() = delete;
-		//elements
 
 
     };

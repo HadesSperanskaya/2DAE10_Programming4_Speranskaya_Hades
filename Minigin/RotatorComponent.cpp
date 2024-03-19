@@ -1,6 +1,7 @@
 #include "TransformComponent.h"
 #include "RotatorComponent.h"
 #include "GameObject.h"
+#include "Scene.h"
 
 using namespace Engine;
 
@@ -12,12 +13,12 @@ RotatorComponent::RotatorComponent(GameObject* gameObjectParentPointer, const st
 }
 
 
-void RotatorComponent::Update(float deltaTime)
+void RotatorComponent::Update()
 {
 	//if both pointers are valid - target and object that is doing the orbiting
 	if (m_OrbitTargetTransformPointer)
 	{
-		float totalRotation = m_OwnerGameObjectPointer->GetTransformComponent()->m_Local.rotation + m_AngularVeloctiy * deltaTime;
+		float totalRotation = m_OwnerGameObjectPointer->GetTransformComponent()->m_Local.rotation + m_AngularVeloctiy * Scene::m_DeltaTime;
 
 		if (totalRotation > PI_TIMES_TW0_VALUE)
 		{

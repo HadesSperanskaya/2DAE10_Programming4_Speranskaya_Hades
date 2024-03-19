@@ -2,14 +2,15 @@
 
 #include "FPSComponent.h"
 #include "TextComponent.h"
-
+#include "GameObject.h"
+#include "Scene.h"
 
 using namespace Engine;
 
 
 FPSComponent::FPSComponent(GameObject* gameObjectParentPointer, TextComponent* connectedTextComponent) :
-	GameObjectComponent(COMPONENT_TYPE::FPSComponent, COMPONENT_TYPENAME_FPS, gameObjectParentPointer),
-	m_UpdateFrequency{1} //every second, essentially
+	GameObjectComponent(COMPONENT_TYPE::FPSComponent, COMPONENT_TYPENAME_FPS, gameObjectParentPointer)
+
 {
 	if (connectedTextComponent && connectedTextComponent->m_OwnerGameObjectPointer == gameObjectParentPointer)
 	{
@@ -18,17 +19,17 @@ FPSComponent::FPSComponent(GameObject* gameObjectParentPointer, TextComponent* c
 	}
 }
 
-void FPSComponent::Update(float deltaTime)
+void FPSComponent::Update()
 {
 	
 	const float oneSecond = 1.0f;
-	const float framesPerSecond = oneSecond / deltaTime;
+	const float framesPerSecond = oneSecond / Scene::m_DeltaTime;
 
 	m_FPSTotal = m_FPSTotal + framesPerSecond;
 
 	++m_CyclesRun;
 
-	m_TimePassed = m_TimePassed + deltaTime;
+	m_TimePassed = m_TimePassed + Scene::m_DeltaTime;
 
 	if(m_TimePassed >= m_UpdateFrequency)
 	{
@@ -65,8 +66,5 @@ void FPSComponent::SetTextComponentPointer(TextComponent* textComponent)
 		m_TextComponentPointer = textComponent;
 
 	}
-	else
-	{
-		m_TextComponentPointer = nullptr;
-	}
+
 }

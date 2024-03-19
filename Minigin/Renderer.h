@@ -13,7 +13,7 @@ namespace Engine
 		
 	public:
 		//functions
-		explicit Renderer(SDL_Window* window);
+		Renderer(SDL_Window* window);
 		~Renderer();
 
 		Renderer(const Renderer& other) = delete;

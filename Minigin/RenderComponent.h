@@ -9,16 +9,17 @@ namespace Engine
 {
 
 	class Texture2DComponent;
+	class GameObject;
 	struct Transform;
 
-    class RenderComponent : public GameObjectComponent
+    class RenderComponent final : public GameObjectComponent
     {
 	public: 
 		//constructor
 		RenderComponent(GameObject* gameObjectParentPointer);
 
 		//destructor
-		virtual ~RenderComponent() = default;
+		~RenderComponent() = default;
 
 		//copy and move constructors and assignment operators
 		RenderComponent(const RenderComponent& other) = delete;
@@ -28,10 +29,8 @@ namespace Engine
 
 
 		//functions
-
-
-		virtual void Render(const Transform& transform) const;
-		virtual void RenderUI(const Transform& transform);
+		void Render(const Transform& transform) const;
+		void RenderUI(const Transform& transform);
 
 		void AddComponentToRender(GameObjectComponent* componentToAdd);
 
@@ -39,11 +38,10 @@ namespace Engine
 
 
 	private:
-		//functions, explicitly deleted constructor
+		//explicitly deleted default constructor
 		RenderComponent() = delete;
 
 		//elements
-		//render component only needs to call the render functions of the renderable components
 		std::vector<GameObjectComponent*> m_ComponentPointersVector;
 
 

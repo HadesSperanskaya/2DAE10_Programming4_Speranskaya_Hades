@@ -9,14 +9,16 @@ namespace Engine
 	{
 	public:
 		virtual ~Command() {};
-		virtual void Execute(GameObject& actor) = 0;
+		virtual void Execute(GameObject& actor);
+		virtual void Execute();
 	};
 
 
 	class NullCommand : public Command
 	{
 	public:
-		void Execute(GameObject& actor) { actor; };
+		virtual void Execute(GameObject& actor) { actor; };
+		virtual void Execute() {};
 	};
 }
 

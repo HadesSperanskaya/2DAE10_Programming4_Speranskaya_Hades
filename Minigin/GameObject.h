@@ -12,10 +12,10 @@ namespace Engine
 
 	class GameObjectComponent;
 
-	class TextComponent;
 	class TransformComponent;
 	class RenderComponent;
-	class RotatorComponent;
+
+
 
 	class GameObject final 
 	{
@@ -34,7 +34,7 @@ namespace Engine
 
 
 		//functions
-		void Update(float deltaTime);
+		void Update();
 		void Render() const;
 		void RenderUI();
 
@@ -57,7 +57,7 @@ namespace Engine
 
 		void AddFPSComponent(GameObjectComponent* textComponentPointer = nullptr);
 
-		void AddRotatorComponent(const std::string& name, float angularVelocity = 0.5f, float orbitRadius = 40.f);
+		void AddRotatorComponent(const std::string& name);
 
 		//remove all components with this name,with caveat that there should only be one component with a specific name on any given object?
 		void RemoveComponentWithName(const std::string& componentName); 

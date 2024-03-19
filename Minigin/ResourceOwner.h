@@ -3,20 +3,22 @@
 #include <vector>
 #include <SDL.h>
 
-#include "Texture2D.h"
-#include "Font.h"
 
 #ifndef RESOURCE_OWNER_HEADER
 #define RESOURCE_OWNER_HEADER
 
+
+
 namespace Engine
 {
+	class Texture2D;
+	class Font;
 
 	class ResourceOwner final
 	{
 	public:
 		//functions
-		explicit ResourceOwner(const std::string& dataPath);
+		ResourceOwner(const std::string& dataPath);
 		~ResourceOwner() = default;		
 		
 		ResourceOwner(const ResourceOwner& other) = delete;

@@ -10,10 +10,14 @@
 #include <wingdi.h>
 
 #include "Minigin.h"
-#include "InputHandler.h"
-#include "Renderer.h"
 #include "ResourceOwner.h"
+#include "Renderer.h"
+
+#include "InputHandler.h"
 #include "Scene.h"
+
+
+
 
 
 void PrintSDLVersion()
@@ -46,8 +50,8 @@ void PrintSDLVersion()
 
 using namespace Engine;
 
-std::unique_ptr<Scene> Minigin::m_ScenePointer;
-std::unique_ptr<InputHandler> Minigin::m_InputHandlerPointer;
+std::unique_ptr<Scene> Minigin::m_ScenePointer{ nullptr };
+std::unique_ptr<InputHandler> Minigin::m_InputHandlerPointer{ nullptr };
 
 Minigin::Minigin(const std::string &dataPath) : 
 	m_WindowPointer(nullptr)
@@ -69,11 +73,11 @@ Minigin::Minigin(const std::string &dataPath) :
 
 	m_RendererPointer = std::make_unique<Renderer>(m_WindowPointer);
 
-	m_ResourceOwnerPointer = std::make_unique<ResourceOwner>(dataPath, m_RendererPointer->m_SDLRenderer);
+	m_ResourceOwnerPointer = std::make_unique<ResourceOwner>(dataPath);
 
-	m_ScenePointer = std::make_unique<Scene>();
+	m_ScenePointer = std::unique_ptr<Scene>(new Scene());
 
-	m_InputHandlerPointer = std::make_unique<InputHandler>();
+	m_InputHandlerPointer = std::unique_ptr<InputHandler>(new InputHandler());
 }
 
 Engine::Minigin::~Minigin()

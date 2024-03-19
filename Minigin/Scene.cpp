@@ -5,34 +5,47 @@
 
 using namespace Engine;
 
+
+float Scene::m_DeltaTime = 0;
+bool Scene::m_SceneCreated = false;
+
+Scene::Scene()
+{
+	if (m_SceneCreated == false)
+	{
+		m_SceneCreated = true;
+	}
+}
+
 void Scene::Add(GameObject* object)
 {
-	m_Objects.push_back(std::unique_ptr<GameObject>(object));
+	m_ObjectPointers.push_back(std::unique_ptr<GameObject>(object));
 }
 
 void Scene::Remove(GameObject* object)
 {
-	m_Objects.erase(std::remove_if(m_Objects.begin(), m_Objects.end(),
-								[object](const std::unique_ptr<GameObject>& element) { return (element.get() == object); }),
-								m_Objects.end());
+	m_ObjectPointers.erase(std::remove_if(m_ObjectPointers.begin(), m_ObjectPointers.end(),
+											[object](const std::unique_ptr<GameObject>& element) { return (element.get() == object); }),
+											m_ObjectPointers.end());
 }
 
 void Scene::RemoveAll()
 {
-	m_Objects.clear();
+	m_ObjectPointers.clear();
 }
 
 void Scene::Update(float deltaTime)
 {
-	for(auto& object : m_Objects)
+	m_DeltaTime = deltaTime;
+	for(auto& object : m_ObjectPointers)
 	{
-		object->Update(deltaTime);
+		object->Update();
 	}
 }
 
 void Scene::Render() const
 {
-	for (const auto& object : m_Objects)
+	for (const auto& object : m_ObjectPointers)
 	{
 		object->Render();
 	}
@@ -40,7 +53,7 @@ void Scene::Render() const
 
 void Scene::RenderUI()
 {
-	for (auto& object : m_Objects)
+	for (auto& object : m_ObjectPointers)
 	{
 		object->RenderUI();
 	}

@@ -9,6 +9,7 @@ namespace Engine
 	class Font;
 	class Texture2D;
 	class Texture2DComponent;
+	class GameObject;
 	struct Transform;
 
     class TextComponent final : public GameObjectComponent
@@ -29,7 +30,7 @@ namespace Engine
 
 
 		//functions
-		virtual void Update(float deltaTime);
+		virtual void Update();
 		virtual void Render(const Transform& transform) const;
 
 		void SetText(const std::string& text);
@@ -39,10 +40,10 @@ namespace Engine
 
 
 	private:
-
-		//functions
+		//explicitly deleted default constructor
 		TextComponent() = delete;
 
+		//functions
 		void UpdateTextureOfTextComponent();
 
 

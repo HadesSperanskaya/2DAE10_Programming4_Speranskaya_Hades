@@ -6,7 +6,7 @@
 
 namespace Engine
 {
-
+	class GameObject;
 	class Texture2D;
 	struct Transform;
 
@@ -18,7 +18,7 @@ namespace Engine
 		Texture2DComponent(GameObject* gameObjectParentPointer, const std::string& name, Texture2D* texturePointer);
 
 		//destructor
-		virtual ~Texture2DComponent() = default;
+		~Texture2DComponent() = default;
 
 		//copy/assignment constructor and move functions
 		Texture2DComponent(const Texture2DComponent& other) = delete;
@@ -27,7 +27,7 @@ namespace Engine
 		Texture2DComponent& operator=(Texture2DComponent&& other) = delete;
 
 
-		virtual void Render(const Transform& transform) const;
+		void Render(const Transform& transform) const;
 
 
 		//elements
@@ -35,7 +35,10 @@ namespace Engine
 
 
 	private:
+		//explicitly deleted default constructor
 		Texture2DComponent() = delete;
+
+
 	};
 
 }

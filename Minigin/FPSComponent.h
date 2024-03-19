@@ -5,7 +5,7 @@
 #define COMPONENT_FPS_HEADER
 namespace Engine
 {
-
+	class GameObject;
 	class TextComponent;
 
 	class FPSComponent final : public GameObjectComponent
@@ -13,10 +13,10 @@ namespace Engine
 	public:
 
 		//constructor
-		explicit FPSComponent(GameObject* gameObjectParentPointer, TextComponent* connectedTextComponent);
+		FPSComponent(GameObject* gameObjectParentPointer, TextComponent* connectedTextComponent);
 
 		//destructor
-		virtual ~FPSComponent() = default;
+		~FPSComponent() = default;
 
 		//constructors and movers
 		FPSComponent(const FPSComponent& other) = delete;
@@ -26,22 +26,23 @@ namespace Engine
 
 
 		//functions
-		virtual void Update(float deltaTime);
+		void Update();
 		void SetTextComponentPointer(TextComponent* const textComponent);
 
 
 
 	private:
-		//functions
+		//explicitly deleted default constructor
 		FPSComponent() = delete;
+
 
 		//elements
 		float m_CyclesRun{0};
 		float m_FPSTotal{0};
 		float m_TimePassed{0};
-		float m_UpdateFrequency;
+		const float m_UpdateFrequency{ 1 }; //every second, essentially
 
-		TextComponent* m_TextComponentPointer{nullptr};
+		TextComponent* m_TextComponentPointer{ nullptr };
 	};
 
 }

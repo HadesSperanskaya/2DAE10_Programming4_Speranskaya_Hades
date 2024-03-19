@@ -7,7 +7,7 @@ namespace Engine
 	class MoveCommand : public Command
 	{
 	public:
-		void Execute(GameObject& actor);
+		virtual void Execute(GameObject& actor);
 	};
 
 

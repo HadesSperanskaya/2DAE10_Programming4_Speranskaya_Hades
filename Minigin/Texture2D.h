@@ -1,13 +1,16 @@
 #include <glm/vec2.hpp>
 #include <string>
-#include <SDL.h>
+
 
 #ifndef TEXTURE2D_HEADER
 #define TEXTURE2D_HEADER
 
+struct SDL_Texture;
+
 namespace Engine
 {
 	class Font;
+
 
 	class Texture2D final
 	{

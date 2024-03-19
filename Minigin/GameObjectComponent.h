@@ -1,7 +1,6 @@
 #include <memory>
 #include <string>
 
-//including macros here so that all components will have access to them as well.
 #include "EngineMacros.h"
 
 #ifndef GAMEOBJECT_COMPONENT_BASE_HEADER
@@ -30,7 +29,7 @@ namespace Engine
 
 		//functions
 
-		virtual void Update(float deltaTime);
+		virtual void Update();
 
 		//render function requires the parent game object's transform information to render the object in the correct place
 		virtual void Render(const Transform& transform) const;

@@ -1,6 +1,6 @@
+#include <memory>
 #include <vector>
 #include <map>
-#include <memory>
 
 #ifndef INPUT_HANDLER_HEADER
 #define INPUT_HANDLER_HEADER
@@ -17,18 +17,21 @@ namespace Engine
 
 	public:
 
-		//functions
+		//constructor
 		InputHandler();
+		//destructor
 		~InputHandler() = default;
+
 		//deleted 
 		InputHandler(const InputHandler& other) = delete;
 		InputHandler(InputHandler&& other) = delete;
 		InputHandler& operator=(const InputHandler& other) = delete;
 		InputHandler& operator=(InputHandler&& other) = delete;
 
+		//functions
+
 		//run this every frame
 		bool ProcessInput();
-
 
 		void AssignActorToXinputController(int controllerIndex, GameObject* actor);
 		void AssignActorToAllXinputControllers(GameObject* actor);
@@ -37,23 +40,18 @@ namespace Engine
 		void AssignActorToKeyboard(int keyboardIndex, GameObject* actor);
 
 
-		void AssignCommandToXinputControllerInput(TriggerButton triggerButton, Command* commandPointer);
+		//void AssignCommandToXinputControllerInput(TriggerButton triggerButton, Command* commandPointer);
 
-		void AssignCommandToKeyboardInput(TriggerKey triggerButton, Command* commandPointer);
+		//void AssignCommandToKeyboardInput(TriggerKey triggerButton, Command* commandPointer);
 		
 
-
-
-	private:
-
+	private: 
 		class XinputInputHandlerImpl;
 		std::unique_ptr<XinputInputHandlerImpl> m_XinputImplPointer;
 
+
 		class KeyboardInputHandlerImpl;
 		std::unique_ptr<KeyboardInputHandlerImpl> m_KeyboardImplPointer;
-
-
-
 
 
 	};

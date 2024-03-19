@@ -1,4 +1,5 @@
 #include "Texture2D.h"
+#include <SDL.h>
 
 using namespace Engine;
 

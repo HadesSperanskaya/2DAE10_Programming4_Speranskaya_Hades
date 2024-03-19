@@ -1,7 +1,6 @@
 #include <vector>
 #include <memory>
 
-
 #ifndef SCENE_HEADER     
 #define SCENE_HEADER
 
@@ -13,12 +12,12 @@ namespace Engine
 	{
 
 	public:
-		//functions
-
+	
 		//constructor
-		Scene() = default;
+		Scene();
 		//destructor
 		~Scene() = default;
+
 		//deleted 
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
@@ -26,21 +25,26 @@ namespace Engine
 		Scene& operator=(Scene&& other) = delete;
 
 
-		void Add(GameObject* object);
-		void Remove(GameObject* object);
-		void RemoveAll();
+
+		//functions
+		void Add(GameObject* object); //add new object and assume ownership
+		void Remove(GameObject* object); // destroy object
+		void RemoveAll(); //destroy all objects
 
 
 		void Update(float deltaTime);
 		void Render() const;
 		void RenderUI();
-
-
+		
+		static float m_DeltaTime;
 
 	private:
 
 		//elements
-		std::vector<std::unique_ptr<GameObject>> m_Objects;
+		static bool m_SceneCreated;
+
+		std::vector<std::unique_ptr<GameObject>> m_ObjectPointers;
+
 
 	};
 

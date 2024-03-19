@@ -8,12 +8,13 @@
 
 namespace Engine
 {
+	class GameObject;
 
 	struct Transform
 	{
 		glm::vec3 position{ 0.f, 0.f, 0.f };
 		float rotation{ 0 };
-		glm::vec2 scale{ 0, 0 };
+		//glm::vec3 scale{ 0, 0, 0 };
 	};
 
 
@@ -24,36 +25,33 @@ namespace Engine
 
 		//constructor 
 		TransformComponent(GameObject* gameObjectParentPointer);
-	
-
 		//destructor
-		virtual ~TransformComponent() = default;
+		~TransformComponent() = default;
 
-		//copy and move constructor and assignment operators
+		//deleted
 		TransformComponent(const TransformComponent& other) = delete;
 		TransformComponent(TransformComponent&& other) = delete;
 		TransformComponent& operator=(const TransformComponent& other) = delete;
 		TransformComponent& operator=(TransformComponent&& other) = delete;
 
+
+		//functions
 		void UpdateDueToNewParentAssigned(GameObject* parent);
 		void UpdateDueToParentBeingTransformed();
 
-
-		//elements - public following the guideline "C.131: Avoid trivial getters and setters"
-
+		//elements
 		static const Transform m_WorldOrigin;
 
 		Transform m_Local;
-		const Transform* m_World;
+		const Transform* m_World; //does not own that transform, only points to it
 		Transform m_Combined;
 
-
-		//structs holding info on how to handle transforms relating to parent stuff
 		PARENT_CHILD_TRANSFORM_RELATIONSHIP m_NewParentTransformInheritParameters{};
 		PARENT_CHILD_TRANSFORM_RELATIONSHIP m_UpdatedParentTransformInheritParameters{};
 
 	private:
-		
+		//explicitly deleted default constructor
+		TransformComponent() = delete;
 
 	};
 }

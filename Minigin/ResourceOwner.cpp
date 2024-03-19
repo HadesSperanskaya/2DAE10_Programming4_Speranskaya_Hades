@@ -2,6 +2,9 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
+#include "Texture2D.h"
+#include "Font.h"
+
 #include "ResourceOwner.h"
 #include "Renderer.h"
 

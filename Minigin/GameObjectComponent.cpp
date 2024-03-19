@@ -1,5 +1,6 @@
 #include "GameObjectComponent.h"
 #include "TransformComponent.h"
+#include "GameObject.h"
 
 using namespace Engine;
 
@@ -11,3 +12,16 @@ GameObjectComponent::GameObjectComponent(COMPONENT_TYPE componentType, const std
 
 };
 
+void GameObjectComponent::Update()
+{
+
+}
+
+void GameObjectComponent::Render(const Transform& transform) const
+{
+	transform;
+}
+void GameObjectComponent::RenderUI(const Transform& transform)
+{
+	transform;
+}

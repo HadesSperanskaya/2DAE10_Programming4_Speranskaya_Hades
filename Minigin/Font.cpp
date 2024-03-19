@@ -1,9 +1,10 @@
 #include <stdexcept>
+#include <SDL_ttf.h>
+
 #include "Font.h"
 
+
 using namespace Engine;
-
-
 
 Font::Font(const std::string& fullPath, unsigned int size) : 
 	m_Font{ nullptr }
