@@ -25,6 +25,18 @@ namespace Engine
 
 	};
 
+	class TakeDamage : public Command
+	{
 
+	public:
+		TakeDamage() {};
+
+		virtual void Execute(GameObject& actor);
+		virtual void Execute() {};
+
+
+	private:
+
+	};
 }
 #endif

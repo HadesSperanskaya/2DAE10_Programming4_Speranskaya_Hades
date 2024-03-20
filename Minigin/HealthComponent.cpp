@@ -38,10 +38,15 @@ void HealthComponent::TakeDamage(int damage)
 	if (m_CurrentHealth <= 0)
 	{
 		m_CurrentLives = m_CurrentLives - 1;
+
+		NotifyObservers(m_OwnerGameObjectPointer, GAME_EVENT::ENTITY_LOST_LIFE);
 	}
 	if (m_CurrentLives <= 0)
 	{
 		m_IsDying = true;
+
+		NotifyObservers(m_OwnerGameObjectPointer, GAME_EVENT::ENTITY_DIED);
+
 	}
 };
 

@@ -16,9 +16,6 @@
     <Filter Include="Input\Commands">
       <UniqueIdentifier>{5ed08f80-66d1-4df0-a7c4-fce213d5f4c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main">
-      <UniqueIdentifier>{e3f3ddf0-58fc-4fde-bbe6-a039aae1ae64}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameResources\ResourceOwner">
       <UniqueIdentifier>{17724798-7c76-4c05-861e-548b126be03a}</UniqueIdentifier>
     </Filter>
@@ -29,21 +26,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="GameObject\GameObjectComponents">
-      <UniqueIdentifier>{b14b17ee-7a16-48b1-af6b-c1ce303210b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObject\GameObjectComponents\SimpleComponents">
-      <UniqueIdentifier>{365fb63a-9527-435d-a4ce-926b7ef9f1ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObject\GameObjectComponents\CompositeComponents">
-      <UniqueIdentifier>{e206737a-3a51-4146-a884-61eb79b750d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObject\GameObjectComponents\BaseGameObjectComponent">
-      <UniqueIdentifier>{16193731-4c03-4f16-b929-9bdf01dc0e28}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObject\GameObjectComponents\AssignmentExclusiveComponents">
-      <UniqueIdentifier>{8bbb36a9-2c97-46bc-940f-39173df598c1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameResources\Resource Types">
       <UniqueIdentifier>{55df3255-5956-4e86-b356-cdd800f0701b}</UniqueIdentifier>
     </Filter>
@@ -52,6 +34,24 @@
     </Filter>
     <Filter Include="AddedThirdPartyContent\imgui">
       <UniqueIdentifier>{1269899a-f028-4b5c-b289-6bc69a75dd64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjectComponents">
+      <UniqueIdentifier>{b14b17ee-7a16-48b1-af6b-c1ce303210b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjectComponents\SimpleComponents">
+      <UniqueIdentifier>{365fb63a-9527-435d-a4ce-926b7ef9f1ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjectComponents\CompositeComponents">
+      <UniqueIdentifier>{e206737a-3a51-4146-a884-61eb79b750d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjectComponents\BaseGameObjectComponent">
+      <UniqueIdentifier>{16193731-4c03-4f16-b929-9bdf01dc0e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjectComponents\AssignmentExclusiveComponents">
+      <UniqueIdentifier>{8bbb36a9-2c97-46bc-940f-39173df598c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventHandling">
+      <UniqueIdentifier>{faaaf941-543c-4bb8-95dc-d3ef82a8757d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -71,22 +71,22 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="GameObjectComponent.h">
-      <Filter>GameObject\GameObjectComponents\BaseGameObjectComponent</Filter>
+      <Filter>GameObjectComponents\BaseGameObjectComponent</Filter>
     </ClInclude>
     <ClInclude Include="Texture2DComponent.h">
-      <Filter>GameObject\GameObjectComponents\SimpleComponents</Filter>
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
     </ClInclude>
     <ClInclude Include="TransformComponent.h">
-      <Filter>GameObject\GameObjectComponents\SimpleComponents</Filter>
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
     </ClInclude>
     <ClInclude Include="TextComponent.h">
-      <Filter>GameObject\GameObjectComponents\CompositeComponents</Filter>
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClInclude>
     <ClInclude Include="RenderComponent.h">
-      <Filter>GameObject\GameObjectComponents\CompositeComponents</Filter>
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClInclude>
-    <ClInclude Include="RotatorComponent.h">
-      <Filter>GameObject\GameObjectComponents\CompositeComponents</Filter>
+    <ClInclude Include="OrbitComponent.h">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClInclude>
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imconfig.h">
       <Filter>AddedThirdPartyContent\imgui</Filter>
@@ -118,17 +118,8 @@
     <ClInclude Include="CommandsSetPlayer.h">
       <Filter>Input\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="EngineMacros.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="Minigin.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="HeaderFileAliasMacros.h">
-      <Filter>Main</Filter>
-    </ClInclude>
     <ClInclude Include="FPSComponent.h">
-      <Filter>GameObject\GameObjectComponents\CompositeComponents</Filter>
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClInclude>
     <ClInclude Include="Texture2D.h">
       <Filter>GameResources\Resource Types</Filter>
@@ -137,7 +128,28 @@
       <Filter>GameResources\Resource Types</Filter>
     </ClInclude>
     <ClInclude Include="LocomotionComponent.h">
-      <Filter>GameObject\GameObjectComponents\SimpleComponents</Filter>
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatedTexture2DComponent.h">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Spritesheet.h">
+      <Filter>GameResources\Resource Types</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthComponent.h">
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Minigin.h" />
+    <ClInclude Include="EngineMacros.h" />
+    <ClInclude Include="HeaderFileAliasMacros.h" />
+    <ClInclude Include="Observer.h">
+      <Filter>EventHandling</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>EventHandling</Filter>
+    </ClInclude>
+    <ClInclude Include="UITextComponent.h">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -157,22 +169,22 @@
       <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="GameObjectComponent.cpp">
-      <Filter>GameObject\GameObjectComponents\BaseGameObjectComponent</Filter>
+      <Filter>GameObjectComponents\BaseGameObjectComponent</Filter>
     </ClCompile>
     <ClCompile Include="Texture2DComponent.cpp">
-      <Filter>GameObject\GameObjectComponents\SimpleComponents</Filter>
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
     </ClCompile>
     <ClCompile Include="TransformComponent.cpp">
-      <Filter>GameObject\GameObjectComponents\SimpleComponents</Filter>
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
     </ClCompile>
     <ClCompile Include="TextComponent.cpp">
-      <Filter>GameObject\GameObjectComponents\CompositeComponents</Filter>
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClCompile>
     <ClCompile Include="RenderComponent.cpp">
-      <Filter>GameObject\GameObjectComponents\CompositeComponents</Filter>
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClCompile>
-    <ClCompile Include="RotatorComponent.cpp">
-      <Filter>GameObject\GameObjectComponents\CompositeComponents</Filter>
+    <ClCompile Include="OrbitComponent.cpp">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imgui.cpp">
       <Filter>AddedThirdPartyContent\imgui</Filter>
@@ -198,14 +210,8 @@
     <ClCompile Include="CommandsSetPlayer.cpp">
       <Filter>Input\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Minigin.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="FPSComponent.cpp">
-      <Filter>GameObject\GameObjectComponents\CompositeComponents</Filter>
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClCompile>
     <ClCompile Include="Font.cpp">
       <Filter>GameResources\Resource Types</Filter>
@@ -214,7 +220,27 @@
       <Filter>GameResources\Resource Types</Filter>
     </ClCompile>
     <ClCompile Include="LocomotionComponent.cpp">
-      <Filter>GameObject\GameObjectComponents\SimpleComponents</Filter>
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatedTexture2DComponent.cpp">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Spritesheet.cpp">
+      <Filter>GameResources\Resource Types</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthComponent.cpp">
+      <Filter>GameObjectComponents\SimpleComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Minigin.cpp" />
+    <ClCompile Include="Observer.cpp">
+      <Filter>EventHandling</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>EventHandling</Filter>
+    </ClCompile>
+    <ClCompile Include="UITextComponent.cpp">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

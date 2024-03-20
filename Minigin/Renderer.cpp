@@ -101,7 +101,7 @@ void Renderer::RenderSprite(Spritesheet* sprite, const Transform& transform, int
 
 	SDL_Rect sourceRect{};
 
-	sourceRect.x = sprite->GetAnimationInformation(animationIndex)->startColumn * sprite->GetWidth();
+	sourceRect.x = sprite->GetAnimationInformation(animationIndex)->startColumn * sprite->GetWidth() + frame * sprite->GetWidth();
 	sourceRect.y = sprite->GetAnimationInformation(animationIndex)->startRow * sprite->GetHeight();
 	sourceRect.w = sprite->GetWidth();
 	sourceRect.h = sprite->GetHeight();

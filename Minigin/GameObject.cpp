@@ -21,6 +21,8 @@
 #include "FPSComponent.h"
 #include "OrbitComponent.h"
 #include "LocomotionComponent.h"
+#include "HealthComponent.h"
+#include "UITextComponent.h"
 
 using namespace Engine;
 
@@ -225,6 +227,26 @@ void GameObject::AddTextComponent(const std::string& name, Font* fontPointer, co
 
 };
 
+void GameObject::AddUITextComponent(const std::string& name, Font* fontPointer, const std::string& textString)
+{
+	//type checking is a little cheaper, and an object is probably not going to have more than one text component added very often?
+	if(CheckForComponentOfType(COMPONENT_TYPE::UITextComponent))
+	{
+		if (CheckForComponentWithName(name))
+		{
+			return;
+		}
+	}
+
+	m_GameObjectComponentsVector.push_back(std::make_unique<UITextComponent>(this, name, fontPointer, textString));
+
+	++m_ExtraComponentCount;
+
+	//give the render component a raw pointer to love and treasure and render
+	m_RenderComponentPointer->AddComponentToRender(m_GameObjectComponentsVector.back().get());
+
+};
+
 void GameObject::AddFPSComponent(GameObjectComponent* textComponentPointer)
 {
 	//an object does not need more than one of these for sure. FPS component is rendered by a textcomponent that it knows about
@@ -265,7 +287,17 @@ void GameObject::AddLocomotionComponent(const std::string& name, float baseSpeed
 	++m_ExtraComponentCount;
 }
 
+void GameObject::AddHealthComponent(int maxHealth, int maxLives)
+{
+	if (CheckForComponentOfType(COMPONENT_TYPE::HealthComponent))
+	{
+		return;
+	}
 
+	m_GameObjectComponentsVector.push_back(std::make_unique<HealthComponent>(this, maxHealth, maxLives));
+
+	++m_ExtraComponentCount;
+}
 
 
 void GameObject::RemoveComponentWithName(const std::string& componentName)
@@ -333,7 +365,7 @@ bool GameObject::CheckForComponentOfType(COMPONENT_TYPE componentType) const
 
 };
 
-GameObjectComponent* const GameObject::GetComponentByName(const std::string& componentName) const
+GameObjectComponent* GameObject::GetComponentByName(const std::string& componentName) const
 {
 	for (const auto& component : m_GameObjectComponentsVector)
 	{
@@ -346,7 +378,7 @@ GameObjectComponent* const GameObject::GetComponentByName(const std::string& com
 	return nullptr;
 };
 
-GameObjectComponent* const GameObject::GetComponentByType(COMPONENT_TYPE componentType) const
+GameObjectComponent* GameObject::GetComponentByType(COMPONENT_TYPE componentType) const
 {
 
 	for (const auto& component : m_GameObjectComponentsVector)

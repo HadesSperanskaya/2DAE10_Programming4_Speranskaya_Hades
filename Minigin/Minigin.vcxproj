@@ -186,6 +186,10 @@
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imstb_rectpack.h" />
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imstb_textedit.h" />
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imstb_truetype.h" />
+    <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="Observer.h" />
+    <ClInclude Include="Spritesheet.h" />
+    <ClInclude Include="AnimatedTexture2DComponent.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandsSetPlayer.h" />
     <ClInclude Include="HeaderFileAliasMacros.h" />
@@ -200,12 +204,14 @@
     <ClInclude Include="RenderComponent.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceOwner.h" />
-    <ClInclude Include="RotatorComponent.h" />
+    <ClInclude Include="OrbitComponent.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Subject.h" />
     <ClInclude Include="TextComponent.h" />
     <ClInclude Include="Texture2DComponent.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="TransformComponent.h" />
+    <ClInclude Include="UITextComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\backends\imgui_impl_opengl2.cpp" />
@@ -215,6 +221,10 @@
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imgui_draw.cpp" />
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imgui_tables.cpp" />
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imgui_widgets.cpp" />
+    <ClCompile Include="HealthComponent.cpp" />
+    <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="Spritesheet.cpp" />
+    <ClCompile Include="AnimatedTexture2DComponent.cpp" />
     <ClCompile Include="CommandsSetPlayer.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
@@ -227,12 +237,14 @@
     <ClCompile Include="RenderComponent.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceOwner.cpp" />
-    <ClCompile Include="RotatorComponent.cpp" />
+    <ClCompile Include="OrbitComponent.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="Texture2DComponent.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
+    <ClCompile Include="UITextComponent.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

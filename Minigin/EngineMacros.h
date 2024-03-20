@@ -20,6 +20,7 @@ namespace Engine
 	const std::string COMPONENT_TYPENAME_LOCOMOTION{ "Locomotion" };
 	const std::string COMPONENT_TYPENAME_ANIMATEDTEXTURE2D{ "AnimatedTexture2D" };
 	const std::string COMPONENT_TYPENAME_HEALTH{ "Health" };
+	const std::string COMPONENT_TYPENAME_UITEXT{ "UITextComponent" };
 
 
 	//component type enum
@@ -34,7 +35,8 @@ namespace Engine
 		CacheTrasher,
 		LocomotionComponent,
 		AnimatedTexture2DComponent,
-		HealthComponent
+		HealthComponent,
+		UITextComponent
 	};
 
 	//flag types
@@ -53,6 +55,11 @@ namespace Engine
 	};
 
 
+	enum struct GAME_EVENT
+	{
+		ENTITY_DIED,
+		ENTITY_LOST_LIFE
+	};
 
 	enum struct XINPUT_CONTROLLER_BUTTON
 	{

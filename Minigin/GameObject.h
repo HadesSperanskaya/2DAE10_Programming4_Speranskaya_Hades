@@ -55,11 +55,15 @@ namespace Engine
 	
 		void AddTextComponent(const std::string& name, Font* fontPointer = nullptr, const std::string& textString = "");
 
+		void AddUITextComponent(const std::string& name, Font* fontPointer = nullptr, const std::string& textString = "");
+
 		void AddFPSComponent(GameObjectComponent* textComponentPointer = nullptr);
 
 		void AddOrbitComponent(const std::string& name);
 
 		void AddLocomotionComponent(const std::string& name, float baseSpeed);
+
+		void AddHealthComponent(int maxHealth, int maxLives);
 
 
 		//remove all components with this name,with caveat that there should only be one component with a specific name on any given object?
@@ -76,8 +80,8 @@ namespace Engine
 
 
 		//Get a pointer to a component by name
-		GameObjectComponent* const GetComponentByName(const std::string& componentName) const;
-		GameObjectComponent* const GetComponentByType(COMPONENT_TYPE componentType) const;
+		GameObjectComponent* GetComponentByName(const std::string& componentName) const;
+		GameObjectComponent* GetComponentByType(COMPONENT_TYPE componentType) const;
 
 		TransformComponent* const GetTransformComponent() const;
 
