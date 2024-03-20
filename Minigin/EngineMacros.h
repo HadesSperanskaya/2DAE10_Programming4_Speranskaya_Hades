@@ -15,8 +15,11 @@ namespace Engine
 	const std::string COMPONENT_TYPENAME_TRANSFORM{ "Transform" };
 	const std::string COMPONENT_TYPENAME_FPS{ "FPS" };
 	const std::string COMPONENT_TYPENAME_RENDER{ "Render" };
-	const std::string COMPONENT_TYPENAME_ROTATOR{ "Rotator" };
+	const std::string COMPONENT_TYPENAME_ORBIT{ "Orbit" };
 	const std::string COMPONENT_TYPENAME_CACHETRASHER{ "CacheTrasher" };
+	const std::string COMPONENT_TYPENAME_LOCOMOTION{ "Locomotion" };
+	const std::string COMPONENT_TYPENAME_ANIMATEDTEXTURE2D{ "AnimatedTexture2D" };
+	const std::string COMPONENT_TYPENAME_HEALTH{ "Health" };
 
 
 	//component type enum
@@ -27,10 +30,12 @@ namespace Engine
 		TransformComponent,
 		FPSComponent,
 		RenderComponent,
-		RotatorComponent,
-		CacheTrasher
+		OrbitComponent,
+		CacheTrasher,
+		LocomotionComponent,
+		AnimatedTexture2DComponent,
+		HealthComponent
 	};
-
 
 	//flag types
 	enum class TRANSFORM_RELATIONSHIP_FlAG
@@ -48,6 +53,32 @@ namespace Engine
 	};
 
 
+
+	enum struct XINPUT_CONTROLLER_BUTTON
+	{
+		DpadUp = 0x0001,
+		DpadDown = 0x0002,
+		DpadLeft = 0x0004,
+		DpadRight = 0x0008,
+		Start = 0x0010,
+		Back = 0x0020,
+		//Left_Thumb = 0x0040,
+		//Right_Thumb = 0x0080,
+		//Left_Shoulder = 0x0100,
+		//Right_Shoulder = 0x0200,
+		A = 0x1000,
+		B = 0x2000,
+		X = 0x4000,
+		Y = 0x8000
+	};
+
+	enum struct XINPUT_CONTROLLER_BUTTON_STATE
+	{
+		IsDown = 0,
+		IsUp = 1,
+		WasPressed = 2,
+		WasReleased = 3
+	};
 
 }
 

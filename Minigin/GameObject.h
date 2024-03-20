@@ -57,7 +57,10 @@ namespace Engine
 
 		void AddFPSComponent(GameObjectComponent* textComponentPointer = nullptr);
 
-		void AddRotatorComponent(const std::string& name);
+		void AddOrbitComponent(const std::string& name);
+
+		void AddLocomotionComponent(const std::string& name, float baseSpeed);
+
 
 		//remove all components with this name,with caveat that there should only be one component with a specific name on any given object?
 		void RemoveComponentWithName(const std::string& componentName); 

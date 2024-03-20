@@ -57,8 +57,7 @@ void TextComponent::SetText(const std::string& text)
 
 void TextComponent::SetPosition(float x, float y)
 {
-	const float zeroZPosition = 0.00f;
-	m_TransformUniquePointer->position = glm::vec3{ x, y, zeroZPosition };
+	m_TransformUniquePointer->position = glm::vec2{ x, y };
 };
 
 void TextComponent::SetRotation(float rotation)

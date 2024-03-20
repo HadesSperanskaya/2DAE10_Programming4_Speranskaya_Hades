@@ -17,36 +17,11 @@
 
 namespace Engine
 {
-	enum struct ControllerButton
-	{
-		DpadUp = 0x0001,
-		DpadDown = 0x0002,
-		DpadLeft = 0x0004,
-		DpadRight = 0x0008,
-		Start = 0x0010,
-		Back = 0x0020,
-		//Left_Thumb = 0x0040,
-		//Right_Thumb = 0x0080,
-		//Left_Shoulder = 0x0100,
-		//Right_Shoulder = 0x0200,
-		A = 0x1000,
-		B = 0x2000,
-		X = 0x4000,
-		Y = 0x8000
-	};
-
-	enum struct TriggerState
-	{
-		IsDown = 0,
-		IsUp = 1,
-		WasPressed = 2,
-		WasReleased = 3
-	};
 
 	struct TriggerButton
 	{
-		ControllerButton button;
-		TriggerState trigger;
+		XINPUT_CONTROLLER_BUTTON button;
+		XINPUT_CONTROLLER_BUTTON_STATE trigger;
 
 		bool operator<(const TriggerButton& rhs) const
 		{
@@ -83,7 +58,7 @@ namespace Engine
 	struct TriggerKey
 	{
 		SDL_KeyCode key;
-		TriggerState trigger;
+		unsigned int trigger{};
 
 		bool operator<(const TriggerKey& rhs) const
 		{
@@ -97,14 +72,8 @@ namespace Engine
 			}
 			else
 			{
-				if (this->trigger < rhs.trigger)
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
+				return (this->trigger < rhs.trigger);
+
 			}
 		};
 	};
@@ -134,8 +103,7 @@ public:
 		{
 			m_XinputControllers.push_back(XinputController{});
 		}
-
-		m_XinputControllerCommands.emplace(std::make_pair<TriggerButton, std::unique_ptr<Command>>(TriggerButton{ ControllerButton::DpadDown, TriggerState::IsDown }, std::unique_ptr<Command>(new MoveCommand())));
+		CheckForNewXinputControllers();
 
 	}
 
@@ -158,18 +126,20 @@ public:
 			//set result to the input state of the controller
 			dwordResult = XInputGetState(i, &state);
 
+			const int controllerIndexInVector = i;
+
 			//if a controller is found, and the controller is currently marked as not found
-			if (dwordResult == ERROR_SUCCESS && m_XinputControllers[int(i)].exists == false)
+			if (dwordResult == ERROR_SUCCESS && m_XinputControllers[controllerIndexInVector].exists == false)
 			{
 				// Controller is connected. mark as existing, and overwrite whatever state it had stored
-				m_XinputControllers[int(i)].exists = true;
-				m_XinputControllers[int(i)].state = state;
+				m_XinputControllers[controllerIndexInVector].exists = true;
+				m_XinputControllers[controllerIndexInVector].state = state;
 			}
 			//if a controller is not found, 
 			else
 			{
 				// Controller is not connected. set connected bool as false. do not store state
-				m_XinputControllers[int(i)].exists = false;
+				m_XinputControllers[controllerIndexInVector].exists = false;
 			}
 		}
 	}
@@ -182,27 +152,30 @@ public:
 		//that is not changeable, so if there is only one controller,
 		//it will not automatically be at index 0. so go over all indexes
 
+		int dwordIndex = 0;
 
-		for (DWORD i{ 0 }; i < XUSER_MAX_COUNT; ++i)
+		for (auto& controller : m_XinputControllers)
 		{
+
 			//only handle input for controllers marked as true, and which have actors they control
-			if (m_XinputControllers[int(i)].exists && m_XinputControllers[int(i)].controlledActor != nullptr)
+			if (controller.exists && controller.controlledActor != nullptr)
 			{
 
 				XINPUT_STATE currentState;
 				ZeroMemory(&currentState, sizeof(XINPUT_STATE));
-				dwordResult = XInputGetState(i, &currentState);
+				dwordResult = XInputGetState(dwordIndex, &currentState);
 
 				if (dwordResult == ERROR_SUCCESS)
 				{
 					// Controller is connected. Process input.
 
-					//check for changes in packet number to find if anythinng happened
+					//check for changes in packet number to find if anything happened
+					
 
-					if (currentState.dwPacketNumber != m_XinputControllers[int(i)].state.dwPacketNumber)
+					if (currentState.dwPacketNumber != controller.state.dwPacketNumber)
 					{
 						//check gamepad to get more detailed state information
-						auto buttonChanges = currentState.Gamepad.wButtons ^ m_XinputControllers[int(i)].state.Gamepad.wButtons;
+						auto buttonChanges = currentState.Gamepad.wButtons ^ controller.state.Gamepad.wButtons;
 						WORD buttonsPressedThisFrame = buttonChanges & currentState.Gamepad.wButtons;
 						WORD buttonsReleasedThisFrame = buttonChanges & (~currentState.Gamepad.wButtons);
 
@@ -212,27 +185,31 @@ public:
 						{
 							switch (command.first.trigger)
 							{
-							case TriggerState::IsDown:
-								if (IsPressed(currentState.Gamepad.wButtons, int(command.first.button)))
+
+							case XINPUT_CONTROLLER_BUTTON_STATE::IsDown:
+								if (IsPressed(currentState.Gamepad.wButtons, unsigned int(command.first.button)))
 								{
-									command.second->Execute(*m_XinputControllers[int(i)].controlledActor);
+									command.second->Execute(*controller.controlledActor);
+									
 								}
 								break;
 
-							case TriggerState::WasPressed:
+							case XINPUT_CONTROLLER_BUTTON_STATE::WasPressed:
 
-								if (IsDownThisFrame(buttonsPressedThisFrame, int(command.first.button)))
+								if (IsDownThisFrame(buttonsPressedThisFrame, unsigned int(command.first.button)))
 								{
-									command.second->Execute(*m_XinputControllers[int(i)].controlledActor);
+									command.second->Execute(*controller.controlledActor);
+									
 								}
 								break;
 
 
-							case TriggerState::WasReleased:
+							case XINPUT_CONTROLLER_BUTTON_STATE::WasReleased:
 
-								if (IsUpThisFrame(buttonsReleasedThisFrame, int(command.first.button)))
+								if (IsUpThisFrame(buttonsReleasedThisFrame, unsigned int(command.first.button)))
 								{
-									command.second->Execute(*m_XinputControllers[int(i)].controlledActor);
+									command.second->Execute(*controller.controlledActor);
+
 								}
 
 								break;
@@ -241,7 +218,11 @@ public:
 
 								break;
 							}
+						
 						}
+
+
+						controller.state = currentState;
 
 					}
 
@@ -250,14 +231,17 @@ public:
 				else
 				{
 					//Controller was disconnected since last check, set controller as non-existant
-					m_XinputControllers[int(i)].exists = false;
+					controller.exists = false;
 
 				}
 			}
+		
+			++dwordIndex;
 		}
 
 	}
 	
+
 	void AssignActorToXinputController(int controllerIndex, GameObject* actor)
 	{
 		m_XinputControllers[controllerIndex].controlledActor = actor;
@@ -265,7 +249,7 @@ public:
 
 	void AssignActorToAllXinputControllers(GameObject* actor)
 	{
-		for (XinputController& controller : m_XinputControllers)
+		for (auto& controller : m_XinputControllers)
 		{
 			controller.controlledActor = actor;
 		}
@@ -286,6 +270,7 @@ public:
 
 	//elements
 
+	std::map<TriggerButton, std::unique_ptr<Command>> m_XinputControllerCommands{};
 
 private:
 
@@ -309,7 +294,7 @@ private:
 
 
 	std::vector<XinputController> m_XinputControllers{};
-	std::map<TriggerButton, std::unique_ptr<Command>> m_XinputControllerCommands{};
+
 
 };
 
@@ -324,9 +309,6 @@ public:
 		//for now only deal with one keyboard, but could theoretically expand to deal with more
 		m_Keyboards.push_back(Keyboard{});
 
-		m_KeyboardCommands.emplace(std::make_pair<TriggerKey, std::unique_ptr<Command>>(TriggerKey{ SDLK_w, TriggerState::IsDown }, std::unique_ptr<Command>(new MoveCommand)));
-
-
 	}
 
 	bool HandleKeyboardInput()
@@ -339,20 +321,12 @@ public:
 				return false;
 			}
 
-			if (e.type == SDL_PRESSED)
+
+			for (auto& command : m_KeyboardCommands)
 			{
-				switch (e.key.keysym.sym)
+				if(e.key.keysym.sym == command.first.key && e.key.state == command.first.trigger && e.key.repeat == 0)
 				{
-				case SDLK_w:
-					break;
-
-				case SDLK_a:
-					break;
-
-				case SDLK_s:
-					break;
-
-				case SDLK_d:
+					command.second->Execute(*m_Keyboards[0].controlledActor);
 					break;
 				}
 			}
@@ -372,6 +346,7 @@ public:
 	};
 
 	//elements
+	std::map<TriggerKey, std::unique_ptr<Command>> m_KeyboardCommands{};
 
 
 private:
@@ -379,7 +354,6 @@ private:
 	//elements
 
 	std::vector<Keyboard> m_Keyboards{};
-	std::map<TriggerKey, std::unique_ptr<Command>> m_KeyboardCommands{};
 };
 
 
@@ -390,11 +364,18 @@ using namespace Engine;
 // INPUT HANDLER FUNCTION IMPLEMENTATIONS
 
 InputHandler::InputHandler() :
-	m_XinputImplPointer{std::make_unique<XinputInputHandlerImpl>()},
-	m_KeyboardImplPointer{ std::make_unique<KeyboardInputHandlerImpl>() }
+	m_XinputImplPointer{new XinputInputHandlerImpl()},
+	m_KeyboardImplPointer{ new KeyboardInputHandlerImpl() }
 {
 	m_XinputImplPointer->Initialise();
 	m_KeyboardImplPointer->Initialise();
+}
+
+InputHandler::~InputHandler()
+
+{
+	delete m_XinputImplPointer;
+	delete m_KeyboardImplPointer;
 }
 
 
@@ -433,3 +414,13 @@ void InputHandler::AssignActorToKeyboard(int keyboard, GameObject* actor)
 };
 
 
+void InputHandler::AssignCommandToXinputControllerInput(XINPUT_CONTROLLER_BUTTON button, XINPUT_CONTROLLER_BUTTON_STATE state, Command* commandPointer)
+{
+	m_XinputImplPointer->m_XinputControllerCommands.emplace(TriggerButton(button, state), std::unique_ptr<Command>(commandPointer));
+}
+
+void InputHandler::AssignCommandToKeyboardInput(SDL_KeyCode key, unsigned int state, Command* commandPointer)
+{
+	m_KeyboardImplPointer->m_KeyboardCommands.emplace(TriggerKey(key, state), std::unique_ptr<Command>(commandPointer));
+
+}

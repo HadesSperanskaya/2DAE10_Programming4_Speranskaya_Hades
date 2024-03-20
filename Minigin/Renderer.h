@@ -7,6 +7,8 @@ namespace Engine
 {
 	class Scene;
 	class Texture2D;
+	class Spritesheet;
+	struct Transform;
 
 	class Renderer final
 	{
@@ -23,14 +25,15 @@ namespace Engine
 
 		void Render(Scene* scene);
 
-		static void RenderTexture(Texture2D* texture, float x, float y);
-		static void RenderTexture(Texture2D* texture, float x, float y, float width, float height);
+		static void RenderTexture(Texture2D* texture, const Transform& transform);
+
+		static void RenderSprite(Spritesheet* sprite, const Transform& transform, int animationIndex, int frame);
 
 
 		//elements
 		SDL_Color m_BackgroundColor{};
 		static SDL_Renderer* m_SDLRenderer;
-
+		static int m_GlobalTextureScale;
 
 	private:
 		//functions

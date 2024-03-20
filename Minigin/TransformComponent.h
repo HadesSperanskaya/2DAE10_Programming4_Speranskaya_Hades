@@ -12,9 +12,9 @@ namespace Engine
 
 	struct Transform
 	{
-		glm::vec3 position{ 0.f, 0.f, 0.f };
+		glm::vec2 position{ 0.f, 0.f};
 		float rotation{ 0 };
-		//glm::vec3 scale{ 0, 0, 0 };
+		//glm::vec2 scale{ 0, 0};
 	};
 
 

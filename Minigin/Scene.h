@@ -1,12 +1,13 @@
 #include <vector>
 #include <memory>
 
+#include "GameObject.h"
+
 #ifndef SCENE_HEADER     
 #define SCENE_HEADER
 
 namespace Engine
 {
-	class GameObject;
 
 	class Scene final
 	{

@@ -21,11 +21,9 @@ Texture2DComponent::Texture2DComponent(GameObject* gameObjectParentPointer, cons
 void Texture2DComponent::Render(const Transform& transform) const
 {
 
-	//to do: implement rotation of texture?
-
 	if (m_TexturePointer)
 	{
-		Renderer::RenderTexture(m_TexturePointer, transform.position.x, transform.position.y);
+		Renderer::RenderTexture(m_TexturePointer, transform);
 	}
 }
 

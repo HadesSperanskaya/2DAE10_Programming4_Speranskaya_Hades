@@ -13,9 +13,6 @@
     <Filter Include="Renderer">
       <UniqueIdentifier>{2adb6bee-6a18-471e-8569-ee536ee7f9c8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="imgui">
-      <UniqueIdentifier>{1269899a-f028-4b5c-b289-6bc69a75dd64}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Input\Commands">
       <UniqueIdentifier>{5ed08f80-66d1-4df0-a7c4-fce213d5f4c6}</UniqueIdentifier>
     </Filter>
@@ -49,6 +46,12 @@
     </Filter>
     <Filter Include="GameResources\Resource Types">
       <UniqueIdentifier>{55df3255-5956-4e86-b356-cdd800f0701b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AddedThirdPartyContent">
+      <UniqueIdentifier>{07e2b3f5-9d19-4512-8707-a648ef5a425f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AddedThirdPartyContent\imgui">
+      <UniqueIdentifier>{1269899a-f028-4b5c-b289-6bc69a75dd64}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -86,28 +89,28 @@
       <Filter>GameObject\GameObjectComponents\CompositeComponents</Filter>
     </ClInclude>
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imconfig.h">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imgui.h">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imgui_internal.h">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imstb_rectpack.h">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imstb_textedit.h">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imstb_truetype.h">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\backends\imgui_impl_sdl2.h">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\backends\imgui_impl_opengl2.h">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Command.h">
       <Filter>Input\Commands</Filter>
@@ -132,6 +135,9 @@
     </ClInclude>
     <ClInclude Include="Font.h">
       <Filter>GameResources\Resource Types</Filter>
+    </ClInclude>
+    <ClInclude Include="LocomotionComponent.h">
+      <Filter>GameObject\GameObjectComponents\SimpleComponents</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -169,25 +175,25 @@
       <Filter>GameObject\GameObjectComponents\CompositeComponents</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imgui.cpp">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imgui_demo.cpp">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imgui_draw.cpp">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imgui_tables.cpp">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\imgui_widgets.cpp">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\backends\imgui_impl_sdl2.cpp">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui-1.90.4\backends\imgui_impl_opengl2.cpp">
-      <Filter>imgui</Filter>
+      <Filter>AddedThirdPartyContent\imgui</Filter>
     </ClCompile>
     <ClCompile Include="CommandsSetPlayer.cpp">
       <Filter>Input\Commands</Filter>
@@ -206,6 +212,9 @@
     </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>GameResources\Resource Types</Filter>
+    </ClCompile>
+    <ClCompile Include="LocomotionComponent.cpp">
+      <Filter>GameObject\GameObjectComponents\SimpleComponents</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

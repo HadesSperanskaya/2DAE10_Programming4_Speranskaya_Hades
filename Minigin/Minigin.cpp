@@ -140,7 +140,6 @@ void Engine::Minigin::Run(const std::function<void(Minigin* engine)>& load)
 		//}
 
 
-
 		m_ScenePointer->Update(deltaTime);
 		m_RendererPointer->Render(m_ScenePointer.get());
 

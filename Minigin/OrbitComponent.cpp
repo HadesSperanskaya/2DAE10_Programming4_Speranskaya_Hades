@@ -1,19 +1,19 @@
 #include "TransformComponent.h"
-#include "RotatorComponent.h"
+#include "OrbitComponent.h"
 #include "GameObject.h"
 #include "Scene.h"
 
 using namespace Engine;
 
-RotatorComponent::RotatorComponent(GameObject* gameObjectParentPointer, const std::string& name)
+OrbitComponent::OrbitComponent(GameObject* gameObjectParentPointer, const std::string& name)
 	:
-	GameObjectComponent(COMPONENT_TYPE::RotatorComponent, name, gameObjectParentPointer)
+	GameObjectComponent(COMPONENT_TYPE::OrbitComponent, name, gameObjectParentPointer)
 {
 	m_OrbitTargetTransformPointer = &gameObjectParentPointer->GetTransformComponent()->m_Combined;
 }
 
 
-void RotatorComponent::Update()
+void OrbitComponent::Update()
 {
 	//if both pointers are valid - target and object that is doing the orbiting
 	if (m_OrbitTargetTransformPointer)

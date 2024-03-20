@@ -1,4 +1,5 @@
 #include <string>
+#include <string>
 
 #include "GameObject.h"
 
@@ -18,7 +19,8 @@
 
 #include "TextComponent.h"
 #include "FPSComponent.h"
-#include "RotatorComponent.h"
+#include "OrbitComponent.h"
+#include "LocomotionComponent.h"
 
 using namespace Engine;
 
@@ -102,7 +104,7 @@ void GameObject::RenderUI()
 void GameObject::SetLocalPosition(float x, float y)
 {
 
-	m_TransformComponentPointer->m_Local.position = glm::vec3(x, y, 0);
+	m_TransformComponentPointer->m_Local.position = glm::vec2(x, y);
 
 	m_TransformComponentPointer->m_Combined.position = m_TransformComponentPointer->m_Local.position + m_TransformComponentPointer->m_World->position;
 
@@ -239,17 +241,32 @@ void GameObject::AddFPSComponent(GameObjectComponent* textComponentPointer)
 	}
 }
 
-void GameObject::AddRotatorComponent(const std::string& name)
+void GameObject::AddOrbitComponent(const std::string& name)
 {
 	if (CheckForComponentWithName(name))
 	{
 		return;
 	}
 
-	m_GameObjectComponentsVector.push_back(std::make_unique<RotatorComponent>(this, name));
+	m_GameObjectComponentsVector.push_back(std::make_unique<OrbitComponent>(this, name));
 
 	++m_ExtraComponentCount;
 }
+
+void GameObject::AddLocomotionComponent(const std::string& name, float baseSpeed)
+{
+	if (CheckForComponentWithName(name))
+	{
+		return;
+	}
+
+	m_GameObjectComponentsVector.push_back(std::make_unique<LocomotionComponent>(this, name, baseSpeed));
+
+	++m_ExtraComponentCount;
+}
+
+
+
 
 void GameObject::RemoveComponentWithName(const std::string& componentName)
 {

@@ -4,6 +4,7 @@
 
 #include "Texture2D.h"
 #include "Font.h"
+#include "Spritesheet.h"
 
 #include "ResourceOwner.h"
 #include "Renderer.h"
@@ -11,8 +12,10 @@
 using namespace Engine;
 
 std::vector<std::unique_ptr<Texture2D>> ResourceOwner::m_Texture2DResourcePointers;
+std::vector<std::unique_ptr<Spritesheet>> ResourceOwner::m_SpritesheetResourcePointers;
 std::vector<std::unique_ptr<Font>> ResourceOwner::m_FontResourcePointers;
-std::string m_DataPath;
+
+std::string ResourceOwner::m_DataPath;
 
 ResourceOwner::ResourceOwner(const std::string& dataPath)
 {
@@ -33,6 +36,12 @@ Font* ResourceOwner::LoadFont(const std::string& file, unsigned int size)
 {
 	m_FontResourcePointers.push_back(std::unique_ptr<Font>(new Font(m_DataPath + file, size)));
 	return m_FontResourcePointers.back().get();
+}
+
+Spritesheet* ResourceOwner::LoadSpritesheet(const std::string& file, const SpritesheetInformation& spritesheetInformation)
+{
+	m_SpritesheetResourcePointers.push_back(std::unique_ptr<Spritesheet>(new Spritesheet(IMG_LoadTexture(Renderer::m_SDLRenderer, (m_DataPath + file).c_str()), spritesheetInformation)));
+	return m_SpritesheetResourcePointers.back().get();
 }
 
 Texture2D* ResourceOwner::CreateTexture2DFromText(const SDL_Color color, Font* font, const std::string& text)

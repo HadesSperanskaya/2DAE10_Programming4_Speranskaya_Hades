@@ -52,7 +52,7 @@ void TransformComponent::UpdateDueToNewParentAssigned(GameObject* parent)
 	case TRANSFORM_RELATIONSHIP_FlAG::CopyParent:
 
 		//reset all locals to null
-		m_Local.position = glm::vec3{ 0.f, 0.f, 0.f };
+		m_Local.position = glm::vec2{ 0.f, 0.f};
 		m_Local.rotation = 0;
 
 		//combined just copies world transform
@@ -92,7 +92,7 @@ void TransformComponent::UpdateDueToParentBeingTransformed()
 	case TRANSFORM_RELATIONSHIP_FlAG::CopyParent:
 
 		//reset locals
-		m_Local.position = glm::vec3{ 0.f, 0.f, 0.f };
+		m_Local.position = glm::vec2{ 0.f, 0.f};
 		m_Local.rotation = 0;
 
 		//change combined

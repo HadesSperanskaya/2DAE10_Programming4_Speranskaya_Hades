@@ -1,6 +1,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include "EngineMacros.h"
 
 #ifndef INPUT_HANDLER_HEADER
 #define INPUT_HANDLER_HEADER
@@ -20,7 +21,7 @@ namespace Engine
 		//constructor
 		InputHandler();
 		//destructor
-		~InputHandler() = default;
+		~InputHandler();
 
 		//deleted 
 		InputHandler(const InputHandler& other) = delete;
@@ -40,18 +41,18 @@ namespace Engine
 		void AssignActorToKeyboard(int keyboardIndex, GameObject* actor);
 
 
-		//void AssignCommandToXinputControllerInput(TriggerButton triggerButton, Command* commandPointer);
+		void AssignCommandToXinputControllerInput(XINPUT_CONTROLLER_BUTTON button, XINPUT_CONTROLLER_BUTTON_STATE state, Command* commandPointer);
 
-		//void AssignCommandToKeyboardInput(TriggerKey triggerButton, Command* commandPointer);
+		void AssignCommandToKeyboardInput(SDL_KeyCode key, unsigned int state, Command* commandPointer);
 		
 
 	private: 
 		class XinputInputHandlerImpl;
-		std::unique_ptr<XinputInputHandlerImpl> m_XinputImplPointer;
+		XinputInputHandlerImpl* m_XinputImplPointer;
 
 
 		class KeyboardInputHandlerImpl;
-		std::unique_ptr<KeyboardInputHandlerImpl> m_KeyboardImplPointer;
+		KeyboardInputHandlerImpl* m_KeyboardImplPointer;
 
 
 	};

@@ -1,6 +1,5 @@
 #include <algorithm>
 #include "Scene.h"
-#include "GameObject.h"
 
 
 using namespace Engine;
@@ -15,6 +14,7 @@ Scene::Scene()
 	{
 		m_SceneCreated = true;
 	}
+
 }
 
 void Scene::Add(GameObject* object)
@@ -37,6 +37,7 @@ void Scene::RemoveAll()
 void Scene::Update(float deltaTime)
 {
 	m_DeltaTime = deltaTime;
+
 	for(auto& object : m_ObjectPointers)
 	{
 		object->Update();
