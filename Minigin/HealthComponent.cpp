@@ -1,5 +1,6 @@
 #include "HealthComponent.h"
 #include "GameObject.h"
+#include "SubjectComponent.h"
 
 
 using namespace Engine;
@@ -39,14 +40,26 @@ void HealthComponent::TakeDamage(int damage)
 	{
 		m_CurrentLives = m_CurrentLives - 1;
 
-		NotifyObservers(m_OwnerGameObjectPointer, GAME_EVENT::ENTITY_LOST_LIFE);
+		GameObjectComponent* subjectPointer{ m_OwnerGameObjectPointer->GetComponentByType(COMPONENT_TYPE::SubjectComponent) };
+
+		if (subjectPointer)
+		{
+			(static_cast<SubjectComponent*>(subjectPointer))->NotifyObservers(m_OwnerGameObjectPointer, this, GAME_EVENT::ENTITY_LOST_LIFE);
+		}
+
+
+
 	}
 	if (m_CurrentLives <= 0)
 	{
 		m_IsDying = true;
 
-		NotifyObservers(m_OwnerGameObjectPointer, GAME_EVENT::ENTITY_DIED);
+		GameObjectComponent* subjectPointer{ m_OwnerGameObjectPointer->GetComponentByType(COMPONENT_TYPE::SubjectComponent) };
 
+		if (subjectPointer)
+		{
+			(static_cast<SubjectComponent*>(subjectPointer))->NotifyObservers(m_OwnerGameObjectPointer, this, GAME_EVENT::ENTITY_DIED);
+		}
 	}
 };
 

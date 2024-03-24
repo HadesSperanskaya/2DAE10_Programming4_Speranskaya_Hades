@@ -21,5 +21,5 @@ void TakeDamage::Execute(GameObject& actor)
 
 void GetPoints::Execute(GameObject& actor)
 {
-	static_cast<ScoreTrackerComponent*>(actor.GetComponentByType(COMPONENT_TYPE::ScoreTrackerComponent))->m_Score += 20;;
+	static_cast<ScoreTrackerComponent*>(actor.GetComponentByType(COMPONENT_TYPE::ScoreTrackerComponent))->IncreaseScore(20);
 }

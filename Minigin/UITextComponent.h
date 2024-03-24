@@ -1,11 +1,7 @@
 #include <vector>
 #include <memory>
 #include <glm/glm.hpp>
-
-
-
 #include "GameObjectComponent.h"
-#include "Observer.h"
 
 #ifndef COMPONENT_UI_TEXT_HEADER
 #define COMPONENT_UI_TEXT_HEADER
@@ -13,14 +9,14 @@ namespace Engine
 {
 	struct Transform;
 	class Font;
-	class Texture2DComponent;
+	class TextComponent;
 	class GameObject;
 
-    class UITextComponent : public GameObjectComponent, public Observer
+    class UITextComponent : public GameObjectComponent
     {
 	public:
 		//constructor
-		UITextComponent(GameObject* gameObjectParentPointer, const std::string& componentName, Font* fontPointer = nullptr, std::string textString = "");
+		UITextComponent(GameObject* gameObjectParentPointer, const std::string& componentName, Font* fontPointer, const std::string& variableText, const std::string& invariableText);
 
 		//destructor
 		~UITextComponent() = default;
@@ -31,40 +27,28 @@ namespace Engine
 		UITextComponent& operator=(const UITextComponent& other) = delete;
 		UITextComponent& operator=(UITextComponent&& other) = delete;
 
-
-		virtual void OnNotify(GameObject* gameObject, GAME_EVENT event) override;
-
 		virtual void Update();
 		virtual void Render(const Transform& transform) const;
 
+		void SetVariableText(const std::string& text);
 		void SetPosition(float x, float y);
 		void SetRotation(float rotation);
 		void SetFont(Font* fontSharedPointer);
+
+		std::string m_InvariableText;
+		std::string m_VariableText{" "};
+
 
 
 	private:
 		//explicitly deleted default constructor
 		UITextComponent() = delete;
 	
-		void UpdateTextureOfTextComponent();
+		std::unique_ptr<TextComponent> m_TextComponentUniquePointer;
 
 
 		//elements
 
-		//the dirty flag for marking that something needs to happen in the update function
-		bool m_NeedsUpdate{ false };
-
-		const glm::vec4 m_Color{ 255,255,255,255 }; // only white text is supported now
-
-		std::string m_TextString;
-
-		std::string m_InitialString;
-
-		std::unique_ptr<Texture2DComponent> m_TextureComponentUniquePointer;
-
-		std::unique_ptr<Transform> m_TransformUniquePointer;
-
-		Font* m_FontPointer;
 
     };
 }

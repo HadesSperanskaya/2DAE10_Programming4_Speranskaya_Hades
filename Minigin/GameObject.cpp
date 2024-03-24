@@ -23,6 +23,12 @@
 #include "LocomotionComponent.h"
 #include "HealthComponent.h"
 #include "UITextComponent.h"
+#include "SubjectComponent.h"
+#include "ScoreTrackerComponent.h"
+#include "ObserverComponent.h"
+
+
+#include "Event.h"
 
 using namespace Engine;
 
@@ -227,7 +233,7 @@ void GameObject::AddTextComponent(const std::string& name, Font* fontPointer, co
 
 };
 
-void GameObject::AddUITextComponent(const std::string& name, Font* fontPointer, const std::string& textString)
+void GameObject::AddUITextComponent(const std::string& name, Font* fontPointer, const std::string& variableText, const std::string& invariableText)
 {
 	//type checking is a little cheaper, and an object is probably not going to have more than one text component added very often?
 	if(CheckForComponentOfType(COMPONENT_TYPE::UITextComponent))
@@ -238,7 +244,7 @@ void GameObject::AddUITextComponent(const std::string& name, Font* fontPointer, 
 		}
 	}
 
-	m_GameObjectComponentsVector.push_back(std::make_unique<UITextComponent>(this, name, fontPointer, textString));
+	m_GameObjectComponentsVector.push_back(std::make_unique<UITextComponent>(this, name, fontPointer, variableText, invariableText));
 
 	++m_ExtraComponentCount;
 
@@ -295,6 +301,46 @@ void GameObject::AddHealthComponent(int maxHealth, int maxLives)
 	}
 
 	m_GameObjectComponentsVector.push_back(std::make_unique<HealthComponent>(this, maxHealth, maxLives));
+
+	++m_ExtraComponentCount;
+}
+
+void GameObject::AddScoreTrackerComponent()
+{
+	if (CheckForComponentOfType(COMPONENT_TYPE::ScoreTrackerComponent))
+	{
+		return;
+	}
+
+	m_GameObjectComponentsVector.push_back(std::make_unique<ScoreTrackerComponent>(this));
+
+	++m_ExtraComponentCount;
+}
+
+void GameObject::AddSubjectComponent()
+{
+	if (CheckForComponentOfType(COMPONENT_TYPE::SubjectComponent))
+	{
+		return;
+	}
+
+	m_GameObjectComponentsVector.push_back(std::make_unique<SubjectComponent>(this));
+
+	++m_ExtraComponentCount;
+}
+
+
+void GameObject::AddObserverComponent(const std::string& name, Event* eventFunction)
+{
+	if (CheckForComponentOfType(COMPONENT_TYPE::ObserverComponent))
+	{
+		if (CheckForComponentWithName(name))
+		{
+			return;
+		}
+	}
+
+	m_GameObjectComponentsVector.push_back(std::make_unique<ObserverComponent>(this, name, eventFunction));
 
 	++m_ExtraComponentCount;
 }

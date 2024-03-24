@@ -26,13 +26,15 @@ namespace Engine
 		ScoreTrackerComponent& operator=(const ScoreTrackerComponent& other) = delete;
 		ScoreTrackerComponent& operator=(ScoreTrackerComponent&& other) = delete;
 
-
-		int m_Score{ 0 };
+		void IncreaseScore(int increaseValue);
+		void SetScore(int score);
+		int GetScore() const;
 
 
 	private:
 		//explicitly deleted default constructor
 		ScoreTrackerComponent() = delete;
+		int m_Score{ 0 };
 
 
 

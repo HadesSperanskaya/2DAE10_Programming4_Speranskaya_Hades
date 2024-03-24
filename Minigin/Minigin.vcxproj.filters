@@ -50,8 +50,11 @@
     <Filter Include="GameObjectComponents\AssignmentExclusiveComponents">
       <UniqueIdentifier>{8bbb36a9-2c97-46bc-940f-39173df598c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="EventHandling">
+    <Filter Include="GameObjectComponents\SimpleComponents\EventHandling">
       <UniqueIdentifier>{faaaf941-543c-4bb8-95dc-d3ef82a8757d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events">
+      <UniqueIdentifier>{cac35b94-5e1c-4fd8-b5a6-fb60bd87ed15}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -142,14 +145,23 @@
     <ClInclude Include="Minigin.h" />
     <ClInclude Include="EngineMacros.h" />
     <ClInclude Include="HeaderFileAliasMacros.h" />
-    <ClInclude Include="Observer.h">
-      <Filter>EventHandling</Filter>
+    <ClInclude Include="ObserverComponent.h">
+      <Filter>GameObjectComponents\SimpleComponents\EventHandling</Filter>
     </ClInclude>
-    <ClInclude Include="Subject.h">
-      <Filter>EventHandling</Filter>
+    <ClInclude Include="SubjectComponent.h">
+      <Filter>GameObjectComponents\SimpleComponents\EventHandling</Filter>
     </ClInclude>
     <ClInclude Include="UITextComponent.h">
       <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreTrackerComponent.h">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSetOne.h">
+      <Filter>Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -233,14 +245,23 @@
     </ClCompile>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Minigin.cpp" />
-    <ClCompile Include="Observer.cpp">
-      <Filter>EventHandling</Filter>
+    <ClCompile Include="ObserverComponent.cpp">
+      <Filter>GameObjectComponents\SimpleComponents\EventHandling</Filter>
     </ClCompile>
-    <ClCompile Include="Subject.cpp">
-      <Filter>EventHandling</Filter>
+    <ClCompile Include="SubjectComponent.cpp">
+      <Filter>GameObjectComponents\SimpleComponents\EventHandling</Filter>
     </ClCompile>
     <ClCompile Include="UITextComponent.cpp">
       <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreTrackerComponent.cpp">
+      <Filter>GameObjectComponents\CompositeComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="EventSetOne.cpp">
+      <Filter>Events</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

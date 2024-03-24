@@ -22,6 +22,8 @@ namespace Engine
 	const std::string COMPONENT_TYPENAME_HEALTH{ "Health" };
 	const std::string COMPONENT_TYPENAME_UITEXT{ "UIText" };
 	const std::string COMPONENT_TYPENAME_SCORETRACKER{ "ScoreTracker" };
+	const std::string COMPONENT_TYPENAME_OBSERVER{ "Observer" };
+	const std::string COMPONENT_TYPENAME_SUBJECT{ "Subject" };
 
 
 	//component type enum
@@ -38,7 +40,9 @@ namespace Engine
 		AnimatedTexture2DComponent,
 		HealthComponent,
 		UITextComponent,
-		ScoreTrackerComponent
+		ScoreTrackerComponent,
+		ObserverComponent,
+		SubjectComponent
 	};
 
 	//flag types
@@ -60,7 +64,8 @@ namespace Engine
 	enum struct GAME_EVENT
 	{
 		ENTITY_DIED,
-		ENTITY_LOST_LIFE
+		ENTITY_LOST_LIFE,
+		ENTITY_GAINED_POINTS
 	};
 
 	enum struct XINPUT_CONTROLLER_BUTTON

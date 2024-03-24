@@ -1,6 +1,9 @@
 #include <glm/glm.hpp>
 
 #include "GameObjectComponent.h"
+#include "Texture2DComponent.h"
+#include "TransformComponent.h"
+
 
 #ifndef COMPONENT_TEXT_HEADER
 #define COMPONENT_TEXT_HEADER
@@ -8,9 +11,7 @@ namespace Engine
 {
 	class Font;
 	class Texture2D;
-	class Texture2DComponent;
 	class GameObject;
-	struct Transform;
 
     class TextComponent final : public GameObjectComponent
     {
@@ -20,7 +21,7 @@ namespace Engine
 		TextComponent(GameObject* gameObjectParentPointer, const std::string& componentName, Font* fontPointer = nullptr, std::string textString = "");
 
 		//destructor
-		virtual ~TextComponent() = default;
+		~TextComponent() = default;
 
 		//copy and move constructors and assignment operators
 		TextComponent(const TextComponent& other) = delete;
@@ -60,7 +61,7 @@ namespace Engine
 		std::unique_ptr<Texture2DComponent> m_TextureComponentUniquePointer;
 
 		//this component has its own local transform
-		std::unique_ptr<Transform> m_TransformUniquePointer;
+		Transform m_Transform;
 
 		//this component references a font resource that is not unique to it, so shared pointer
 		Font* m_FontPointer;

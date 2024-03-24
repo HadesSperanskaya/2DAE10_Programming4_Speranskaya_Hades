@@ -1,3 +1,11 @@
+
+
+#pragma warning( push)
+#pragma warning(disable: 4996)
+#include <steam_api.h>
+#pragma warning( pop )
+
+
 #include <stdexcept>
 #define WIN32_LEAN_AND_MEAN 
 #include <windows.h>
@@ -118,6 +126,8 @@ void Engine::Minigin::Run(const std::function<void(Minigin* engine)>& load)
 
 	while (doContinue)
 	{
+		SteamAPI_RunCallbacks();
+
 		//get and store current point in time
 		const auto currentTime = std::chrono::high_resolution_clock::now();
 		

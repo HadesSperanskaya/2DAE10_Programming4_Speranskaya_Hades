@@ -15,6 +15,7 @@ namespace Engine
 	class TransformComponent;
 	class RenderComponent;
 
+	class Event;
 
 
 	class GameObject final 
@@ -55,7 +56,7 @@ namespace Engine
 	
 		void AddTextComponent(const std::string& name, Font* fontPointer = nullptr, const std::string& textString = "");
 
-		void AddUITextComponent(const std::string& name, Font* fontPointer = nullptr, const std::string& textString = "");
+		void AddUITextComponent(const std::string& name, Font* fontPointer, const std::string& variableText, const std::string& invariableText);
 
 		void AddFPSComponent(GameObjectComponent* textComponentPointer = nullptr);
 
@@ -65,6 +66,11 @@ namespace Engine
 
 		void AddHealthComponent(int maxHealth, int maxLives);
 
+		void AddScoreTrackerComponent();
+
+		void AddSubjectComponent();
+
+		void AddObserverComponent(const std::string& name, Event* eventFunction);
 
 		//remove all components with this name,with caveat that there should only be one component with a specific name on any given object?
 		void RemoveComponentWithName(const std::string& componentName); 

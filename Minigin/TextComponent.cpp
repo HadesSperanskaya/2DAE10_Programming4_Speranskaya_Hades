@@ -6,7 +6,6 @@
 #include "Texture2D.h"
 #include "Texture2DComponent.h"
 #include "ResourceOwner.h"
-#include "TransformComponent.h"
 #include "GameObject.h"
 
 using namespace Engine;
@@ -23,7 +22,6 @@ TextComponent::TextComponent(GameObject* gameObjectParentPointer, const std::str
 	Texture2D* newTexture = ResourceOwner::CreateTexture2DFromText(colorConverted, m_FontPointer, m_TextString);
 
 	m_TextureComponentUniquePointer = std::make_unique<Texture2DComponent>(m_OwnerGameObjectPointer, componentName + COMPONENT_TYPENAME_TEXTURE2D, newTexture);
-	m_TransformUniquePointer = std::make_unique<Transform>();
 
 
 };
@@ -40,8 +38,8 @@ void TextComponent::Update()
 void TextComponent::Render(const Transform& transform) const
 {
 	Transform sum = transform;
-	sum.position += m_TransformUniquePointer->position;
-	sum.rotation += m_TransformUniquePointer->rotation;
+	sum.position += m_Transform.position;
+	sum.rotation += m_Transform.rotation;
 	//sum.scale *= m_TransformUniquePointer->scale;
 
 	m_TextureComponentUniquePointer->Render(sum);
@@ -57,12 +55,13 @@ void TextComponent::SetText(const std::string& text)
 
 void TextComponent::SetPosition(float x, float y)
 {
-	m_TransformUniquePointer->position = glm::vec2{ x, y };
+	m_Transform.position.x = x;
+	m_Transform.position.y = y;
 };
 
 void TextComponent::SetRotation(float rotation)
 {
-	m_TransformUniquePointer->rotation = rotation;
+	m_Transform.rotation = rotation;
 };
 
 void TextComponent::SetFont(Font* fontSharedPointer)

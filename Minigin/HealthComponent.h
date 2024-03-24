@@ -1,13 +1,12 @@
 
 #include "GameObjectComponent.h"
-#include "Subject.h"
 
 #ifndef COMPONENT_HEALTH_HEADER
 #define COMPONENT_HEALTH_HEADER
 
 namespace Engine
 {
-    class HealthComponent : public GameObjectComponent, public Subject
+    class HealthComponent : public GameObjectComponent
     {
 
 	public:
