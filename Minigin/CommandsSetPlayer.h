@@ -38,5 +38,20 @@ namespace Engine
 	private:
 
 	};
+
+
+	class GetPoints : public Command
+	{
+
+	public:
+		GetPoints() {};
+
+		virtual void Execute(GameObject& actor);
+		virtual void Execute() {};
+
+
+	private:
+
+	};
 }
 #endif

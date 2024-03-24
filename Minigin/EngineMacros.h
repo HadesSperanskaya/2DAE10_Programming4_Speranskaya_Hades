@@ -20,7 +20,8 @@ namespace Engine
 	const std::string COMPONENT_TYPENAME_LOCOMOTION{ "Locomotion" };
 	const std::string COMPONENT_TYPENAME_ANIMATEDTEXTURE2D{ "AnimatedTexture2D" };
 	const std::string COMPONENT_TYPENAME_HEALTH{ "Health" };
-	const std::string COMPONENT_TYPENAME_UITEXT{ "UITextComponent" };
+	const std::string COMPONENT_TYPENAME_UITEXT{ "UIText" };
+	const std::string COMPONENT_TYPENAME_SCORETRACKER{ "ScoreTracker" };
 
 
 	//component type enum
@@ -36,7 +37,8 @@ namespace Engine
 		LocomotionComponent,
 		AnimatedTexture2DComponent,
 		HealthComponent,
-		UITextComponent
+		UITextComponent,
+		ScoreTrackerComponent
 	};
 
 	//flag types
