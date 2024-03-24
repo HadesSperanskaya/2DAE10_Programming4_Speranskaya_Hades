@@ -7,6 +7,7 @@
 #include "UITextComponent.h"
 #include "ScoreTrackerComponent.h"
 
+#include "SteamAchievements.h"
 
 using namespace Engine;
 
@@ -33,6 +34,26 @@ void UpdatePointTrackerUI::Execute(GameObject* observer, GameObject* subject, GA
 
 		(static_cast<UITextComponent*>(observer->GetComponentByType(COMPONENT_TYPE::UITextComponent)))->SetVariableText(textToSet);
 		return;
+
+	}
+}
+
+
+void WinOneGameAchivement::Execute(GameObject* observer, GameObject* subject, GAME_EVENT passedEvent)
+{
+
+	observer;
+	if (passedEvent == GAME_EVENT::ENTITY_GAINED_POINTS)
+	{
+		int score = static_cast<ScoreTrackerComponent*>(subject->GetComponentByType(COMPONENT_TYPE::ScoreTrackerComponent))->GetScore();
+
+		if (score >= 500)
+		{
+			if (SteamAchievements::m_SteamAchievementsPointer != nullptr)
+			{
+				SteamAchievements::m_SteamAchievementsPointer->SetAchievement("ACH_WIN_ONE_GAME");
+			}
+		}
 
 	}
 }

@@ -249,6 +249,8 @@ xcopy $(SolutionDir)Minigin\Data $(OutputPath)Data\ /Y
     <ClInclude Include="ResourceOwner.h" />
     <ClInclude Include="OrbitComponent.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="StatsAndAchievements.h" />
+    <ClInclude Include="SteamAchievements.h" />
     <ClInclude Include="SubjectComponent.h" />
     <ClInclude Include="TextComponent.h" />
     <ClInclude Include="Texture2DComponent.h" />
@@ -285,6 +287,8 @@ xcopy $(SolutionDir)Minigin\Data $(OutputPath)Data\ /Y
     <ClCompile Include="ResourceOwner.cpp" />
     <ClCompile Include="OrbitComponent.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="StatsAndAchievements.cpp" />
+    <ClCompile Include="SteamAchievements.cpp" />
     <ClCompile Include="SubjectComponent.cpp" />
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="Texture2DComponent.cpp" />

@@ -25,7 +25,12 @@ namespace Engine
 		virtual void Execute(GameObject* observer, GameObject* subject, GAME_EVENT passedEvent);
 	};
 
-
+	class WinOneGameAchivement : public Event
+	{
+	public:
+		virtual ~WinOneGameAchivement() = default;
+		virtual void Execute(GameObject* observer, GameObject* subject, GAME_EVENT passedEvent);
+	};
 
 
 }

@@ -56,6 +56,9 @@
     <Filter Include="Events">
       <UniqueIdentifier>{cac35b94-5e1c-4fd8-b5a6-fb60bd87ed15}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SteamIntegration">
+      <UniqueIdentifier>{37f356b7-3db8-4efc-b643-ace5f914e777}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ResourceOwner.h">
@@ -163,6 +166,12 @@
     <ClInclude Include="EventSetOne.h">
       <Filter>Events</Filter>
     </ClInclude>
+    <ClInclude Include="StatsAndAchievements.h">
+      <Filter>SteamIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="SteamAchievements.h">
+      <Filter>SteamIntegration</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceOwner.cpp">
@@ -262,6 +271,12 @@
     </ClCompile>
     <ClCompile Include="EventSetOne.cpp">
       <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="StatsAndAchievements.cpp">
+      <Filter>SteamIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="SteamAchievements.cpp">
+      <Filter>SteamIntegration</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
